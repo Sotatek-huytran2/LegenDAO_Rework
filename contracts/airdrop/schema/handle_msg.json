@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleMsg",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "confirm_airdrop"
+      ],
+      "properties": {
+        "confirm_airdrop": {
+          "type": "object",
+          "required": [
+            "airdrops"
+          ],
+          "properties": {
+            "airdrops": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AirdropClaimSubmit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "change_config"
+      ],
+      "properties": {
+        "change_config": {
+          "$ref": "#/definitions/NewConfig"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "set_quest_password"
+      ],
+      "properties": {
+        "set_quest_password": {
+          "type": "object",
+          "required": [
+            "password"
+          ],
+          "properties": {
+            "password": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "set_airdrop_vk"
+      ],
+      "properties": {
+        "set_airdrop_vk": {
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "AirdropClaimSubmit": {
+      "type": "object",
+      "required": [
+        "address",
+        "amount",
+        "to"
+      ],
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "amount": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "to": {
+          "$ref": "#/definitions/HumanAddr"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "NewConfig": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confirmer": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "platform": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SecretContract"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quest_contract": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "token": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/SecretContract"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "SecretContract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

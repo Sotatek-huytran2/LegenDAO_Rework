@@ -1,0 +1,3 @@
+pub const RESPONSE_BLOCK_SIZE: usize = 256;
+pub const REWARD_SCALE: u128 = 1_000_000_000_000_000_000; // 10 ^ 18
+pub const MULTIPLIER_SCALE: u128 = 100_000; // 10 ^ 5

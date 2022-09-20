@@ -1,0 +1,1126 @@
+{
+  "background": {
+    "Night": {
+      "trait_rarity": 0.01851423281647767,
+      "trait_rarity_score": 54.012499999999996
+    },
+    "Night Mountains Pink": {
+      "trait_rarity": 0.03309419115945383,
+      "trait_rarity_score": 30.21678321678322
+    },
+    "Night Mountains": {
+      "trait_rarity": 0.02522564221245082,
+      "trait_rarity_score": 39.64220183486239
+    },
+    "Mountains Purple Blizzard": {
+      "trait_rarity": 0.03633418190233742,
+      "trait_rarity_score": 27.522292993630575
+    },
+    "Mountains Bright Blue Blizzard": {
+      "trait_rarity": 0.03401990280027772,
+      "trait_rarity_score": 29.394557823129247
+    },
+    "Mountains Blizzard Orange": {
+      "trait_rarity": 0.03401990280027772,
+      "trait_rarity_score": 29.394557823129247
+    },
+    "Blue Blizzard": {
+      "trait_rarity": 0.04535987040037028,
+      "trait_rarity_score": 22.04591836734694
+    },
+    "Gray Blizzard": {
+      "trait_rarity": 0.03795417727377922,
+      "trait_rarity_score": 26.347560975609756
+    },
+    "Mountains Orange": {
+      "trait_rarity": 0.039111316824809075,
+      "trait_rarity_score": 25.568047337278106
+    },
+    "Mountains Green": {
+      "trait_rarity": 0.04582272622078223,
+      "trait_rarity_score": 21.82323232323232
+    },
+    "Mountains Purple": {
+      "trait_rarity": 0.04744272159222402,
+      "trait_rarity_score": 21.078048780487805
+    },
+    "Mountains Bright Blue": {
+      "trait_rarity": 0.04373987502892849,
+      "trait_rarity_score": 22.86243386243386
+    },
+    "Mountains Blue": {
+      "trait_rarity": 0.039805600555426986,
+      "trait_rarity_score": 25.122093023255815
+    },
+    "Mint Green": {
+      "trait_rarity": 0.06225410784540616,
+      "trait_rarity_score": 16.063197026022305
+    },
+    "Teal": {
+      "trait_rarity": 0.0659569544087017,
+      "trait_rarity_score": 15.161403508771928
+    },
+    "Blue Purple": {
+      "trait_rarity": 0.06780837769034946,
+      "trait_rarity_score": 14.747440273037542
+    },
+    "Purple": {
+      "trait_rarity": 0.08609118259662116,
+      "trait_rarity_score": 11.615591397849462
+    },
+    "Green": {
+      "trait_rarity": 0.08308261976394353,
+      "trait_rarity_score": 12.036211699164346
+    },
+    "Turquoise": {
+      "trait_rarity": 0.07752834991900023,
+      "trait_rarity_score": 12.898507462686567
+    },
+    "Blue": {
+      "trait_rarity": 0.07683406618838232,
+      "trait_rarity_score": 13.015060240963855
+    }
+  },
+  "bull_bottom_hand": {
+    "Mage Staff Green Crystal": {
+      "trait_rarity": 0.01897708863688961,
+      "trait_rarity_score": 52.69512195121951
+    },
+    "Mage Staff Red Crystal": {
+      "trait_rarity": 0.0222170793797732,
+      "trait_rarity_score": 45.01041666666667
+    },
+    "Mage Staff Blue Crystal": {
+      "trait_rarity": 0.025457070122656793,
+      "trait_rarity_score": 39.28181818181818
+    },
+    "Hammer": {
+      "trait_rarity": 0.03008562832677621,
+      "trait_rarity_score": 33.238461538461536
+    },
+    "Mace": {
+      "trait_rarity": 0.029854200416570238,
+      "trait_rarity_score": 33.49612403100775
+    },
+    "Orc Sword": {
+      "trait_rarity": 0.039805600555426986,
+      "trait_rarity_score": 25.122093023255815
+    },
+    "Axe": {
+      "trait_rarity": 0.03656560981254339,
+      "trait_rarity_score": 27.348101265822784
+    },
+    "Elegant Sword": {
+      "trait_rarity": 0.03934274473501504,
+      "trait_rarity_score": 25.41764705882353
+    },
+    "Basic Sword": {
+      "trait_rarity": 0.04975700069428373,
+      "trait_rarity_score": 20.09767441860465
+    },
+    "None": {
+      "trait_rarity": 0.04142559592686878,
+      "trait_rarity_score": 24.139664804469273
+    }
+  },
+  "bull_head": {
+    "Ram Horns White": {
+      "trait_rarity": 0.023142791020597082,
+      "trait_rarity_score": 43.21
+    },
+    "Ram Horns": {
+      "trait_rarity": 0.028465632955334413,
+      "trait_rarity_score": 35.13008130081301
+    },
+    "Blue Gold Horns": {
+      "trait_rarity": 0.015274242073594076,
+      "trait_rarity_score": 65.46969696969697
+    },
+    "Green Gold Horns": {
+      "trait_rarity": 0.022911363110391113,
+      "trait_rarity_score": 43.64646464646464
+    },
+    "Cracked Horns": {
+      "trait_rarity": 0.02453135848183291,
+      "trait_rarity_score": 40.764150943396224
+    },
+    "Green Horns": {
+      "trait_rarity": 0.02453135848183291,
+      "trait_rarity_score": 40.764150943396224
+    },
+    "Spiked Horns Gold": {
+      "trait_rarity": 0.0388798889146031,
+      "trait_rarity_score": 25.720238095238095
+    },
+    "Spiked Horns": {
+      "trait_rarity": 0.036797037722749365,
+      "trait_rarity_score": 27.176100628930815
+    },
+    "Small Horns Gold": {
+      "trait_rarity": 0.03077991205739412,
+      "trait_rarity_score": 32.48872180451128
+    },
+    "Small Horns": {
+      "trait_rarity": 0.035177042351307565,
+      "trait_rarity_score": 28.42763157894737
+    },
+    "None": {
+      "trait_rarity": 0.05299699143716732,
+      "trait_rarity_score": 18.868995633187772
+    }
+  },
+  "bull_earrings": {
+    "Double Earrings": {
+      "trait_rarity": 0.03239990742883592,
+      "trait_rarity_score": 30.864285714285714
+    },
+    "Gray Long Earring": {
+      "trait_rarity": 0.03309419115945383,
+      "trait_rarity_score": 30.21678321678322
+    },
+    "Gold Earring": {
+      "trait_rarity": 0.045591298310576255,
+      "trait_rarity_score": 21.934010152284266
+    },
+    "Gold Long Earring": {
+      "trait_rarity": 0.056699838000462854,
+      "trait_rarity_score": 17.63673469387755
+    },
+    "Single Earring": {
+      "trait_rarity": 0.07197408007405694,
+      "trait_rarity_score": 13.893890675241156
+    },
+    "None": {
+      "trait_rarity": 0.09372830363341819,
+      "trait_rarity_score": 10.669135802469135
+    }
+  },
+  "bull_eyes": {
+    "Cyborg Visor Red": {
+      "trait_rarity": 0.027308493404304558,
+      "trait_rarity_score": 36.61864406779661
+    },
+    "Cyborg Visor Blue": {
+      "trait_rarity": 0.034482758620689655,
+      "trait_rarity_score": 29
+    },
+    "Glasses": {
+      "trait_rarity": 0.042119879657486696,
+      "trait_rarity_score": 23.74175824175824
+    },
+    "Chill": {
+      "trait_rarity": 0.044202730849340434,
+      "trait_rarity_score": 22.623036649214658
+    },
+    "Raised Eyebrow": {
+      "trait_rarity": 0.04952557278407776,
+      "trait_rarity_score": 20.19158878504673
+    },
+    "Angry": {
+      "trait_rarity": 0.05345984725757926,
+      "trait_rarity_score": 18.705627705627705
+    },
+    "Eye Patch": {
+      "trait_rarity": 0.020365656098125434,
+      "trait_rarity_score": 49.10227272727273
+    },
+    "Normal": {
+      "trait_rarity": 0.062022679935200185,
+      "trait_rarity_score": 16.12313432835821
+    }
+  },
+  "bull_top_hand": {
+    "Mage Staff Green Crystal": {
+      "trait_rarity": 0.011571395510298541,
+      "trait_rarity_score": 86.42
+    },
+    "Mage Staff Red Crystal": {
+      "trait_rarity": 0.016894237445035872,
+      "trait_rarity_score": 59.1917808219178
+    },
+    "Mage Staff Blue Crystal": {
+      "trait_rarity": 0.01920851654709558,
+      "trait_rarity_score": 52.06024096385542
+    },
+    "Hammer": {
+      "trait_rarity": 0.03077991205739412,
+      "trait_rarity_score": 32.48872180451128
+    },
+    "Mace": {
+      "trait_rarity": 0.029854200416570238,
+      "trait_rarity_score": 33.49612403100775
+    },
+    "Orc Sword": {
+      "trait_rarity": 0.04096274010645684,
+      "trait_rarity_score": 24.412429378531073
+    },
+    "Axe": {
+      "trait_rarity": 0.049294144873871786,
+      "trait_rarity_score": 20.286384976525824
+    },
+    "Elegant Sword": {
+      "trait_rarity": 0.06456838694746586,
+      "trait_rarity_score": 15.487455197132617
+    },
+    "Basic Sword": {
+      "trait_rarity": 0.07035408470261513,
+      "trait_rarity_score": 14.213815789473685
+    }
+  },
+  "bull_scars": {
+    "Scar 1": {
+      "trait_rarity": 0.05415413098819718,
+      "trait_rarity_score": 18.465811965811966
+    },
+    "Scar 2": {
+      "trait_rarity": 0.05415413098819718,
+      "trait_rarity_score": 18.465811965811966
+    },
+    "Scar 3": {
+      "trait_rarity": 0.0698912288822032,
+      "trait_rarity_score": 14.307947019867548
+    },
+    "Scar 4": {
+      "trait_rarity": 0.039805600555426986,
+      "trait_rarity_score": 25.122093023255815
+    },
+    "None": {
+      "trait_rarity": 0.11548252719277945,
+      "trait_rarity_score": 8.659318637274549
+    }
+  },
+  "bull_mouth": {
+    "Black Stache": {
+      "trait_rarity": 0.04350844711872252,
+      "trait_rarity_score": 22.98404255319149
+    },
+    "White Stache": {
+      "trait_rarity": 0.039805600555426986,
+      "trait_rarity_score": 25.122093023255815
+    },
+    "Smile": {
+      "trait_rarity": 0.06225410784540616,
+      "trait_rarity_score": 16.063197026022305
+    },
+    "Confused": {
+      "trait_rarity": 0.062022679935200185,
+      "trait_rarity_score": 16.12313432835821
+    },
+    "Fang": {
+      "trait_rarity": 0.04512844249016432,
+      "trait_rarity_score": 22.15897435897436
+    },
+    "Frown": {
+      "trait_rarity": 0.08076834066188382,
+      "trait_rarity_score": 12.381088825214901
+    }
+  },
+  "bull_clothes": {
+    "Robot": {
+      "trait_rarity": 0.00833140476741495,
+      "trait_rarity_score": 120.02777777777779
+    },
+    "Samurai Blue": {
+      "trait_rarity": 0.012265679240916455,
+      "trait_rarity_score": 81.52830188679245
+    },
+    "Samurai Red": {
+      "trait_rarity": 0.012728535061328396,
+      "trait_rarity_score": 78.56363636363636
+    },
+    "Samurai White": {
+      "trait_rarity": 0.011802823420504514,
+      "trait_rarity_score": 84.72549019607843
+    },
+    "Gi Orange": {
+      "trait_rarity": 0.015505669983800046,
+      "trait_rarity_score": 64.49253731343283
+    },
+    "Gi Red": {
+      "trait_rarity": 0.015505669983800046,
+      "trait_rarity_score": 64.49253731343283
+    },
+    "Hoodie Blue": {
+      "trait_rarity": 0.015737097894006017,
+      "trait_rarity_score": 63.544117647058826
+    },
+    "Hoodie Green": {
+      "trait_rarity": 0.017588521175653783,
+      "trait_rarity_score": 56.85526315789474
+    },
+    "Hoodie White": {
+      "trait_rarity": 0.020597084008331403,
+      "trait_rarity_score": 48.55056179775281
+    },
+    "Armor Dark": {
+      "trait_rarity": 0.0166628095348299,
+      "trait_rarity_score": 60.01388888888889
+    },
+    "Armor Grey": {
+      "trait_rarity": 0.02568849803286276,
+      "trait_rarity_score": 38.92792792792793
+    },
+    "Fur Coat Dark": {
+      "trait_rarity": 0.025919925943068734,
+      "trait_rarity_score": 38.580357142857146
+    },
+    "Fur Coat": {
+      "trait_rarity": 0.03054848414718815,
+      "trait_rarity_score": 32.734848484848484
+    },
+    "Suit Dark": {
+      "trait_rarity": 0.031705623698218006,
+      "trait_rarity_score": 31.54014598540146
+    },
+    "Suit Red": {
+      "trait_rarity": 0.04096274010645684,
+      "trait_rarity_score": 24.412429378531073
+    },
+    "None": {
+      "trait_rarity": 0.03193705160842398,
+      "trait_rarity_score": 31.311594202898547
+    }
+  },
+  "bull_fur": {
+    "Blue Purple": {
+      "trait_rarity": 0.009951400138856746,
+      "trait_rarity_score": 100.48837209302326
+    },
+    "Dark Blue Grey": {
+      "trait_rarity": 0.007868548947003009,
+      "trait_rarity_score": 127.08823529411765
+    },
+    "Dark Blue Purple": {
+      "trait_rarity": 0.010645683869474658,
+      "trait_rarity_score": 93.93478260869566
+    },
+    "Gold Purple": {
+      "trait_rarity": 0.01133996760009257,
+      "trait_rarity_score": 88.18367346938776
+    },
+    "Green Blue": {
+      "trait_rarity": 0.015042814163388105,
+      "trait_rarity_score": 66.47692307692307
+    },
+    "Green Yellow": {
+      "trait_rarity": 0.015505669983800046,
+      "trait_rarity_score": 64.49253731343283
+    },
+    "Green": {
+      "trait_rarity": 0.01619995371441796,
+      "trait_rarity_score": 61.72857142857143
+    },
+    "Grey": {
+      "trait_rarity": 0.017819949085859755,
+      "trait_rarity_score": 56.116883116883116
+    },
+    "Light Brown": {
+      "trait_rarity": 0.01920851654709558,
+      "trait_rarity_score": 52.06024096385542
+    },
+    "Orange Blue": {
+      "trait_rarity": 0.020365656098125434,
+      "trait_rarity_score": 49.10227272727273
+    },
+    "Pale Green": {
+      "trait_rarity": 0.023142791020597082,
+      "trait_rarity_score": 43.21
+    },
+    "Red Brown": {
+      "trait_rarity": 0.023605646841009027,
+      "trait_rarity_score": 42.36274509803921
+    },
+    "Red Purple": {
+      "trait_rarity": 0.02175422355936126,
+      "trait_rarity_score": 45.96808510638298
+    },
+    "Space": {
+      "trait_rarity": 0.025919925943068734,
+      "trait_rarity_score": 38.580357142857146
+    },
+    "White Blue": {
+      "trait_rarity": 0.027308493404304558,
+      "trait_rarity_score": 36.61864406779661
+    },
+    "White Purple": {
+      "trait_rarity": 0.03239990742883592,
+      "trait_rarity_score": 30.864285714285714
+    },
+    "Yellow Teal": {
+      "trait_rarity": 0.03540847026151354,
+      "trait_rarity_score": 28.241830065359476
+    }
+  },
+  "female_handheld_left": {
+    "Elegant Dagger Gold": {
+      "trait_rarity": 0.0349456144411016,
+      "trait_rarity_score": 28.615894039735096
+    },
+    "Green Dagger": {
+      "trait_rarity": 0.03772274936357325,
+      "trait_rarity_score": 26.50920245398773
+    },
+    "Red Dagger": {
+      "trait_rarity": 0.04397130293913446,
+      "trait_rarity_score": 22.742105263157892
+    },
+    "Elegant Dagger": {
+      "trait_rarity": 0.04350844711872252,
+      "trait_rarity_score": 22.98404255319149
+    },
+    "None": {
+      "trait_rarity": 0.05183985188613747,
+      "trait_rarity_score": 19.290178571428573
+    },
+    "Basic Dagger": {
+      "trait_rarity": 0.06017125665355242,
+      "trait_rarity_score": 16.619230769230768
+    },
+    "Basic Dagger Blue": {
+      "trait_rarity": 0.0610969682943763,
+      "trait_rarity_score": 16.367424242424242
+    }
+  },
+  "female_head": {
+    "Blue Gold Horns": {
+      "trait_rarity": 0.020365656098125434,
+      "trait_rarity_score": 49.10227272727273
+    },
+    "Cracked Horns": {
+      "trait_rarity": 0.020828511918537376,
+      "trait_rarity_score": 48.01111111111111
+    },
+    "Green Gold Horns": {
+      "trait_rarity": 0.021059939828743348,
+      "trait_rarity_score": 47.48351648351648
+    },
+    "Green Horns": {
+      "trait_rarity": 0.021059939828743348,
+      "trait_rarity_score": 47.48351648351648
+    },
+    "Ram Horns White": {
+      "trait_rarity": 0.028002777134922472,
+      "trait_rarity_score": 35.71074380165289
+    },
+    "Ram Horns": {
+      "trait_rarity": 0.026845637583892617,
+      "trait_rarity_score": 37.25
+    },
+    "Small Horns Gold": {
+      "trait_rarity": 0.02568849803286276,
+      "trait_rarity_score": 38.92792792792793
+    },
+    "Small Horns": {
+      "trait_rarity": 0.031705623698218006,
+      "trait_rarity_score": 31.54014598540146
+    },
+    "Spiked Horns Gold": {
+      "trait_rarity": 0.03772274936357325,
+      "trait_rarity_score": 26.50920245398773
+    },
+    "Spiked Horns": {
+      "trait_rarity": 0.04165702383707475,
+      "trait_rarity_score": 24.005555555555556
+    },
+    "None": {
+      "trait_rarity": 0.058319833371904654,
+      "trait_rarity_score": 17.146825396825395
+    }
+  },
+  "female_eyes": {
+    "No Pupil": {
+      "trait_rarity": 0.04466558666975237,
+      "trait_rarity_score": 22.38860103626943
+    },
+    "Cyborg Red": {
+      "trait_rarity": 0.044202730849340434,
+      "trait_rarity_score": 22.623036649214658
+    },
+    "Cyborg Blue": {
+      "trait_rarity": 0.054385558898403144,
+      "trait_rarity_score": 18.387234042553192
+    },
+    "Glasses": {
+      "trait_rarity": 0.05276556352696135,
+      "trait_rarity_score": 18.95175438596491
+    },
+    "Confused": {
+      "trait_rarity": 0.062022679935200185,
+      "trait_rarity_score": 16.12313432835821
+    },
+    "Eyes": {
+      "trait_rarity": 0.07521407081694052,
+      "trait_rarity_score": 13.295384615384615
+    }
+  },
+  "female_scars": {
+    "Scar 1": {
+      "trait_rarity": 0.06063411247396436,
+      "trait_rarity_score": 16.49236641221374
+    },
+    "Scar 2": {
+      "trait_rarity": 0.05207127979634344,
+      "trait_rarity_score": 19.204444444444444
+    },
+    "Scar 3": {
+      "trait_rarity": 0.06433695903725989,
+      "trait_rarity_score": 15.5431654676259
+    },
+    "Scar 4": {
+      "trait_rarity": 0.03841703309419116,
+      "trait_rarity_score": 26.03012048192771
+    },
+    "None": {
+      "trait_rarity": 0.11779680629483916,
+      "trait_rarity_score": 8.489194499017682
+    }
+  },
+  "female_mouth": {
+    "Fang": {
+      "trait_rarity": 0.06803980560055543,
+      "trait_rarity_score": 14.697278911564624
+    },
+    "Angry": {
+      "trait_rarity": 0.08215690812311965,
+      "trait_rarity_score": 12.171830985915491
+    },
+    "Lipstick": {
+      "trait_rarity": 0.08053691275167785,
+      "trait_rarity_score": 12.416666666666668
+    },
+    "Mouth": {
+      "trait_rarity": 0.10252256422124509,
+      "trait_rarity_score": 9.75395033860045
+    }
+  },
+  "female_earrings": {
+    "Double Earrings": {
+      "trait_rarity": 0.029159916685952327,
+      "trait_rarity_score": 34.29365079365079
+    },
+    "Gray Long Earring": {
+      "trait_rarity": 0.03841703309419116,
+      "trait_rarity_score": 26.03012048192771
+    },
+    "Gold Earring": {
+      "trait_rarity": 0.04350844711872252,
+      "trait_rarity_score": 22.98404255319149
+    },
+    "Gold Long Earring": {
+      "trait_rarity": 0.053922703077991206,
+      "trait_rarity_score": 18.545064377682404
+    },
+    "Single Earring": {
+      "trait_rarity": 0.07035408470261513,
+      "trait_rarity_score": 14.213815789473685
+    },
+    "None": {
+      "trait_rarity": 0.09789400601712567,
+      "trait_rarity_score": 10.215130023640661
+    }
+  },
+  "female_clothes": {
+    "None": {
+      "trait_rarity": 0.011802823420504514,
+      "trait_rarity_score": 84.72549019607843
+    },
+    "Spiked Armor": {
+      "trait_rarity": 0.012034251330710484,
+      "trait_rarity_score": 83.09615384615384
+    },
+    "Spiked Armor Red": {
+      "trait_rarity": 0.01388567461235825,
+      "trait_rarity_score": 72.01666666666667
+    },
+    "Plate": {
+      "trait_rarity": 0.015505669983800046,
+      "trait_rarity_score": 64.49253731343283
+    },
+    "Hoodie White": {
+      "trait_rarity": 0.01967137236750752,
+      "trait_rarity_score": 50.83529411764706
+    },
+    "Hoodie Red": {
+      "trait_rarity": 0.018745660726683638,
+      "trait_rarity_score": 53.34567901234568
+    },
+    "Hoodie Blue": {
+      "trait_rarity": 0.02707706549409859,
+      "trait_rarity_score": 36.93162393162393
+    },
+    "Fighter Red": {
+      "trait_rarity": 0.0277713492247165,
+      "trait_rarity_score": 36.00833333333333
+    },
+    "Fighter Grey": {
+      "trait_rarity": 0.03263133533904189,
+      "trait_rarity_score": 30.645390070921984
+    },
+    "Fighter Green": {
+      "trait_rarity": 0.026845637583892617,
+      "trait_rarity_score": 37.25
+    },
+    "Canary White": {
+      "trait_rarity": 0.043277019208516544,
+      "trait_rarity_score": 23.106951871657756
+    },
+    "Canary Red": {
+      "trait_rarity": 0.037491321453367275,
+      "trait_rarity_score": 26.67283950617284
+    },
+    "Canary Blue": {
+      "trait_rarity": 0.04651700995140014,
+      "trait_rarity_score": 21.497512437810947
+    }
+  },
+  "female_fur": {
+    "Blue Purple": {
+      "trait_rarity": 0.010182828049062717,
+      "trait_rarity_score": 98.20454545454545
+    },
+    "Dark Blue Grey": {
+      "trait_rarity": 0.008794260587826891,
+      "trait_rarity_score": 113.71052631578948
+    },
+    "Dark Blue Purple": {
+      "trait_rarity": 0.011571395510298541,
+      "trait_rarity_score": 86.42
+    },
+    "Gold Purple": {
+      "trait_rarity": 0.013191390881740338,
+      "trait_rarity_score": 75.80701754385964
+    },
+    "Green Blue": {
+      "trait_rarity": 0.014579958342976164,
+      "trait_rarity_score": 68.58730158730158
+    },
+    "Green Yellow": {
+      "trait_rarity": 0.017819949085859755,
+      "trait_rarity_score": 56.116883116883116
+    },
+    "Green": {
+      "trait_rarity": 0.015274242073594076,
+      "trait_rarity_score": 65.46969696969697
+    },
+    "Grey": {
+      "trait_rarity": 0.015505669983800046,
+      "trait_rarity_score": 64.49253731343283
+    },
+    "Light Brown": {
+      "trait_rarity": 0.021059939828743348,
+      "trait_rarity_score": 47.48351648351648
+    },
+    "Orange Blue": {
+      "trait_rarity": 0.01943994445730155,
+      "trait_rarity_score": 51.44047619047619
+    },
+    "Pale Green": {
+      "trait_rarity": 0.01897708863688961,
+      "trait_rarity_score": 52.69512195121951
+    },
+    "Red Brown": {
+      "trait_rarity": 0.023837074751214996,
+      "trait_rarity_score": 41.95145631067961
+    },
+    "Red Purple": {
+      "trait_rarity": 0.02175422355936126,
+      "trait_rarity_score": 45.96808510638298
+    },
+    "Space": {
+      "trait_rarity": 0.022911363110391113,
+      "trait_rarity_score": 43.64646464646464
+    },
+    "White Blue": {
+      "trait_rarity": 0.028928488775746355,
+      "trait_rarity_score": 34.568
+    },
+    "White Purple": {
+      "trait_rarity": 0.03355704697986577,
+      "trait_rarity_score": 29.8
+    },
+    "Yellow Teal": {
+      "trait_rarity": 0.03587132608192548,
+      "trait_rarity_score": 27.877419354838707
+    }
+  },
+  "female_handheld_right": {
+    "Red Dagger": {
+      "trait_rarity": 0.023374218930803055,
+      "trait_rarity_score": 42.78217821782178
+    },
+    "Mage Staff Red": {
+      "trait_rarity": 0.028465632955334413,
+      "trait_rarity_score": 35.13008130081301
+    },
+    "Mage Staff Green": {
+      "trait_rarity": 0.03471418653089563,
+      "trait_rarity_score": 28.806666666666665
+    },
+    "Mage Staff Blue": {
+      "trait_rarity": 0.032168479518629944,
+      "trait_rarity_score": 31.0863309352518
+    },
+    "Green Dagger": {
+      "trait_rarity": 0.039111316824809075,
+      "trait_rarity_score": 25.568047337278106
+    },
+    "Elegant Dagger": {
+      "trait_rarity": 0.03471418653089563,
+      "trait_rarity_score": 28.806666666666665
+    },
+    "Elegant Dagger Gold": {
+      "trait_rarity": 0.042814163388104606,
+      "trait_rarity_score": 23.356756756756756
+    },
+    "Basic Dagger": {
+      "trait_rarity": 0.0483684332330479,
+      "trait_rarity_score": 20.67464114832536
+    },
+    "Basic Dagger Blue": {
+      "trait_rarity": 0.04952557278407776,
+      "trait_rarity_score": 20.19158878504673
+    }
+  },
+  "male_handheld_left": {
+    "Mage Staff Blue": {
+      "trait_rarity": 0.01967137236750752,
+      "trait_rarity_score": 50.83529411764706
+    },
+    "Mage Staff Green": {
+      "trait_rarity": 0.01851423281647767,
+      "trait_rarity_score": 54.012499999999996
+    },
+    "Mage Staff Red": {
+      "trait_rarity": 0.022448507289979172,
+      "trait_rarity_score": 44.54639175257732
+    },
+    "Elegant Dagger Gold": {
+      "trait_rarity": 0.027308493404304558,
+      "trait_rarity_score": 36.61864406779661
+    },
+    "None": {
+      "trait_rarity": 0.025919925943068734,
+      "trait_rarity_score": 38.580357142857146
+    },
+    "Elegant Dagger": {
+      "trait_rarity": 0.02499421430224485,
+      "trait_rarity_score": 40.00925925925926
+    },
+    "Green Dagger": {
+      "trait_rarity": 0.028465632955334413,
+      "trait_rarity_score": 35.13008130081301
+    },
+    "Orc Sword": {
+      "trait_rarity": 0.040268456375838924,
+      "trait_rarity_score": 24.833333333333336
+    },
+    "Red Dagger": {
+      "trait_rarity": 0.03610275399213145,
+      "trait_rarity_score": 27.698717948717952
+    },
+    "Basic Dagger Blue": {
+      "trait_rarity": 0.04397130293913446,
+      "trait_rarity_score": 22.742105263157892
+    },
+    "Basic Dagger": {
+      "trait_rarity": 0.045591298310576255,
+      "trait_rarity_score": 21.934010152284266
+    }
+  },
+  "male_head": {
+    "Blue Gold Horns": {
+      "trait_rarity": 0.021059939828743348,
+      "trait_rarity_score": 47.48351648351648
+    },
+    "Cracked Horns": {
+      "trait_rarity": 0.01967137236750752,
+      "trait_rarity_score": 50.83529411764706
+    },
+    "Green Gold Horns": {
+      "trait_rarity": 0.026382781763480675,
+      "trait_rarity_score": 37.90350877192982
+    },
+    "Green Horns": {
+      "trait_rarity": 0.02198565146956723,
+      "trait_rarity_score": 45.484210526315785
+    },
+    "Ram Horns White": {
+      "trait_rarity": 0.027308493404304558,
+      "trait_rarity_score": 36.61864406779661
+    },
+    "Ram Horns": {
+      "trait_rarity": 0.028002777134922472,
+      "trait_rarity_score": 35.71074380165289
+    },
+    "Small Horns Gold": {
+      "trait_rarity": 0.03263133533904189,
+      "trait_rarity_score": 30.645390070921984
+    },
+    "Small Horns": {
+      "trait_rarity": 0.03077991205739412,
+      "trait_rarity_score": 32.48872180451128
+    },
+    "Spiked Horns Gold": {
+      "trait_rarity": 0.035177042351307565,
+      "trait_rarity_score": 28.42763157894737
+    },
+    "Spiked Horns": {
+      "trait_rarity": 0.039805600555426986,
+      "trait_rarity_score": 25.122093023255815
+    },
+    "None": {
+      "trait_rarity": 0.05045128442490164,
+      "trait_rarity_score": 19.821100917431195
+    }
+  },
+  "male_eyes": {
+    "Monocle": {
+      "trait_rarity": 0.03633418190233742,
+      "trait_rarity_score": 27.522292993630575
+    },
+    "Cyborg Visor Red": {
+      "trait_rarity": 0.03864846100439713,
+      "trait_rarity_score": 25.87425149700599
+    },
+    "Cyborg Visor Blue": {
+      "trait_rarity": 0.0571626938208748,
+      "trait_rarity_score": 17.493927125506072
+    },
+    "Glasses": {
+      "trait_rarity": 0.04373987502892849,
+      "trait_rarity_score": 22.86243386243386
+    },
+    "Raised Brow": {
+      "trait_rarity": 0.04906271696366582,
+      "trait_rarity_score": 20.382075471698112
+    },
+    "Angry": {
+      "trait_rarity": 0.05299699143716732,
+      "trait_rarity_score": 18.868995633187772
+    },
+    "Eyes": {
+      "trait_rarity": 0.055311270539227034,
+      "trait_rarity_score": 18.07949790794979
+    }
+  },
+  "male_scars": {
+    "Scar 1": {
+      "trait_rarity": 0.04883128905345985,
+      "trait_rarity_score": 20.47867298578199
+    },
+    "Scar 2": {
+      "trait_rarity": 0.058319833371904654,
+      "trait_rarity_score": 17.146825396825395
+    },
+    "Scar 3": {
+      "trait_rarity": 0.06873408933117334,
+      "trait_rarity_score": 14.54882154882155
+    },
+    "Scar 4": {
+      "trait_rarity": 0.04535987040037028,
+      "trait_rarity_score": 22.04591836734694
+    },
+    "None": {
+      "trait_rarity": 0.11201110853968989,
+      "trait_rarity_score": 8.927685950413222
+    }
+  },
+  "male_mouth": {
+    "Black Stache": {
+      "trait_rarity": 0.04003702846563296,
+      "trait_rarity_score": 24.97687861271676
+    },
+    "White Stache": {
+      "trait_rarity": 0.053228419347373296,
+      "trait_rarity_score": 18.78695652173913
+    },
+    "Fangs": {
+      "trait_rarity": 0.0444341587595464,
+      "trait_rarity_score": 22.505208333333336
+    },
+    "Confused": {
+      "trait_rarity": 0.06086554038417033,
+      "trait_rarity_score": 16.429657794676807
+    },
+    "Smile": {
+      "trait_rarity": 0.0610969682943763,
+      "trait_rarity_score": 16.367424242424242
+    },
+    "Mouth": {
+      "trait_rarity": 0.07359407544549873,
+      "trait_rarity_score": 13.588050314465407
+    }
+  },
+  "male_earrings": {
+    "Single Earring": {
+      "trait_rarity": 0.028697060865540386,
+      "trait_rarity_score": 34.846774193548384
+    },
+    "Double Earrings": {
+      "trait_rarity": 0.03540847026151354,
+      "trait_rarity_score": 28.241830065359476
+    },
+    "Gold Earring": {
+      "trait_rarity": 0.04952557278407776,
+      "trait_rarity_score": 20.19158878504673
+    },
+    "Gray Long Earring": {
+      "trait_rarity": 0.056699838000462854,
+      "trait_rarity_score": 17.63673469387755
+    },
+    "Gold Long Earring": {
+      "trait_rarity": 0.06942837306179125,
+      "trait_rarity_score": 14.403333333333332
+    },
+    "None": {
+      "trait_rarity": 0.09349687572321222,
+      "trait_rarity_score": 10.695544554455445
+    }
+  },
+  "male_clothes": {
+    "Barbarian": {
+      "trait_rarity": 0.01943994445730155,
+      "trait_rarity_score": 51.44047619047619
+    },
+    "Hoodie Blue": {
+      "trait_rarity": 0.02175422355936126,
+      "trait_rarity_score": 45.96808510638298
+    },
+    "Hoodie Green": {
+      "trait_rarity": 0.01967137236750752,
+      "trait_rarity_score": 50.83529411764706
+    },
+    "Hoodie White": {
+      "trait_rarity": 0.024299930571626938,
+      "trait_rarity_score": 41.15238095238095
+    },
+    "Monk Robes": {
+      "trait_rarity": 0.023142791020597082,
+      "trait_rarity_score": 43.21
+    },
+    "Paladin Gold": {
+      "trait_rarity": 0.029159916685952327,
+      "trait_rarity_score": 34.29365079365079
+    },
+    "Paladin White": {
+      "trait_rarity": 0.031242767877806065,
+      "trait_rarity_score": 32.007407407407406
+    },
+    "Paladin": {
+      "trait_rarity": 0.033788474890071744,
+      "trait_rarity_score": 29.5958904109589
+    },
+    "Wizard Robes Blue": {
+      "trait_rarity": 0.040499884286044896,
+      "trait_rarity_score": 24.69142857142857
+    },
+    "Wizard Robes Green": {
+      "trait_rarity": 0.044202730849340434,
+      "trait_rarity_score": 22.623036649214658
+    },
+    "Wizard Robes Grey": {
+      "trait_rarity": 0.0460541541309882,
+      "trait_rarity_score": 21.713567839195978
+    }
+  },
+  "male_fur": {
+    "Blue Purple": {
+      "trait_rarity": 0.0071742652163850965,
+      "trait_rarity_score": 139.38709677419354
+    },
+    "Dark Blue Grey": {
+      "trait_rarity": 0.009951400138856746,
+      "trait_rarity_score": 100.48837209302326
+    },
+    "Dark Blue Purple": {
+      "trait_rarity": 0.010414255959268688,
+      "trait_rarity_score": 96.02222222222223
+    },
+    "Gold Purple": {
+      "trait_rarity": 0.012959962971534367,
+      "trait_rarity_score": 77.16071428571429
+    },
+    "Green Blue": {
+      "trait_rarity": 0.010182828049062717,
+      "trait_rarity_score": 98.20454545454545
+    },
+    "Green Yellow": {
+      "trait_rarity": 0.012034251330710484,
+      "trait_rarity_score": 83.09615384615384
+    },
+    "Green": {
+      "trait_rarity": 0.01411710252256422,
+      "trait_rarity_score": 70.8360655737705
+    },
+    "Grey": {
+      "trait_rarity": 0.018745660726683638,
+      "trait_rarity_score": 53.34567901234568
+    },
+    "Light Brown": {
+      "trait_rarity": 0.01712566535524184,
+      "trait_rarity_score": 58.391891891891895
+    },
+    "Orange Blue": {
+      "trait_rarity": 0.023142791020597082,
+      "trait_rarity_score": 43.21
+    },
+    "Pale Green": {
+      "trait_rarity": 0.02522564221245082,
+      "trait_rarity_score": 39.64220183486239
+    },
+    "Red Brown": {
+      "trait_rarity": 0.02499421430224485,
+      "trait_rarity_score": 40.00925925925926
+    },
+    "Red Purple": {
+      "trait_rarity": 0.02499421430224485,
+      "trait_rarity_score": 40.00925925925926
+    },
+    "Space": {
+      "trait_rarity": 0.022448507289979172,
+      "trait_rarity_score": 44.54639175257732
+    },
+    "White Blue": {
+      "trait_rarity": 0.033788474890071744,
+      "trait_rarity_score": 29.5958904109589
+    },
+    "White Purple": {
+      "trait_rarity": 0.035177042351307565,
+      "trait_rarity_score": 28.42763157894737
+    },
+    "Yellow Teal": {
+      "trait_rarity": 0.03077991205739412,
+      "trait_rarity_score": 32.48872180451128
+    }
+  },
+  "male_handheld_right": {
+    "Elegant Dagger Gold": {
+      "trait_rarity": 0.03795417727377922,
+      "trait_rarity_score": 26.347560975609756
+    },
+    "Green Dagger": {
+      "trait_rarity": 0.03610275399213145,
+      "trait_rarity_score": 27.698717948717952
+    },
+    "None": {
+      "trait_rarity": 0.042119879657486696,
+      "trait_rarity_score": 23.74175824175824
+    },
+    "Red Dagger": {
+      "trait_rarity": 0.04350844711872252,
+      "trait_rarity_score": 22.98404255319149
+    },
+    "Elegant Dagger": {
+      "trait_rarity": 0.054616986808609116,
+      "trait_rarity_score": 18.309322033898304
+    },
+    "Basic Dagger Blue": {
+      "trait_rarity": 0.054385558898403144,
+      "trait_rarity_score": 18.387234042553192
+    },
+    "Basic Dagger": {
+      "trait_rarity": 0.06456838694746586,
+      "trait_rarity_score": 15.487455197132617
+    }
+  }
+}

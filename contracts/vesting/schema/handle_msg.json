@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleMsg",
+  "anyOf": [
+    {
+      "description": "Claim available funds from the vesting account.\n\nIf `amount` is not specified, all available funds are withdrawn.",
+      "type": "object",
+      "required": [
+        "claim"
+      ],
+      "properties": {
+        "claim": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Create a random viewing key using entropy",
+      "type": "object",
+      "required": [
+        "create_viewing_key"
+      ],
+      "properties": {
+        "create_viewing_key": {
+          "type": "object",
+          "required": [
+            "entropy"
+          ],
+          "properties": {
+            "entropy": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Set a custom viewing key",
+      "type": "object",
+      "required": [
+        "set_viewing_key"
+      ],
+      "properties": {
+        "set_viewing_key": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Set the address and hash of the vesting token contract",
+      "type": "object",
+      "required": [
+        "set_vesting_token"
+      ],
+      "properties": {
+        "set_vesting_token": {
+          "type": "object",
+          "required": [
+            "contract",
+            "key"
+          ],
+          "properties": {
+            "contract": {
+              "$ref": "#/definitions/Contract"
+            },
+            "key": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Set the viewing key for the vesting token",
+      "type": "object",
+      "required": [
+        "set_vesting_token_viewing_key"
+      ],
+      "properties": {
+        "set_vesting_token_viewing_key": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Add a vesting account with its own schedule",
+      "type": "object",
+      "required": [
+        "add_accounts"
+      ],
+      "properties": {
+        "add_accounts": {
+          "type": "object",
+          "required": [
+            "accounts"
+          ],
+          "properties": {
+            "accounts": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": [
+                  {
+                    "$ref": "#/definitions/HumanAddr"
+                  },
+                  {
+                    "$ref": "#/definitions/NewSchedule"
+                  }
+                ],
+                "maxItems": 2,
+                "minItems": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Remove an address from the set of vesting accounts",
+      "type": "object",
+      "required": [
+        "remove_accounts"
+      ],
+      "properties": {
+        "remove_accounts": {
+          "type": "object",
+          "required": [
+            "accounts"
+          ],
+          "properties": {
+            "accounts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HumanAddr"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Redeem all funds to admin account. requires mode == \"emergency\"",
+      "type": "object",
+      "required": [
+        "emergency_redeem_all"
+      ],
+      "properties": {
+        "emergency_redeem_all": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "description": "Change the operational mode of the contract",
+      "type": "object",
+      "required": [
+        "set_contract_mode"
+      ],
+      "properties": {
+        "set_contract_mode": {
+          "type": "object",
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "$ref": "#/definitions/ContractMode"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Change the contract's admin address",
+      "type": "object",
+      "required": [
+        "change_admin"
+      ],
+      "properties": {
+        "change_admin": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "ContractMode": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "paused_claims",
+        "emergency"
+      ]
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "NewSchedule": {
+      "type": "object",
+      "required": [
+        "allocation",
+        "rate",
+        "releases",
+        "start_time"
+      ],
+      "properties": {
+        "allocation": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "rate": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "releases": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint16",
+            "minimum": 0.0
+          }
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

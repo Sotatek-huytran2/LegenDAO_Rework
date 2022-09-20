@@ -1,0 +1,273 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "public"
+      ],
+      "properties": {
+        "public": {
+          "$ref": "#/definitions/PublicQueryMsg"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "with_auth"
+      ],
+      "properties": {
+        "with_auth": {
+          "$ref": "#/definitions/AuthQuery"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "AdminQueryMsg": {
+      "anyOf": [
+        {
+          "description": "Get the status of the fund. Do we have enough funds in the account to cover everyone's vesting schedules?",
+          "type": "object",
+          "required": [
+            "fund_status"
+          ],
+          "properties": {
+            "fund_status": {
+              "type": "object"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "balance_of"
+          ],
+          "properties": {
+            "balance_of": {
+              "type": "object",
+              "required": [
+                "address"
+              ],
+              "properties": {
+                "address": {
+                  "$ref": "#/definitions/HumanAddr"
+                },
+                "time": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Auth": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "viewing_key"
+          ],
+          "properties": {
+            "viewing_key": {
+              "type": "object",
+              "required": [
+                "address",
+                "key"
+              ],
+              "properties": {
+                "address": {
+                  "$ref": "#/definitions/HumanAddr"
+                },
+                "key": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "permit"
+          ],
+          "properties": {
+            "permit": {
+              "$ref": "#/definitions/Permit_for_TokenPermissions"
+            }
+          }
+        }
+      ]
+    },
+    "AuthQuery": {
+      "type": "object",
+      "required": [
+        "auth",
+        "query"
+      ],
+      "properties": {
+        "auth": {
+          "$ref": "#/definitions/Auth"
+        },
+        "query": {
+          "$ref": "#/definitions/AuthQueryMsg"
+        }
+      }
+    },
+    "AuthQueryMsg": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "balance"
+          ],
+          "properties": {
+            "balance": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "admin"
+          ],
+          "properties": {
+            "admin": {
+              "$ref": "#/definitions/AdminQueryMsg"
+            }
+          }
+        }
+      ]
+    },
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+      "type": "string"
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "PermitParams_for_TokenPermissions": {
+      "type": "object",
+      "required": [
+        "allowed_tokens",
+        "chain_id",
+        "permissions",
+        "permit_name"
+      ],
+      "properties": {
+        "allowed_tokens": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HumanAddr"
+          }
+        },
+        "chain_id": {
+          "type": "string"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TokenPermissions"
+          }
+        },
+        "permit_name": {
+          "type": "string"
+        }
+      }
+    },
+    "PermitSignature": {
+      "type": "object",
+      "required": [
+        "pub_key",
+        "signature"
+      ],
+      "properties": {
+        "pub_key": {
+          "$ref": "#/definitions/PubKey"
+        },
+        "signature": {
+          "$ref": "#/definitions/Binary"
+        }
+      }
+    },
+    "Permit_for_TokenPermissions": {
+      "type": "object",
+      "required": [
+        "params",
+        "signature"
+      ],
+      "properties": {
+        "params": {
+          "$ref": "#/definitions/PermitParams_for_TokenPermissions"
+        },
+        "signature": {
+          "$ref": "#/definitions/PermitSignature"
+        }
+      }
+    },
+    "PubKey": {
+      "type": "object",
+      "required": [
+        "type",
+        "value"
+      ],
+      "properties": {
+        "type": {
+          "description": "ignored, but must be \"tendermint/PubKeySecp256k1\" otherwise the verification will fail",
+          "type": "string"
+        },
+        "value": {
+          "description": "Secp256k1 PubKey",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Binary"
+            }
+          ]
+        }
+      }
+    },
+    "PublicQueryMsg": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "contract_mode"
+          ],
+          "properties": {
+            "contract_mode": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "TokenPermissions": {
+      "type": "string",
+      "enum": [
+        "allowance",
+        "balance",
+        "history",
+        "owner"
+      ]
+    }
+  }
+}

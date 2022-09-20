@@ -1,0 +1,319 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryAnswer",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "admin"
+      ],
+      "properties": {
+        "admin": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "rewards"
+      ],
+      "properties": {
+        "rewards": {
+          "type": "object",
+          "required": [
+            "rewards"
+          ],
+          "properties": {
+            "rewards": {
+              "$ref": "#/definitions/Uint128"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "balance"
+      ],
+      "properties": {
+        "balance": {
+          "type": "object",
+          "required": [
+            "amount",
+            "effective_multiplier",
+            "total_multiplier"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "effective_multiplier": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "total_multiplier": {
+              "$ref": "#/definitions/Uint128"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "booster_items"
+      ],
+      "properties": {
+        "booster_items": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BoosterItemInInventory"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "total_locked"
+      ],
+      "properties": {
+        "total_locked": {
+          "type": "object",
+          "required": [
+            "amount",
+            "total_weight"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "total_weight": {
+              "$ref": "#/definitions/Uint128"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "subscribers"
+      ],
+      "properties": {
+        "subscribers": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Contract"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "multiplier_contracts"
+      ],
+      "properties": {
+        "multiplier_contracts": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HumanAddr"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "contract_balance_from_snip"
+      ],
+      "properties": {
+        "contract_balance_from_snip": {
+          "type": "object",
+          "required": [
+            "amount"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
+              "$ref": "#/definitions/Contract"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "platform"
+      ],
+      "properties": {
+        "platform": {
+          "type": "object",
+          "required": [
+            "contract"
+          ],
+          "properties": {
+            "contract": {
+              "$ref": "#/definitions/Contract"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "inflation_schedule"
+      ],
+      "properties": {
+        "inflation_schedule": {
+          "type": "object",
+          "required": [
+            "inflation_schedule"
+          ],
+          "properties": {
+            "inflation_schedule": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ScheduleUnit"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "query_error"
+      ],
+      "properties": {
+        "query_error": {
+          "type": "object",
+          "required": [
+            "msg"
+          ],
+          "properties": {
+            "msg": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "BoosterItemInInventory": {
+      "type": "object",
+      "required": [
+        "contract",
+        "id",
+        "multiplier"
+      ],
+      "properties": {
+        "contract": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "id": {
+          "type": "string"
+        },
+        "multiplier": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "ScheduleUnit": {
+      "type": "object",
+      "required": [
+        "end_block",
+        "reward_per_block"
+      ],
+      "properties": {
+        "end_block": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "reward_per_block": {
+          "$ref": "#/definitions/Uint128"
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

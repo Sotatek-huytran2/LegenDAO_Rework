@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InitMsg",
+  "type": "object",
+  "required": [
+    "platform",
+    "quest_contracts",
+    "quest_weights",
+    "token"
+  ],
+  "properties": {
+    "admin": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "platform": {
+      "$ref": "#/definitions/SecretContract"
+    },
+    "quest_contracts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/QuestContract"
+      }
+    },
+    "quest_weights": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/QuestWeight"
+      }
+    },
+    "token": {
+      "$ref": "#/definitions/SecretContract"
+    }
+  },
+  "definitions": {
+    "HumanAddr": {
+      "type": "string"
+    },
+    "QuestContract": {
+      "type": "object",
+      "required": [
+        "contract",
+        "quest"
+      ],
+      "properties": {
+        "contract": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "quest": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        }
+      }
+    },
+    "QuestWeight": {
+      "type": "object",
+      "required": [
+        "quest",
+        "weight"
+      ],
+      "properties": {
+        "quest": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "weight": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        }
+      }
+    },
+    "SecretContract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "decimal_places_in_rates": 3,
+  "royalties": [
+    {
+      "recipient": "secret1399pyvvk3hvwgxwt3udkslsc5jl3rqv4yshfrl",
+      "rate": 45
+    }
+  ]
+}

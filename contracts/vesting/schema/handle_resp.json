@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleResp",
+  "anyOf": [
+    {
+      "type": "string",
+      "enum": [
+        "success"
+      ]
+    },
+    {
+      "type": "object",
+      "required": [
+        "viewing_key"
+      ],
+      "properties": {
+        "viewing_key": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

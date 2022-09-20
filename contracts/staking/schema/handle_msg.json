@@ -1,0 +1,499 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HandleMsg",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "withdraw"
+      ],
+      "properties": {
+        "withdraw": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "create_viewing_key"
+      ],
+      "properties": {
+        "create_viewing_key": {
+          "type": "object",
+          "required": [
+            "entropy"
+          ],
+          "properties": {
+            "entropy": {
+              "type": "string"
+            },
+            "padding": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "set_viewing_key"
+      ],
+      "properties": {
+        "set_viewing_key": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "padding": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "emergency_withdraw"
+      ],
+      "properties": {
+        "emergency_withdraw": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "emergency_withdraw_skip_platform"
+      ],
+      "properties": {
+        "emergency_withdraw_skip_platform": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "receive"
+      ],
+      "properties": {
+        "receive": {
+          "type": "object",
+          "required": [
+            "amount",
+            "from",
+            "msg",
+            "sender"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "from": {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            "msg": {
+              "$ref": "#/definitions/Binary"
+            },
+            "sender": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "features"
+      ],
+      "properties": {
+        "features": {
+          "$ref": "#/definitions/FeatureToggleHandleMsg_for_Features"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "apply_multiplier"
+      ],
+      "properties": {
+        "apply_multiplier": {
+          "type": "object",
+          "required": [
+            "item_id",
+            "multiplier",
+            "to"
+          ],
+          "properties": {
+            "item_id": {
+              "type": "string"
+            },
+            "multiplier": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "to": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "drop_multiplier"
+      ],
+      "properties": {
+        "drop_multiplier": {
+          "type": "object",
+          "required": [
+            "from",
+            "item_id"
+          ],
+          "properties": {
+            "from": {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            "item_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "change_admin"
+      ],
+      "properties": {
+        "change_admin": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "add_subs"
+      ],
+      "properties": {
+        "add_subs": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Contract"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "remove_subs"
+      ],
+      "properties": {
+        "remove_subs": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HumanAddr"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "add_multiplier_contracts"
+      ],
+      "properties": {
+        "add_multiplier_contracts": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HumanAddr"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "remove_multiplier_contracts"
+      ],
+      "properties": {
+        "remove_multiplier_contracts": {
+          "type": "object",
+          "required": [
+            "contracts"
+          ],
+          "properties": {
+            "contracts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HumanAddr"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "change_config"
+      ],
+      "properties": {
+        "change_config": {
+          "type": "object",
+          "properties": {
+            "admin": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/HumanAddr"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "inflation": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "$ref": "#/definitions/ScheduleUnit"
+              }
+            },
+            "max_multiplier": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Uint128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "platform": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Contract"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "token_vk": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+      "type": "string"
+    },
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "FeatureToggleHandleMsg_for_Features": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "pause"
+          ],
+          "properties": {
+            "pause": {
+              "type": "object",
+              "required": [
+                "features"
+              ],
+              "properties": {
+                "features": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Features"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "unpause"
+          ],
+          "properties": {
+            "unpause": {
+              "type": "object",
+              "required": [
+                "features"
+              ],
+              "properties": {
+                "features": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Features"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "set_pauser"
+          ],
+          "properties": {
+            "set_pauser": {
+              "type": "object",
+              "required": [
+                "address"
+              ],
+              "properties": {
+                "address": {
+                  "$ref": "#/definitions/HumanAddr"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "remove_pauser"
+          ],
+          "properties": {
+            "remove_pauser": {
+              "type": "object",
+              "required": [
+                "address"
+              ],
+              "properties": {
+                "address": {
+                  "$ref": "#/definitions/HumanAddr"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Features": {
+      "type": "string",
+      "enum": [
+        "Deposit",
+        "Withdraw",
+        "EmergencyWithdraw",
+        "EmergencyWithdrawSkipPlatform"
+      ]
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "ScheduleUnit": {
+      "type": "object",
+      "required": [
+        "end_block",
+        "reward_per_block"
+      ],
+      "properties": {
+        "end_block": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "reward_per_block": {
+          "$ref": "#/definitions/Uint128"
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "token": {
+      "native": "uscrt"
+    },
+    "price": "100",
+    "whitelist_price": "75"
+  },
+  {
+    "token": {
+      "snip20": {
+        "address": "",
+        "hash": ""
+      }
+    },
+    "price": "100",
+    "whitelist_price": "75"
+  }
+]

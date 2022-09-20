@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InitMsg",
+  "type": "object",
+  "required": [
+    "prng_seed",
+    "schedules",
+    "vesting_token",
+    "vesting_token_vk"
+  ],
+  "properties": {
+    "admin": {
+      "description": "The administrator account, contract initializer by default",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "prng_seed": {
+      "description": "The initial seed for the Viewing Keys store",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Binary"
+        }
+      ]
+    },
+    "schedules": {
+      "description": "List of vesting schedules",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": [
+          {
+            "$ref": "#/definitions/HumanAddr"
+          },
+          {
+            "$ref": "#/definitions/NewSchedule"
+          }
+        ],
+        "maxItems": 2,
+        "minItems": 2
+      }
+    },
+    "vesting_token": {
+      "description": "The SNIP-20 token to distribute tokens from",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Contract"
+        }
+      ]
+    },
+    "vesting_token_vk": {
+      "description": "The vesting token's viewing key",
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+      "type": "string"
+    },
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "NewSchedule": {
+      "type": "object",
+      "required": [
+        "allocation",
+        "rate",
+        "releases",
+        "start_time"
+      ],
+      "properties": {
+        "allocation": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "rate": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "releases": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "uint16",
+            "minimum": 0.0
+          }
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

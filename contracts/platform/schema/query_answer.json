@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryAnswer",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "config"
+      ],
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/Config"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "balance"
+      ],
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/ResponseBalances"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "num_of_pending_claims"
+      ],
+      "properties": {
+        "num_of_pending_claims": {
+          "$ref": "#/definitions/Uint128"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "total_balances"
+      ],
+      "properties": {
+        "total_balances": {
+          "$ref": "#/definitions/ResponseTotalBalances"
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "Config": {
+      "type": "object",
+      "required": [
+        "admin",
+        "native_token_denom",
+        "self_contract_addr",
+        "token",
+        "unbonding_period"
+      ],
+      "properties": {
+        "admin": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "native_token_denom": {
+          "type": "string"
+        },
+        "self_contract_addr": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "token": {
+          "$ref": "#/definitions/Contract"
+        },
+        "unbonding_period": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    },
+    "ResponseBalances": {
+      "type": "object",
+      "required": [
+        "pending_redeem",
+        "staked"
+      ],
+      "properties": {
+        "pending_redeem": {
+          "description": "Withdraw requests",
+          "allOf": [
+            {
+              "$ref": "#/definitions/ResponseRedeemInfo"
+            }
+          ]
+        },
+        "staked": {
+          "description": "Staked amount, not including unbonding (or claimable) funds",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Uint128"
+            }
+          ]
+        }
+      }
+    },
+    "ResponseRedeemInfo": {
+      "type": "object",
+      "required": [
+        "claimable",
+        "unbondings"
+      ],
+      "properties": {
+        "claimable": {
+          "description": "Claimable withdraws (i.e. finished unbonding period)",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Uint128"
+            }
+          ]
+        },
+        "unbondings": {
+          "description": "Unbonding withdraws",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ResponseUnbondingRecord"
+          }
+        }
+      }
+    },
+    "ResponseTotalBalances": {
+      "type": "object",
+      "required": [
+        "staked",
+        "unbonding"
+      ],
+      "properties": {
+        "staked": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "unbonding": {
+          "$ref": "#/definitions/Uint128"
+        }
+      }
+    },
+    "ResponseUnbondingRecord": {
+      "type": "object",
+      "required": [
+        "amount",
+        "end_ts"
+      ],
+      "properties": {
+        "amount": {
+          "description": "Amount unbonding",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Uint128"
+            }
+          ]
+        },
+        "end_ts": {
+          "description": "Unbonding period ending timestamp (in seconds)",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
+    }
+  }
+}

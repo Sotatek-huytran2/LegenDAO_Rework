@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InitMsg",
+  "type": "object",
+  "required": [
+    "token",
+    "token_native_denom",
+    "viewing_key"
+  ],
+  "properties": {
+    "receiving_contracts": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/definitions/HumanAddr"
+      }
+    },
+    "token": {
+      "$ref": "#/definitions/Contract"
+    },
+    "token_native_denom": {
+      "type": "string"
+    },
+    "unbonding_period": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "viewing_key": {
+      "type": "string"
+    }
+  },
+  "definitions": {
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
+      "type": "string"
+    }
+  }
+}

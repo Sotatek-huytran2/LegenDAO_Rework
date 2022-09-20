@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "airdrop_was_claimed"
+      ],
+      "properties": {
+        "airdrop_was_claimed": {
+          "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Function that reads airdrop numbers for each account. Can only be read by the quest contract, which sets a password that only it knows",
+      "type": "object",
+      "required": [
+        "get_account_info"
+      ],
+      "properties": {
+        "get_account_info": {
+          "type": "object",
+          "required": [
+            "address",
+            "password"
+          ],
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/HumanAddr"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "HumanAddr": {
+      "type": "string"
+    }
+  }
+}
