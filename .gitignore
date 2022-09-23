@@ -1,0 +1,27 @@
+# Build results
+target/
+Cargo.lock
+contract.wasm*
+artifacts/
+contracts/*/schema
+node_modules
+package-lock.json
+
+# Cargo+Git helper file (https://github.com/rust-lang/cargo/blob/0.44.1/src/cargo/sources/git/utils.rs#L320-L327)
+.cargo-ok
+
+# Text file backups
+**/*.rs.bk
+
+# macOS
+.DS_Store
+
+# IDEs
+*.iml
+.idea
+
+.env*
+
+.vscode
+
+/deploy/deploy_info/*

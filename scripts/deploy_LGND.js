@@ -1,6 +1,6 @@
 const { Contract, getAccountByName, getLogs } = require("secret-polar-reworks");
 
-async function run () {
+async function run() {
   const contract_owner = getAccountByName("huy_sota");
   const contract = new Contract("snip20");
   await contract.parseSchema();
@@ -23,17 +23,17 @@ async function run () {
     name: "legend",
     decimals: 6,
     initial_balances: [
-        {address: contract_owner.account.address, amount: "10000000000000000"},
+      { address: contract_owner.account.address, amount: "10000000000000000" },
     ],
     config: {
-        public_total_supply: true,
-        enable_deposit: true,
-        enable_redeem: true,
-        enable_mint: true,
-        enable_burn: true,
+      public_total_supply: true,
+      enable_deposit: true,
+      enable_redeem: true,
+      enable_mint: true,
+      enable_burn: true,
     },
     supported_denoms: [process.env.LGND_NATIVE],
-};
+  };
 
 
   const resp = await contract.instantiate(
@@ -93,4 +93,3 @@ module.exports = { default: run };
 // CodeHash: 61d8a71482b8d6fdc8be79d0911fd5ff0304d5ece9d8c56e68690e258239f9e7
 // Address: secret18y59n8z3frrslek52tkkq6t9yk76cdp57wztn9 (LegenDAO-1)
 // Address: secret1w9p38mejmkn3rn6l8erkxumrw46jcjfkgzzp00 (LegenDAO-2)
-  

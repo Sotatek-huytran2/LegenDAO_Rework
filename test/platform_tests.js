@@ -1,7 +1,7 @@
 const assert = require("assert");
 const polarConfig = require("../polar.config");
 const {use} = require("chai");
-const {polarChai} = require("secret-polar");
+const {polarChai} = require("secret-polar-reworks");
 use(polarChai);
 require("dotenv").config();
 

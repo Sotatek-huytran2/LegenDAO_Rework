@@ -8,22 +8,22 @@ const VIEWING_KEY = "hello";
 async function run() {
     const contract_owner = getAccountByName("huy_sota");
 
-    const contract_platform = new Contract("platform");
+    // const contract_platform = new Contract("platform");
 
-    // console.log(contract_platform)
-    // await contract_platform.parseSchema();
+    // // console.log(contract_platform)
+    // // await contract_platform.parseSchema();
 
-    // //console.log(contract_owner.account.address);
+    // // //console.log(contract_owner.account.address);
 
-    const deploy_response = await contract_platform.deploy(
-        contract_owner,
-        { // custom fees
-            amount: [{ amount: "50000", denom: "uscrt" }],
-            gas: "3000000",
-        }
-    );
+    // const deploy_response = await contract_platform.deploy(
+    //     contract_owner,
+    //     { // custom fees
+    //         amount: [{ amount: "50000", denom: "uscrt" }],
+    //         gas: "3000000",
+    //     }
+    // );
 
-    console.log(deploy_response);
+    // console.log(deploy_response);
 
     const lgndToken = 'secret18y59n8z3frrslek52tkkq6t9yk76cdp57wztn9';
     
@@ -34,26 +34,26 @@ async function run() {
 
     const lgndContractHash = await secretjs.getCodeHashByContractAddr(lgndToken);
 
-    const platformInitMsg = {
-        token: {
-            address: lgndToken,
-            hash: lgndContractHash,
-        },
-        token_native_denom: process.env.LGND_NATIVE,
-        viewing_key: VIEWING_KEY,
-    };
+    // const platformInitMsg = {
+    //     token: {
+    //         address: lgndToken,
+    //         hash: lgndContractHash,
+    //     },
+    //     token_native_denom: process.env.LGND_NATIVE,
+    //     viewing_key: VIEWING_KEY,
+    // };
 
 
-    const resp = await contract_platform.instantiate(
-        platformInitMsg,
-        "Instantiate config platform 6",
-        contract_owner
-    );
+    // const resp = await contract_platform.instantiate(
+    //     platformInitMsg,
+    //     "Instantiate config platform 6",
+    //     contract_owner
+    // );
 
-    console.log(resp);
+    // console.log(resp);
 
 
-    console.log("================================================================");
+    // console.log("================================================================");
 
 
     const contract_staking = new Contract("staking");
@@ -78,10 +78,12 @@ async function run() {
             hash: lgndContractHash,
         },
         platform: {
-            address: resp.contractAddress,
-            hash: deploy_response.contractCodeHash,
+            // address: resp.contractAddress,
+            // hash: deploy_response.contractCodeHash,
+            address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
+            hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
         },
-        inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "1" }],
+        inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
         viewing_key: VIEWING_KEY,
         prng_seed: "IAo=",
     }
@@ -89,7 +91,7 @@ async function run() {
 
     const resp_stake = await contract_staking.instantiate(
         stakingInitMsg,
-        "Instantiate config staking 6",
+        "Instantiate config staking 7",
         contract_owner
     );
 
@@ -99,7 +101,7 @@ async function run() {
 
     console.log("Success!");
     console.log(`$LGND address: ${lgndToken}`);
-    console.log(`Platform address: ${resp.contractAddress}`);
+    // console.log(`Platform address: ${resp.contractAddress}`);
     console.log(`Staking address: ${resp_stake.contractAddress}`);
 
 
