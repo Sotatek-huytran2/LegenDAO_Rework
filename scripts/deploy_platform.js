@@ -29,6 +29,7 @@ async function run() {
     
     // const grpcWebUrl = "http://testnet.securesecrets.org:1317/";
     const grpcWebUrl = "https://secret-4.api.trivium.network:1317/";
+
     // To create a readonly secret.js client, just pass in a gRPC-web endpoint
     const secretjs = new CosmWasmClient(grpcWebUrl, undefined, BroadcastMode.Sync);
 
@@ -79,7 +80,7 @@ async function run() {
         },
         platform: {
             // address: resp.contractAddress,
-            // hash: deploy_response.contractCodeHash,
+            //hash: deploy_response.contractCodeHash,
             address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
             hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
         },
@@ -91,7 +92,7 @@ async function run() {
 
     const resp_stake = await contract_staking.instantiate(
         stakingInitMsg,
-        "Instantiate config staking 7",
+        "Instantiate config staking 8",
         contract_owner
     );
 
@@ -143,7 +144,7 @@ module.exports = { default: run };
 // Staking address: secret165m55asf7j28mwn7e627m46kzl088gglythez7
 
 
-// {
+//   {
 //     codeId: 707,
 //     contractCodeHash: '2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab',
 //     deployTimestamp: 'Tue Sep 20 2022 16:24:15 GMT+0700 (Indochina Time)'

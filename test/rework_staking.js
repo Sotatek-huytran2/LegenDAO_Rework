@@ -8,8 +8,6 @@ const { send } = require("process");
 
 use(polarChai);
 
-
-
 const snip_label = "Init snip 1"
 const platform_label = "Init platform 2"
 const staking_label = "Init staking 3"
@@ -20,13 +18,14 @@ const OWNER_VK_LGND = "OWNER_VK"
 
 
 const USER_1_VK_LGND = "USER_1_VK"
-const USER_1_VK_ON_PLATFORM = "USER_1_VK"
+const USER_1_VK_ON_PLATFORM = "USER_1_VK_PLATFORM"
+const USER_1_VK_ON_STAKING = "USER_1_VK_STAKING"
 
 describe("staking", () => {
 
     async function setup() {
 
-        const AMOUNT_STAKE = new BigNumber(100000).multipliedBy(new BigNumber(10).pow(6));
+        const AMOUNT_STAKE = new BigNumber(50000).multipliedBy(new BigNumber(10).pow(6));
 
         //console.log(AMOUNT_STAKE.toFixed());
 
@@ -124,8 +123,24 @@ describe("staking", () => {
             contract_owner
         );
 
-        
-        
+
+        // add receive contract
+        await platform.executeMsg(
+            "add_receiving_contracts",
+            {
+                "addresses": [
+                    staking.contractAddress
+                ]
+            },
+            contract_owner,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
+
+    
         await snip20_token.executeMsg(
             "increase_allowance",
             {
@@ -139,6 +154,47 @@ describe("staking", () => {
 
         const platform_code_hash = deploy_response_platform.contractCodeHash;
         const staking_code_hash = deploy_response_staking.contractCodeHash;
+
+        await staking.executeMsg(
+            "set_viewing_key",
+            {
+                "key": USER_1_VK_ON_STAKING,
+                "padding": null,
+            },
+            user_1,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
+
+        await snip20_token.executeMsg(
+            "set_viewing_key",
+            {
+                "key": USER_1_VK_LGND,
+                "padding": null,
+            },
+            user_1,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
+
+        await platform.executeMsg(
+            "set_viewing_key",
+            {
+                "key": USER_1_VK_ON_PLATFORM,
+            },
+            user_1,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
 
 
         return { snip20_token, platform, staking, contract_owner, user_1, user_2, AMOUNT_STAKE, staking_code_hash, platform_code_hash };
@@ -180,19 +236,7 @@ describe("staking", () => {
                 }
             );
 
-            await snip20_token.executeMsg(
-                "set_viewing_key",
-                {
-                    "key": USER_1_VK_LGND,
-                    "padding": null,
-                },
-                user_1,
-                undefined,
-                { // custom fees
-                    amount: [{ amount: "750000", denom: "uscrt" }],
-                    gas: "3000000",
-                }
-            );
+            
   
             // let platformBalance = await snip20_token.query.balance(
             //     {
@@ -216,24 +260,6 @@ describe("staking", () => {
                     "key": USER_1_VK_LGND,
                 }
             )
-
-            // console.log(platformBalance.balance.amount);
-            expect(platformBalance.balance.amount).to.be.equal(AMOUNT_STAKE.toFixed());
-            expect(userOneBalanceAfterDeposit.balance.amount).to.be.equal("900000000000"); 
-            
-            await platform.executeMsg(
-                "set_viewing_key",
-                {
-                    "key": USER_1_VK_ON_PLATFORM,
-                },
-                user_1,
-                undefined,
-                { // custom fees
-                    amount: [{ amount: "750000", denom: "uscrt" }],
-                    gas: "3000000",
-                }
-            );
-
           
             let userOneBalanceInPlatform = await platform.queryMsg(
                 "balance",
@@ -243,26 +269,363 @@ describe("staking", () => {
                 }
             );
 
+            
+            expect(platformBalance.balance.amount).to.be.equal(AMOUNT_STAKE.toFixed());
+            expect(userOneBalanceAfterDeposit.balance.amount).to.be.equal("950000000000"); 
 
-            // {
-            //     balance: {
-            //         staked: '100000000000',
-            //         pending_redeem: { unbondings: [], claimable: '0' }
-            //     }
-            // }
-            // console.log(userOneBalanceInPlatform.);
 
-            expect(userOneBalanceInPlatform.balance.staked).to.be.equal(AMOUNT_STAKE.toFixed());
-            //expect(userOneBalanceInPlatform.balance.pending_redeem.claimable).to.be.equal("0");
+            console.log(`=============================================== Balance of Platform after first deposit: ${platformBalance.balance.amount}`);
+            console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceInPlatform.balance.staked}`);
 
-            let totalPlatformBalance = await platform.queryMsg(
-                "total_balances",
+
+            // PLATFORM DEPOSIT TO STAKING ===========================================================
+
+            const platform_deposit_stakingg = {
+                Deposit: {
+                    
+                }
+            }
+
+            await platform.executeMsg(
+                "send_from_platform",
                 {
-
+                    "contract_addr": staking.contractAddress,
+                    "amount": AMOUNT_STAKE.toFixed(),
+                    "msg": Buffer.from(JSON.stringify(platform_deposit_stakingg)).toString("base64"),
+                    "memo": "",
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
                 }
             );
 
-            expect(totalPlatformBalance.total_balances.staked).to.be.equal(AMOUNT_STAKE.toFixed());
+            let tvl_staking_1 = await staking.queryMsg(
+                "total_locked",
+                {
+                
+                }
+            );
+
+            let user_staking_1 = await staking.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_STAKING
+                }
+            )
+
+            let platform_after_staking_1 = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": platform.contractAddress,
+                    "key": PLATFORM_VK_LGND,
+                }
+            )
+
+            let user_platform_after_staking_1 = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            );
+
+
+
+            console.log(`=============================================== Balance Of User on Platform After First Deposit To Staking: ${user_platform_after_staking_1.balance.staked}`)
+            console.log(`=============================================== Balance of Platform after first Deposit To Staking: ${platform_after_staking_1.balance.amount}`)
+
+  
+            console.log(`=============================================== Balance Of User on Staking After First Deposit: ${user_staking_1.balance.amount}`)
+            console.log(`=============================================== Total Value Lock After First Deposit: ${tvl_staking_1.total_locked.amount}`)
+
+            
+
+
+            // PLATFORM DEPOSIT TO STAKING ===========================================================
+
+
+
+            // DEPOSIT SECOND TIME =================================================================
+
+            const AMOUNT_STAKE_2 = new BigNumber(1333).multipliedBy(new BigNumber(10).pow(6));
+
+
+            await snip20_token.executeMsg(
+                "increase_allowance",
+                {
+                  "amount": `${AMOUNT_STAKE_2.toFixed()}`,
+                  "spender": platform.contractAddress,
+                  "expiration": null,
+                  "padding": null
+                },
+                user_1
+            );
+
+
+            const msg_deposit_2 = {
+                deposit: {
+                    to: user_1.account.address
+                }
+            }
+
+            await snip20_token.executeMsg(
+                "send",
+                {
+                    "recipient": platform.contractAddress,
+                    "recipient_code_hash": platform_code_hash,
+                    "amount": AMOUNT_STAKE_2.toFixed(),
+                    "msg": Buffer.from(JSON.stringify(msg_deposit_2)).toString("base64"),
+                    "memo": "",
+                    "padding": null,
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+
+            let userOneBalanceInPlatform_2 = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            );
+
+            let platformBalance_2 = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": platform.contractAddress,
+                    "key": PLATFORM_VK_LGND,
+                }
+            )
+
+            console.log(`=============================================== Balance of Platform after second deposit: ${platformBalance_2.balance.amount}`);
+            console.log(`=============================================== Balance of User on platform after second deposit: ${userOneBalanceInPlatform_2.balance.staked}`);
+
+            
+            // DEPOSIT SECOND TIME =================================================================
+
+
+            // PLATFORM DEPOSIT TO STAKING SECOND TIME===========================================================
+
+
+            await platform.executeMsg(
+                "send_from_platform",
+                {
+                    "contract_addr": staking.contractAddress,
+                    "amount": AMOUNT_STAKE_2.toFixed(),
+                    "msg": Buffer.from(JSON.stringify(platform_deposit_stakingg)).toString("base64"),
+                    "memo": "",
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+
+    
+            let user_staking_2 = await staking.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_STAKING
+                }
+            )
+
+
+            let tvl_staking_2 = await staking.queryMsg(
+                "total_locked",
+                {
+                
+                }
+            );
+
+            let platform_after_staking_2 = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": platform.contractAddress,
+                    "key": PLATFORM_VK_LGND,
+                }
+            )
+
+            let user_platform_after_staking_2 = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            );
+
+
+
+            console.log(`=============================================== Balance Of User on Platform After second Deposit To Staking: ${user_platform_after_staking_2.balance.staked}`)
+            console.log(`=============================================== Balance of Platform after second Deposit To Staking: ${platform_after_staking_2.balance.amount}`)
+            
+
+
+           
+            console.log(`=============================================== Balance Of User on Staking After Second Deposit: ${user_staking_2.balance.amount}`)
+            console.log(`=============================================== Total Value Lock After Second Deposit: ${tvl_staking_2.total_locked.amount}`)
+
+            // PLATFORM DEPOSIT TO STAKING SECOND TIME===========================================================
+
+
+            // DEPOSIT THIRD TIME =================================================================
+
+            const AMOUNT_STAKE_3 = new BigNumber(13333).multipliedBy(new BigNumber(10).pow(6));
+
+
+            await snip20_token.executeMsg(
+                "increase_allowance",
+                {
+                  "amount": `${AMOUNT_STAKE_3.toFixed()}`,
+                  "spender": platform.contractAddress,
+                  "expiration": null,
+                  "padding": null
+                },
+                user_1
+            );
+
+
+
+            await snip20_token.executeMsg(
+                "send",
+                {
+                    "recipient": platform.contractAddress,
+                    "recipient_code_hash": platform_code_hash,
+                    "amount": AMOUNT_STAKE_3.toFixed(),
+                    "msg": Buffer.from(JSON.stringify(msg_deposit)).toString("base64"),
+                    "memo": "",
+                    "padding": null,
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+
+            let userOneBalanceInPlatform_3 = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            );
+
+            let platformBalance_3 = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": platform.contractAddress,
+                    "key": PLATFORM_VK_LGND,
+                }
+            )
+
+            console.log(`=============================================== Balance of Platform after third deposit: ${platformBalance_3.balance.amount}`);
+            console.log(`=============================================== Balance of User on platform after third deposit: ${userOneBalanceInPlatform_3.balance.staked}`);
+
+            
+            // DEPOSIT THIRD TIME =================================================================
+
+
+            // PLATFORM DEPOSIT TO STAKING THIRD TIME===========================================================
+
+
+            await platform.executeMsg(
+                "send_from_platform",
+                {
+                    "contract_addr": staking.contractAddress,
+                    "amount": AMOUNT_STAKE_2.toFixed(),
+                    "msg": Buffer.from(JSON.stringify(platform_deposit_stakingg)).toString("base64"),
+                    "memo": "",
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+
+    
+            let user_staking_3 = await staking.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_STAKING
+                }
+            )
+
+
+            let tvl_staking_3 = await staking.queryMsg(
+                "total_locked",
+                {
+                
+                }
+            );
+
+            let platform_after_staking_3 = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": platform.contractAddress,
+                    "key": PLATFORM_VK_LGND,
+                }
+            )
+
+            let user_platform_after_staking_3 = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            );
+
+
+
+            console.log(`=============================================== Balance Of User on Platform After third Deposit To Staking: ${user_platform_after_staking_3.balance.staked}`)
+            console.log(`=============================================== Balance of Platform after third Deposit To Staking: ${platform_after_staking_3.balance.amount}`)
+            
+                
+            console.log(`=============================================== Balance Of User on Staking After Third Deposit: ${user_staking_3.balance.amount}`)
+            console.log(`=============================================== Total Value Lock After Third Deposit: ${tvl_staking_3.total_locked.amount}`)
+
+
+            // PLATFORM DEPOSIT TO STAKING THIRD TIME=============================
+            
+          
+            // let userOneBalanceInPlatform = await platform.queryMsg(
+            //     "balance",
+            //     {
+            //         "address": user_1.account.address,
+            //         "key": USER_1_VK_ON_PLATFORM,
+            //     }
+            // );
+
+            // expect(userOneBalanceInPlatform.balance.staked).to.be.equal(AMOUNT_STAKE.toFixed());
+            // //expect(userOneBalanceInPlatform.balance.pending_redeem.claimable).to.be.equal("0");
+
+            // let totalPlatformBalance = await platform.queryMsg(
+            //     "total_balances",
+            //     {
+
+            //     }
+            // );
+
+            // expect(totalPlatformBalance.total_balances.staked).to.be.equal(AMOUNT_STAKE.toFixed());
 
 
             
