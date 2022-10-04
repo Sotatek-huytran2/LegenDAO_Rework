@@ -92,7 +92,7 @@ async function run() {
 
     const resp_stake = await contract_staking.instantiate(
         stakingInitMsg,
-        "Instantiate config staking 8",
+        "Instantiate config staking 11",
         contract_owner
     );
 
@@ -139,6 +139,8 @@ async function run() {
 module.exports = { default: run };
 
 
+// "secretjs": "1.4.0-alpha.10"
+
 // $LGND address: secret16gg80l22ft4nyzv5jnp7e2yjkdqvzune3aa948
 // Platform address: secret10x7ng3j4m636wmx5ssxdafpx0exk9p6c3qznv2
 // Staking address: secret165m55asf7j28mwn7e627m46kzl088gglythez7
@@ -165,6 +167,30 @@ module.exports = { default: run };
 //   {
 //     contractAddress: 'secret15wg0wjxf6susw2gdgaw4csnpzxrnpgf8h8mw9n',
 //     instantiateTimestamp: 'Tue Sep 20 2022 16:24:49 GMT+0700 (Indochina Time)'
+//   }
+  
+
+//{
+//     codeId: 721,
+//     contractCodeHash: 'cd4f88cc0c49e064b1862c5414eb812c28abc51a82a990929db57465f81835c3',
+//     deployTimestamp: 'Fri Sep 30 2022 10:27:15 GMT+0700 (Indochina Time)'
+//   }
+//   Instantiating with label: Instantiate config staking 9
+//   {
+//     contractAddress: 'secret136fjmfhf6qqy0yyg0hhzexmesr5mt7tna9w8q0',
+//     instantiateTimestamp: 'Fri Sep 30 2022 10:28:39 GMT+0700 (Indochina Time)'
+//   }
+  
+
+// {
+//     codeId: 726,
+//     contractCodeHash: 'cd4f88cc0c49e064b1862c5414eb812c28abc51a82a990929db57465f81835c3',
+//     deployTimestamp: 'Mon Oct 03 2022 16:58:50 GMT+0700 (Indochina Time)'
+//   }
+//   Instantiating with label: Instantiate config staking 11
+//   {
+//     contractAddress: 'secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe',
+//     instantiateTimestamp: 'Mon Oct 03 2022 17:00:46 GMT+0700 (Indochina Time)'
 //   }
   
 

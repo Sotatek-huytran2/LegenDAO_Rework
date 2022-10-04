@@ -1043,9 +1043,14 @@ fn query_inflation_schedule<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, 
 fn query_total_locked<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>) -> QueryResult {
     let reward_pool = RewardPool::load(&deps.storage)?;
 
+    // to_binary(&QueryAnswer::TotalLocked {
+    //     amount: Uint128(leave_n_most_significant_digits(reward_pool.total_locked, 3)),
+    //     total_weight: Uint128(leave_n_most_significant_digits(reward_pool.total_weight, 3)),
+    // })
+
     to_binary(&QueryAnswer::TotalLocked {
-        amount: Uint128(leave_n_most_significant_digits(reward_pool.total_locked, 3)),
-        total_weight: Uint128(leave_n_most_significant_digits(reward_pool.total_weight, 3)),
+        amount: Uint128(reward_pool.total_locked),
+        total_weight: Uint128(reward_pool.total_weight),
     })
 }
 

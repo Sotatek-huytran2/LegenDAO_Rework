@@ -87,6 +87,13 @@
                 "string",
                 "null"
               ]
+            },
+            "token_type": {
+              "description": "optional token type",
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         }
@@ -205,6 +212,13 @@
                 {
                   "type": "null"
                 }
+              ]
+            },
+            "token_type": {
+              "description": "optional token type",
+              "type": [
+                "string",
+                "null"
               ]
             }
           }
@@ -1498,6 +1512,13 @@
         },
         "token_id": {
           "description": "optional token id, if omitted, use current token index",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "token_type": {
+          "description": "optional token type",
           "type": [
             "string",
             "null"

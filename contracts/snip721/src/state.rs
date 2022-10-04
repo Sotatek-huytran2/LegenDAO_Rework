@@ -31,6 +31,13 @@ pub const DEFAULT_ROYALTY_KEY: &[u8] = b"defaultroy";
 pub const PREFIX_MAP_TO_INDEX: &[u8] = b"map2idx";
 /// prefix for storage that maps indices to ids
 pub const PREFIX_MAP_TO_ID: &[u8] = b"idx2id";
+
+/// prefix for storage that maps ids to type
+pub const PREFIX_MAP_TO_TYPE: &[u8] = b"id2type";
+
+/// prefix for storage that maps idx to type
+pub const PREFIX_MAP_TO_IDXTYPE: &[u8] = b"idx2type";
+
 /// prefix for storage of token infos
 pub const PREFIX_INFOS: &[u8] = b"infos";
 /// prefix for the storage of public metadata

@@ -35,6 +35,13 @@ const accounts = [
         mnemonic:
             process.env.ACCOUNT_5_MNEMONIC ||
             "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway",
+    },
+    {
+        name: "chi_hien_sota",
+        address: process.env.ACCOUNT_6_ADDR || "secret159plf9h523pxrnpfh0sl06jskc4qqq89m37090",
+        mnemonic:
+            process.env.ACCOUNT_6_MNEMONIC ||
+            "live engage small salt donate memory admit sauce tenant ability beyond voyage",
     }
 ];
 
@@ -93,6 +100,11 @@ module.exports = {
             accounts: accounts,
             types: {},
             fees: default_fees,
+        },
+        localnet: {
+            endpoint: 'http://localhost:1317/',
+            chainId: "secretdev-11",
+            accounts,
         },
         testnet: {
             endpoint: "http://testnet.securesecrets.org:1317/",

@@ -548,7 +548,7 @@ describe("staking", () => {
                 "send_from_platform",
                 {
                     "contract_addr": staking.contractAddress,
-                    "amount": AMOUNT_STAKE_2.toFixed(),
+                    "amount": AMOUNT_STAKE_3.toFixed(),
                     "msg": Buffer.from(JSON.stringify(platform_deposit_stakingg)).toString("base64"),
                     "memo": "",
                 },

@@ -29,7 +29,8 @@ use crate::state::{
     get_txs, json_may_load, json_save, load, may_load, remove, save, store_burn, store_mint,
     store_transfer, AuthList, Config, Permission, PermissionType, ReceiveRegistration, BLOCK_KEY,
     CONFIG_KEY, CREATOR_KEY, DEFAULT_ROYALTY_KEY, MINTERS_KEY, MY_ADDRESS_KEY,
-    PREFIX_ALL_PERMISSIONS, PREFIX_AUTHLIST, PREFIX_INFOS, PREFIX_MAP_TO_ID, PREFIX_MAP_TO_INDEX,
+    PREFIX_ALL_PERMISSIONS, PREFIX_AUTHLIST, PREFIX_INFOS, PREFIX_MAP_TO_ID, PREFIX_MAP_TO_INDEX, 
+    PREFIX_MAP_TO_TYPE, PREFIX_MAP_TO_IDXTYPE,
     PREFIX_MINT_RUN, PREFIX_MINT_RUN_NUM, PREFIX_OWNER_PRIV, PREFIX_PRIV_META, PREFIX_PUB_META,
     PREFIX_RECEIVERS, PREFIX_REVOKED_PERMITS, PREFIX_ROYALTY_INFO, PREFIX_VIEW_KEY, PRNG_SEED_KEY,
 };
@@ -149,6 +150,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             private_metadata,
             serial_number,
             royalty_info,
+            token_type,
             memo,
             ..
         } => mint(
@@ -162,6 +164,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             private_metadata,
             serial_number,
             royalty_info,
+            token_type,
             memo,
         ),
         HandleMsg::BatchMintNft { mut mints, .. } => batch_mint(
@@ -178,6 +181,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             public_metadata,
             private_metadata,
             royalty_info,
+            token_type,
             memo,
             ..
         } => mint_clones(
@@ -191,6 +195,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             public_metadata,
             private_metadata,
             royalty_info,
+            token_type,
             memo,
         ),
         HandleMsg::SetMetadata {
@@ -475,6 +480,7 @@ pub fn mint<S: Storage, A: Api, Q: Querier>(
     private_metadata: Option<Metadata>,
     serial_number: Option<SerialNumber>,
     royalty_info: Option<RoyaltyInfo>,
+    token_type: Option<String>,
     memo: Option<String>,
 ) -> HandleResult {
     check_status(config.status, priority)?;
@@ -493,6 +499,7 @@ pub fn mint<S: Storage, A: Api, Q: Querier>(
         private_metadata,
         serial_number,
         royalty_info,
+        token_type,
         memo,
     }];
     let mut minted = mint_list(deps, &env, config, &sender_raw, &mut mints)?;
@@ -572,6 +579,7 @@ pub fn mint_clones<S: Storage, A: Api, Q: Querier>(
     public_metadata: Option<Metadata>,
     private_metadata: Option<Metadata>,
     royalty_info: Option<RoyaltyInfo>,
+    token_type: Option<String>,
     memo: Option<String>,
 ) -> HandleResult {
     check_status(config.status, priority)?;
@@ -615,6 +623,7 @@ pub fn mint_clones<S: Storage, A: Api, Q: Querier>(
             private_metadata: private_metadata.clone(),
             serial_number: Some(serial_number.clone()),
             royalty_info: royalty_info.clone(),
+            token_type: token_type.clone(),
             memo: memo.clone(),
         });
         serial_number.serial_number += 1;
@@ -3502,6 +3511,14 @@ fn check_status(contract_status: u8, priority: u8) -> StdResult<()> {
     Ok(())
 }
 
+
+fn check_type<S: Storage, A: Api, Q: Querier>(
+    deps: &Extern<S, A, Q>,
+) -> StdResult<()> {
+    
+    Ok(())
+}
+
 /// Returns StdResult<()>
 ///
 /// sets new metadata
@@ -4452,6 +4469,7 @@ fn mint_list<S: Storage, A: Api, Q: Querier>(
     let default_roy: Option<StoredRoyaltyInfo> = may_load(&deps.storage, DEFAULT_ROYALTY_KEY)?;
     for mint in mints.drain(..) {
         let id = mint.token_id.unwrap_or(format!("{}", config.mint_cnt));
+        let tk_type = mint.token_type.unwrap_or("avatar".to_string());
         // check if id already exists
         let mut map2idx = PrefixedStorage::new(PREFIX_MAP_TO_INDEX, &mut deps.storage);
         let may_exist: Option<u32> = may_load(&map2idx, id.as_bytes())?;
@@ -4461,12 +4479,19 @@ fn mint_list<S: Storage, A: Api, Q: Querier>(
                 id
             )));
         }
+
         // increment token count
         config.token_cnt = config.token_cnt.checked_add(1).ok_or_else(|| {
             StdError::generic_err("Attempting to mint more tokens than the implementation limit")
         })?;
+
         // map new token id to its index
-        save(&mut map2idx, id.as_bytes(), &config.mint_cnt)?;
+        save(&mut map2idx, id.as_bytes(), &config.mint_cnt)?; 
+
+        // map new token id to its type
+        let mut map2type = PrefixedStorage::new(PREFIX_MAP_TO_TYPE, &mut deps.storage);
+        save(&mut map2type, id.as_bytes(), &tk_type)?;
+        
         let recipient = if let Some(o) = mint.owner {
             deps.api.canonical_address(&o)?
         } else {
@@ -4498,6 +4523,10 @@ fn mint_list<S: Storage, A: Api, Q: Querier>(
         // map index to id
         let mut map2id = PrefixedStorage::new(PREFIX_MAP_TO_ID, &mut deps.storage);
         save(&mut map2id, &token_key, &id)?;
+
+        // map index to type
+        let mut map2idxtype = PrefixedStorage::new(PREFIX_MAP_TO_IDXTYPE, &mut deps.storage);
+        save(&mut map2idxtype, &token_key, &tk_type)?;
 
         //
         // If you wanted to store an additional data struct for each NFT, you would create

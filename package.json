@@ -9,7 +9,7 @@
     "json-schema-to-typescript": "^10.1.5",
     "mongoose": "^6.1.6",
     "secret-polar-reworks": "0.1.8",
-    "secretjs": "0.17.8"
+    "secretjs": "1.4.0-alpha.10"
   },
   "devDependencies": {
     "assert": "^2.0.0",
