@@ -26,6 +26,7 @@ pub fn mint_nft_msg(
             private_metadata,
             serial_number: None,
             royalty_info: None,
+            token_type: None,
             memo,
             padding,
         })

@@ -3512,9 +3512,18 @@ fn check_status(contract_status: u8, priority: u8) -> StdResult<()> {
 }
 
 
-fn check_type<S: Storage, A: Api, Q: Querier>(
-    deps: &Extern<S, A, Q>,
+fn check_type<S: ReadonlyStorage>(
+    storage: &S,
+    token_id: &str
 ) -> StdResult<()> {
+    let map2type = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_TYPE, storage);
+    let token_type: String = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
+
+    if let "avatar" = &*token_type {
+        return Err(StdError::generic_err(
+            "Can not transfer avatar"
+        ));
+    }
     
     Ok(())
 }
@@ -4290,6 +4299,7 @@ fn send_list<S: Storage, A: Api, Q: Querier>(
         for xfer in xfers.drain(..) {
             let recipient_raw = deps.api.canonical_address(&xfer.recipient)?;
             for token_id in xfer.token_ids.into_iter() {
+                check_type(&deps.storage, &token_id.as_str())?;
                 let _o = transfer_impl(
                     deps,
                     &env.block,
@@ -4309,6 +4319,7 @@ fn send_list<S: Storage, A: Api, Q: Querier>(
             let contract_raw = deps.api.canonical_address(&send.contract)?;
             let mut send_from_list: Vec<SendFrom> = Vec::new();
             for token_id in send.token_ids.into_iter() {
+                check_type(&deps.storage, &token_id.as_str())?;
                 let owner_raw = transfer_impl(
                     deps,
                     &env.block,

@@ -5,7 +5,7 @@ const OWNER_NFT_VK = "OWNER_NFT_VK"
 
 // secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0: testnet
 
-const NFT_ADDRESS = "secret199p24qyx23maqgsgt4ptujts309x5z4atfh5gg"
+const NFT_ADDRESS = "secret1lus0l4aaa0p4wfudq02d7epqcrv36pxmnwy5ku"
 
 const main = async () => {
     // const grpcWebUrl = " https://secret-4.api.trivium.network:1317";
@@ -32,15 +32,17 @@ const main = async () => {
     //     walletAddress: myAddress,
     // });
 
-    // mainnet
-    const secretjsOwner = await SecretNetworkClient.create({
-        grpcWebUrl: "https://grpc.mainnet.secretsaturn.net",
-        chainId: "secret-4",
-        wallet: owner,
-        walletAddress: ownerAddress,
-    });
+    // // mainnet
+    // const secretjsOwner = await SecretNetworkClient.create({
+    //     grpcWebUrl: "https://grpc.mainnet.secretsaturn.net",
+    //     chainId: "secret-4",
+    //     wallet: owner,
+    //     walletAddress: ownerAddress,
+    // });
 
+    
 
+    //
     // const secretjs = await SecretNetworkClient.create({
     //     grpcWebUrl: "https://grpc.testnet.secretsaturn.net",
     //     chainId: "pulsar-2",
@@ -49,12 +51,15 @@ const main = async () => {
     // });
 
 
-    // const secretjsOwner = await SecretNetworkClient.create({
-    //     grpcWebUrl: "https://grpc.testnet.secretsaturn.net",
-    //     chainId: "pulsar-2",
-    //     wallet: owner,
-    //     walletAddress: ownerAddress,
-    // });
+    const secretjsOwner = await SecretNetworkClient.create({
+        grpcWebUrl: "https://grpc.testnet.secretsaturn.net",
+        chainId: "pulsar-2",
+        wallet: owner,
+        walletAddress: ownerAddress,
+    });
+
+
+    // ==============================================================
 
     // const singer = new Signer(
 
@@ -193,7 +198,7 @@ const main = async () => {
     // console.log(nftCodeHash)
 
     const set_status_msg = new MsgExecuteContract({
-        contractAddress: "secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0",
+        contractAddress: NFT_ADDRESS,
         msg: {
             set_contract_status: {
                 level: "normal",
@@ -209,16 +214,16 @@ const main = async () => {
         contractAddress: NFT_ADDRESS,
         msg: {
             mint_nft: {
-                token_id: "LEGEN_DAO_1",
+                token_id: "LEGEN_DAO_5",
                 owner: ownerAddress,
                 public_metadata: {
                     token_uri: undefined,
                     extension: {
-                        name: "NFT_1",
+                        name: "NFT_5",
                         description: undefined,
-                        image: "uri_1",
+                        image: "uri_5",
                         image_data: undefined,
-                        external_url: "url_1",
+                        external_url: "url_5",
                         attributes: [],
                         background_color: undefined,
                         animation_url: undefined,
@@ -229,6 +234,7 @@ const main = async () => {
                 },
                 private_metadata: undefined,
                 royalty_info: undefined,
+                token_type: "avatar",
                 serial_number: undefined,
                 memo: undefined,
                 padding: undefined
@@ -240,7 +246,7 @@ const main = async () => {
     })
 
     const create_vk_msg = new MsgExecuteContract({
-        contractAddress: "secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0",
+        contractAddress: NFT_ADDRESS,
         msg: {
             create_viewing_key: {
                 entropy: OWNER_NFT_VK,
@@ -253,7 +259,7 @@ const main = async () => {
     })
 
     const set_vk_msg = new MsgExecuteContract({
-        contractAddress: "secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0",
+        contractAddress: NFT_ADDRESS,
         msg: {
             set_viewing_key: {
                 key: OWNER_NFT_VK,
@@ -268,12 +274,36 @@ const main = async () => {
 
     // transfer_nft
     const transfer_nft_msg = new MsgExecuteContract({
-        contractAddress: "secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0",
+        contractAddress: NFT_ADDRESS,
         msg: {
             transfer_nft: {
                 recipient: myAddress,
-                token_id: "LEGEN_DAO_1",
+                token_id: "LEGEN_DAO_2",
                 memo: undefined,
+                padding: undefined
+            }
+        },
+        codeHash: nftCodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    })
+
+    const batch_transfer_nft_msg = new MsgExecuteContract({
+        contractAddress: NFT_ADDRESS,
+        msg: {
+            batch_transfer_nft: {
+                transfers: [
+                    {
+                        recipient: myAddress,
+                        token_ids: ["LEGEN_DAO_1"],
+                        memo: undefined,
+                    },
+                    {
+                        recipient: myAddress,
+                        token_ids: ["LEGEN_DAO_3"],
+                        memo: undefined,
+                    },
+                ],
                 padding: undefined
             }
         },
@@ -287,12 +317,12 @@ const main = async () => {
     //     // gasPriceInFeeDenom: 0.000625
     // });
 
-    // const tx = await secretjsOwner.tx.broadcast([mint_nft_msg], {
-    //     gasLimit: 800000,
-    //     // gasPriceInFeeDenom: 0.000625
-    // });
+    const tx = await secretjsOwner.tx.broadcast([batch_transfer_nft_msg], {
+        gasLimit: 8000000,
+        // gasPriceInFeeDenom: 0.000625
+    });
 
-    // console.log(tx);
+    console.log(tx);
 
     // ================================================================== QUERY ==================================================================
 
@@ -303,7 +333,7 @@ const main = async () => {
     }
 
     const owner_of = {
-        token_id: "LEGEN_DAO_1",
+        token_id: "LEGEN_DAO_3",
         viewer: {
             address: ownerAddress,
             viewing_key: OWNER_NFT_VK
@@ -319,19 +349,17 @@ const main = async () => {
         limit: undefined,
     }
 
+    // const config = await secretjsOwner.query.compute.queryContract(
+    //     {
+    //         contractAddress: NFT_ADDRESS,
+    //         codeHash: nftCodeHash, 
+    //         query: {
+    //             owner_of
+    //         }
+    //     }
+    // );
 
-
-    const config = await secretjsOwner.query.compute.queryContract(
-        {
-            contractAddress: "secret199p24qyx23maqgsgt4ptujts309x5z4atfh5gg", 
-            codeHash: nftCodeHash, 
-            query: {
-                nft_info
-            }
-        }
-    );
-
-    console.log("config: ", config);
+    // console.log("config: ", config);
 }
 
 main()

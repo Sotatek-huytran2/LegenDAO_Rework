@@ -92,7 +92,7 @@ async function run() {
 
     const resp_stake = await contract_staking.instantiate(
         stakingInitMsg,
-        "Instantiate config staking 11",
+        "Instantiate config staking 12",
         contract_owner
     );
 
@@ -191,6 +191,19 @@ module.exports = { default: run };
 //   {
 //     contractAddress: 'secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe',
 //     instantiateTimestamp: 'Mon Oct 03 2022 17:00:46 GMT+0700 (Indochina Time)'
+//   }
+  
+
+
+// {
+//     codeId: 728,
+//     contractCodeHash: 'cd4f88cc0c49e064b1862c5414eb812c28abc51a82a990929db57465f81835c3',
+//     deployTimestamp: 'Wed Oct 05 2022 09:29:55 GMT+0700 (Indochina Time)'
+//   }
+//   Instantiating with label: Instantiate config staking 12
+//   {
+//     contractAddress: 'secret1m55srjccp4kd4pznnge7cgudqzvpqehvwp83vv',
+//     instantiateTimestamp: 'Wed Oct 05 2022 09:29:55 GMT+0700 (Indochina Time)'
 //   }
   
 

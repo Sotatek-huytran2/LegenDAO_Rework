@@ -26,6 +26,7 @@ pub struct Config {
     pub minting_enabled: MintingLevel,
     pub price: Vec<MintPrice>,
     pub platform: Option<Contract>,
+    pub base_uri: String,
     /// If this contract can only be accessed via the platform
     pub only_platform: bool,
 }
@@ -74,6 +75,13 @@ pub fn u64_to_bytes(number: &u64) -> [u8; 8] {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct NftInventoryConfig {
     pub num_of_items: u32,
+}
+
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct TokenMinted {
+    pub token_id: String,
+    pub token_type: String,
 }
 
 pub fn build_random_numbers<S: Storage>(store: &mut S, amount: u16) -> StdResult<()> {

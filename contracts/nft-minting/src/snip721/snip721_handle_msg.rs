@@ -24,6 +24,8 @@ pub enum HandleMsg {
         serial_number: Option<SerialNumber>,
         /// optional royalty information for this token
         royalty_info: Option<RoyaltyInfo>,
+        /// optional token type
+        token_type: Option<String>,
         /// optional memo for the tx
         memo: Option<String>,
         /// optional message length padding
@@ -70,6 +72,8 @@ pub struct Mint {
     pub serial_number: Option<SerialNumber>,
     /// optional royalty info for this token
     pub royalty_info: Option<RoyaltyInfo>,
+    /// optional token type
+    pub token_type: Option<String>,
     /// optional memo for the tx
     pub memo: Option<String>,
 }

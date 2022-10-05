@@ -18,6 +18,7 @@ pub struct InitMsg {
     pub nft_count: u16,
     pub nft_contract: Contract,
     pub random_seed: Binary,
+    pub base_uri: String,
     pub price: Vec<MintPrice>,
     pub platform: Option<Contract>,
     pub only_platform: Option<bool>,
@@ -42,10 +43,14 @@ pub enum HandleMsg {
         token_uri: String,
     },
     Mint {
-        amount: Option<u8>,
+        amount: Option<u8>, // avatar
+        amount_loot_box_to_mint: Option<u8>,
+        amount_item_to_mint: Option<u8>
     },
     MintAdmin {
-        amount: Option<u8>,
+        amount: Option<u8>, // avatar
+        amount_loot_box_to_mint: Option<u8>,
+        amount_item_to_mint: Option<u8>,
         mint_for: Option<HumanAddr>,
     },
     EnableReveal {},
@@ -120,8 +125,10 @@ pub struct IsWhitelistedResponse {
 #[serde(rename_all = "snake_case")]
 pub enum ReceiveMsg {
     Mint {
-        amount_to_mint: u8,
         mint_for: HumanAddr,
+        amount_avatar_to_mint: u8,
+        amount_loot_box_to_mint: u8,
+        amount_item_to_mint: u8,
     },
 }
 

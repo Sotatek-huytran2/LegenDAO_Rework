@@ -11,11 +11,21 @@ async function run() {
  
   //console.log(contract_owner.account.address);
  
+
+  //// mainnet
+  // const deploy_response = await contract.deploy(
+  //   contract_owner,
+  //   { // custom fees
+  //     amount: [{ amount: "50000", denom: "uscrt" }],
+  //     gas: "5000000",
+  //   }
+  // );
+
   const deploy_response = await contract.deploy(
     contract_owner,
     { // custom fees
-      amount: [{ amount: "50000", denom: "uscrt" }],
-      gas: "5000000",
+      amount: [{ amount: "750000", denom: "uscrt" }],
+      gas: "50000000",
     }
   );
  
@@ -30,7 +40,7 @@ async function run() {
  
   const resp = await contract.instantiate(
     nftInitMsg,
-    "Instantiate NFT 5",
+    "Instantiate NFT 6",
     contract_owner
   );
  
@@ -52,6 +62,27 @@ module.exports = { default: run };
 //   contractAddress: 'secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0',
 //   instantiateTimestamp: 'Sun Sep 25 2022 16:30:08 GMT+0700 (Indochina Time)'
 // }
+
+// testnet 
+// {
+//   codeId: 13879,
+//   contractCodeHash: '47ad683d1936a0b51476cee2e9c1a583268df708641001741334c49141d82d28',
+//   deployTimestamp: 'Wed Oct 05 2022 10:17:27 GMT+0700 (Indochina Time)'
+// }
+// Instantiating with label: Instantiate NFT 6
+// {
+//   contractAddress: 'secret1lus0l4aaa0p4wfudq02d7epqcrv36pxmnwy5ku',
+//   instantiateTimestamp: 'Wed Oct 05 2022 10:17:27 GMT+0700 (Indochina Time)'
+// }
+
+
+
+
+
+
+
+
+// ======================================================================
 
 
 // mainnet

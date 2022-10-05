@@ -220,6 +220,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "minter-contract"
+version = "0.1.0"
+dependencies = [
+ "cosmwasm-schema 0.10.1",
+ "schemars",
+ "secret-cosmwasm-std",
+ "secret-cosmwasm-storage",
+ "secret-toolkit",
+ "serde",
+ "snafu",
+]
+
+[[package]]
 name = "object"
 version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
