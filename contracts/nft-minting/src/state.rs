@@ -77,11 +77,30 @@ pub struct NftInventoryConfig {
     pub num_of_items: u32,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub enum TokenType {
+    Default,
+    Avatar,
+    Items,
+    LootBox
+}
+
+impl TokenType {
+    pub fn convert_to_u8(&self) -> u8 {
+        match self {
+            TokenType::Avatar => 1,
+            TokenType::Items => 2,
+            TokenType::LootBox => 3,
+            _ => 0
+        }
+    }
+}
+
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct TokenMinted {
     pub token_id: String,
-    pub token_type: String,
+    pub token_type: u8,
 }
 
 pub fn build_random_numbers<S: Storage>(store: &mut S, amount: u16) -> StdResult<()> {

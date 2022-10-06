@@ -1,5 +1,5 @@
 const { Contract, getAccountByName, getLogs } = require("secret-polar-reworks");
- 
+
 
 
 const PRNG_SEED_KEY = "LEGENDAO_ENTROPY"
@@ -7,10 +7,12 @@ const PRNG_SEED_KEY = "LEGENDAO_ENTROPY"
 async function run() {
   const contract_owner = getAccountByName("huy_sota");
   const contract = new Contract("snip721");
+  
+
   await contract.parseSchema();
- 
+
   //console.log(contract_owner.account.address);
- 
+
 
   //// mainnet
   // const deploy_response = await contract.deploy(
@@ -28,29 +30,31 @@ async function run() {
       gas: "50000000",
     }
   );
- 
+
   console.log(deploy_response);
- 
+
   const nftInitMsg = {
     name: "LegenDAO NFT",
     entropy: PRNG_SEED_KEY,
     symbol: "NFT"
   };
- 
- 
+
+
   const resp = await contract.instantiate(
     nftInitMsg,
     "Instantiate NFT 6",
     contract_owner
   );
- 
+
   console.log(resp);
+
+
 }
- 
+
 module.exports = { default: run };
- 
- 
- 
+
+
+
 // test net 
 // {
 //   codeId: 13325,

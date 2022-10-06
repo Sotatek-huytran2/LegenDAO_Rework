@@ -24,9 +24,9 @@ backtraces = ["cosmwasm-std/backtraces"]
 debug-print = ["cosmwasm-std/debug-print"]
 
 [dependencies]
-cosmwasm-std = { package = "secret-cosmwasm-std", version = "0.10" }
+cosmwasm-std = { package = "secret-cosmwasm-std", version = "0.10.1" }
 cosmwasm-storage = { package = "secret-cosmwasm-storage", version = "0.10" }
-secret-toolkit = { version = "0.3.0", default-features=false, features = ["permit", "viewing-key", "storage", "snip20"] }
+secret-toolkit = { version = "0.3", default-features=false, features = ["permit", "viewing-key", "storage", "snip20"] }
 schemars = "0.7"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 snafu = { version = "0.6.3" }

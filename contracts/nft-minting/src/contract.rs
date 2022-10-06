@@ -14,11 +14,11 @@ use crate::handles::set_attributes::try_set_attributes;
 use crate::handles::set_minting_level::set_minting_level;
 use crate::handles::set_placeholder::set_placeholder;
 use crate::handles::withdraw::withdraw_funds;
-use crate::msg::{HandleMsg, InitMsg, PlatformApi, QueryMsg, ReceiveMsg, Token};
+use crate::msg::{HandleMsg, InitMsg, PlatformApi, QueryMsg, ReceiveMsg, Token, };
 use crate::queries::is_whitelisted::query_is_whitelisted;
 use crate::queries::minting_level::query_minting_level;
 use crate::queries::remaining::query_remaining;
-use crate::state::{build_random_numbers, config, Config};
+use crate::state::{build_random_numbers, config, Config, TokenType};
 use crate::types::custom_rng::NftRng;
 use crate::types::minting_level::MintingLevel;
 
@@ -90,9 +90,10 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     config(&mut deps.storage).save(&state)?;
 
     Ok(InitResponse {
-        messages,
+        messages: vec![],
         log: vec![log("status", "success")],
     })
+    // Ok(InitResponse::default())
 }
 
 pub fn handle<S: Storage, A: Api, Q: Querier>(

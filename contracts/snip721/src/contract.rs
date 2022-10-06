@@ -3517,9 +3517,10 @@ fn check_type<S: ReadonlyStorage>(
     token_id: &str
 ) -> StdResult<()> {
     let map2type = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_TYPE, storage);
-    let token_type: String = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
+    let token_type: u8 = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
 
-    if let "avatar" = &*token_type {
+    // 1: avatar
+    if token_type <= 1 {
         return Err(StdError::generic_err(
             "Can not transfer avatar"
         ));
@@ -4480,7 +4481,9 @@ fn mint_list<S: Storage, A: Api, Q: Querier>(
     let default_roy: Option<StoredRoyaltyInfo> = may_load(&deps.storage, DEFAULT_ROYALTY_KEY)?;
     for mint in mints.drain(..) {
         let id = mint.token_id.unwrap_or(format!("{}", config.mint_cnt));
-        let tk_type = mint.token_type.unwrap_or("avatar".to_string());
+
+        let tk_type = mint.token_type.unwrap_or(0);
+
         // check if id already exists
         let mut map2idx = PrefixedStorage::new(PREFIX_MAP_TO_INDEX, &mut deps.storage);
         let may_exist: Option<u32> = may_load(&map2idx, id.as_bytes())?;
@@ -4501,6 +4504,7 @@ fn mint_list<S: Storage, A: Api, Q: Querier>(
 
         // map new token id to its type
         let mut map2type = PrefixedStorage::new(PREFIX_MAP_TO_TYPE, &mut deps.storage);
+
         save(&mut map2type, id.as_bytes(), &tk_type)?;
         
         let recipient = if let Some(o) = mint.owner {

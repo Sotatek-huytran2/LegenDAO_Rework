@@ -345,7 +345,7 @@ const main = async () => {
         owner: ownerAddress,
         viewer: undefined,
         viewing_key: OWNER_NFT_VK,
-        start_after: "",
+        start_after: undefined,
         limit: undefined,
     }
 

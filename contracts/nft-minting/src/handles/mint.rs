@@ -10,7 +10,7 @@ use crate::snip721::snip721_handle_msg::Mint;
 
 use crate::handles::utils::{check_admin, check_paid_for_mint};
 use crate::msgs::mint_nft::batch_mint;
-use crate::state::{config, config_read, Config, TokenMinted};
+use crate::state::{config, config_read, Config, TokenMinted, TokenType};
 use crate::types::custom_rng::NftRng;
 use crate::types::minting_level::MintingLevel;
 use crate::types::token_attributes::{get_nft_attributes, Attributes};
@@ -75,7 +75,7 @@ fn create_mint_msg<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     owner: &HumanAddr,
     base_uri: &String,
-    token_type: &str,
+    token_type: TokenType,
     mints: &mut Vec<Mint>,
     tokens_minted: &mut Vec<TokenMinted>
 ) -> StdResult<()> {
@@ -98,7 +98,7 @@ fn create_mint_msg<S: Storage, A: Api, Q: Querier>(
         // let attrs = maybe_attrs.unwrap();
 
     let public_metadata = Some(create_metadata(&uri));
-        // let private_metadata = Some(create_metadata(&attrs.private_attributes));
+    // let private_metadata = Some(create_metadata(&attrs.private_attributes));
 
     mints.push(Mint {
         token_id: Some(token_id.to_string()),
@@ -108,14 +108,14 @@ fn create_mint_msg<S: Storage, A: Api, Q: Querier>(
         serial_number: None,
             // todo: set royalties
         royalty_info: None,
-        token_type: Some(token_type.to_string()),
+        token_type: Some(token_type.convert_to_u8()),
         memo: None,
     });
 
     tokens_minted.push(
         TokenMinted {
             token_id: token_id.to_string(),
-            token_type: "avatar".to_string(),
+            token_type: token_type.convert_to_u8(),
         }
     );
 
@@ -145,24 +145,36 @@ fn do_mint<S: Storage, A: Api, Q: Querier>(
 
     // MINT AVATAR
     for _ in 0..to_mint {
-        let result = create_mint_msg(deps, &owner, &base_uri, &"avatar", &mut mints, &mut tokens_minted)?;
+        create_mint_msg(deps, &owner, &base_uri, TokenType::Avatar, &mut mints, &mut tokens_minted)?;
     }
 
     // MINT FOR LOOT BOXES
     for _ in 0..to_mint_loot_boxes {
-        let result = create_mint_msg(deps, &owner, &base_uri, &"loot_box", &mut mints, &mut tokens_minted)?;
+        create_mint_msg(deps, &owner, &base_uri, TokenType::LootBox, &mut mints, &mut tokens_minted)?;
     }
 
     // MINT FOR ITEMS
     for _ in 0..to_mint_items {
-        let result = create_mint_msg(deps, &owner, &base_uri, &"items", &mut mints, &mut tokens_minted)?;
+        create_mint_msg(deps, &owner, &base_uri, TokenType::Items, &mut mints, &mut tokens_minted)?;
     }
 
     messages.push(batch_mint(mints, None, contract)?);
 
+    let mut logs = vec![];
+
+    for token_mint in tokens_minted.iter() {
+        logs.push(
+            log("token_id", format!("{}", token_mint.token_id))
+        );
+
+        logs.push(
+            log("token_type", format!("{}", token_mint.token_type))
+        );
+    }
+
     Ok(HandleResponse {
         messages,
-        log: vec![log("minted", format!("{:?}", tokens_minted))], //plaintext_log <- minted, sender
+        log: logs, //plaintext_log <- minted, sender
         data: None,
     })
 }

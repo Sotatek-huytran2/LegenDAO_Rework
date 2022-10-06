@@ -3,7 +3,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::snip721::metadata::Metadata;
-
+use crate::state::{TokenType};
 use super::royalties::RoyaltyInfo;
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -25,7 +25,7 @@ pub enum HandleMsg {
         /// optional royalty information for this token
         royalty_info: Option<RoyaltyInfo>,
         /// optional token type
-        token_type: Option<String>,
+        token_type: Option<u8>,
         /// optional memo for the tx
         memo: Option<String>,
         /// optional message length padding
@@ -73,7 +73,7 @@ pub struct Mint {
     /// optional royalty info for this token
     pub royalty_info: Option<RoyaltyInfo>,
     /// optional token type
-    pub token_type: Option<String>,
+    pub token_type: Option<u8>,
     /// optional memo for the tx
     pub memo: Option<String>,
 }

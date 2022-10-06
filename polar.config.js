@@ -108,6 +108,7 @@ module.exports = {
         },
         testnet: {
             endpoint: "http://testnet.securesecrets.org:1317/",
+            // endpoint: "https://rpc.testnet.secretsaturn.net/",
             chainId: "pulsar-2",
             accounts: accounts,
         },
