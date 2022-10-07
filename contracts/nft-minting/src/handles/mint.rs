@@ -79,6 +79,7 @@ fn create_mint_msg<S: Storage, A: Api, Q: Querier>(
     mints: &mut Vec<Mint>,
     tokens_minted: &mut Vec<TokenMinted>
 ) -> StdResult<()> {
+
     let mut rng = NftRng::load(&deps.storage)?;
     let token_id = rng.next(&mut deps.storage)?;
         
@@ -212,6 +213,10 @@ pub fn try_mint_admin<S: Storage, A: Api, Q: Querier>(
     amount_item_to_mint: Option<u8>
 ) -> StdResult<HandleResponse> {
     check_admin(deps, &env)?;
+
+    // let mut state = config(&mut deps.storage).may_load()?.unwrap();
+    // state.cap_amount = Some(10);
+    // config(&mut deps.storage).save(&state)?;
 
     do_mint(deps, mint_for.unwrap_or(env.message.sender), amount, amount_loot_box_to_mint, amount_item_to_mint)
 }

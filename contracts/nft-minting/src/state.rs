@@ -11,6 +11,8 @@ use serde::{Deserialize, Serialize};
 use crate::msg::MintPrice;
 use crate::types::minting_level::MintingLevel;
 
+use secret_toolkit::storage::{TypedStore, TypedStoreMut};
+
 pub static RANDOM_NUMBERS: &[u8] = b"r";
 pub static CONFIG_KEY: &[u8] = b"config";
 pub static RNG_CONFIG_KEY: &[u8] = b"rng_config";
@@ -43,6 +45,13 @@ pub struct OptionalConfig {
     pub platform: Option<Option<Contract>>,
     /// If this contract can only be accessed via the platform
     pub only_platform: Option<bool>,
+}
+
+
+impl Config {
+    pub fn cap(&self) -> Option<u16> {
+        self.cap_amount
+    }
 }
 
 pub fn config<S: Storage>(storage: &mut S) -> Singleton<S, Config> {

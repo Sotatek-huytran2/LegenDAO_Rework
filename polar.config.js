@@ -119,7 +119,7 @@ module.exports = {
         },
     },
     mocha: {
-        timeout: 600000,
+        timeout: 6000000,
     },
     rust: {
         version: "1.65.0",

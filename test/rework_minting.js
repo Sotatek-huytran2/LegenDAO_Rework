@@ -24,13 +24,11 @@ const USER_1_VK_ON_PLATFORM = "USER_1_VK_PLATFORM"
 const USER_1_VK_ON_STAKING = "USER_1_VK_STAKING"
 const USER_1_VK_SNIP_721 = "USER_1_VK_SNIP_721"
 
-const AMOUNT_MINT = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6));
+const AMOUNT_STAKE = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6));
 
 describe("Minting", () => {
 
     async function setup() {
-
-        const AMOUNT_STAKE = new BigNumber(50000).multipliedBy(new BigNumber(10).pow(6));
 
         //console.log(AMOUNT_STAKE.toFixed());
 
@@ -40,7 +38,6 @@ describe("Minting", () => {
 
         const snip20_token = new Contract("snip20");
         const platform = new Contract("platform");
-        const staking = new Contract("staking");
         const snip721_token = new Contract("snip721");
         const nft_minting = new Contract("minter-contract");
 
@@ -55,10 +52,6 @@ describe("Minting", () => {
             gas: "3000000",
         });
 
-        const deploy_response_staking = await staking.deploy(contract_owner, {
-            amount: [{ amount: "750000", denom: "uscrt" }],
-            gas: "3000000",
-        });
 
         const deploy_response_snip721 = await snip721_token.deploy(contract_owner, {
             amount: [{ amount: "750000", denom: "uscrt" }],
@@ -74,7 +67,6 @@ describe("Minting", () => {
 
         const snip20_code_hash = deploy_response_snip20.contractCodeHash;
         const platform_code_hash = deploy_response_platform.contractCodeHash;
-        const staking_code_hash = deploy_response_staking.contractCodeHash;
         const nft_minting_code_hash = deploy_response_minting.contractCodeHash;
         const snip721_code_hash = deploy_response_snip721.contractCodeHash;
 
@@ -86,8 +78,8 @@ describe("Minting", () => {
             name: "legend",
             decimals: 6,
             initial_balances: [
-                { address: contract_owner.account.address, amount: "10000000000000000" },
-                { address: user_1.account.address, amount: "1000000000000" },
+                { address: contract_owner.account.address, amount: "1000000" },
+                { address: user_1.account.address, amount: "1000000" },
             ],
             config: {
                 public_total_supply: true,
@@ -126,28 +118,7 @@ describe("Minting", () => {
         );
 
 
-        // ==================================================================================
 
-        const stakingInitMsg = {
-            token: {
-                address: resp_snip20.contractAddress,
-                hash: deploy_response_snip20.contractCodeHash,
-            },
-            platform: {
-                address: resp_platform.contractAddress,
-                hash: deploy_response_platform.contractCodeHash,
-            },
-            inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
-            viewing_key: STAKING_VK_LGND,
-            prng_seed: "IAo=",
-        }
-
-
-        await staking.instantiate(
-            stakingInitMsg,
-            staking_label,
-            contract_owner
-        );
 
         // SNIP 721
         // ==================================================================================
@@ -182,21 +153,21 @@ describe("Minting", () => {
             },
             base_uri: "https://concak.com/",
             random_seed: Buffer.from(JSON.stringify("ABC")).toString("base64"),
-            price:
-                [
+            price: [
+                {
+                    price: "100000000",
+                    whitelist_price: "100000000",
+                    token:
                     {
-                        price: "1000000",
-                        whitelist_price: "1000000",
-                        token:
+                        snip20:
                         {
-                            snip20:
-                            {
-                                address: snip20_token.contractAddress,
-                                hash: deploy_response_snip20.contractCodeHash
-                            }
-                        },
-                    }
-                ],
+                            address: snip20_token.contractAddress,
+                            hash: deploy_response_snip20.contractCodeHash
+                        }
+                    },
+                }
+            ],
+            only_platform: true
         }
 
 
@@ -208,24 +179,6 @@ describe("Minting", () => {
             { // custom fees
                 amount: [{ amount: "750000", denom: "uscrt" }],
                 gas: "6000000",
-            }
-        );
-
-
-
-        // add receive contract
-        await platform.executeMsg(
-            "add_receiving_contracts",
-            {
-                "addresses": [
-                    staking.contractAddress
-                ]
-            },
-            contract_owner,
-            undefined,
-            { // custom fees
-                amount: [{ amount: "750000", denom: "uscrt" }],
-                gas: "3000000",
             }
         );
 
@@ -256,20 +209,6 @@ describe("Minting", () => {
                 "padding": null
             },
             user_1
-        );
-
-        await staking.executeMsg(
-            "set_viewing_key",
-            {
-                "key": USER_1_VK_ON_STAKING,
-                "padding": null,
-            },
-            user_1,
-            undefined,
-            { // custom fees
-                amount: [{ amount: "750000", denom: "uscrt" }],
-                gas: "3000000",
-            }
         );
 
         await snip20_token.executeMsg(
@@ -314,20 +253,13 @@ describe("Minting", () => {
         );
 
 
-        return { snip20_token, platform, staking, snip721_token, nft_minting, contract_owner, user_1, user_2, AMOUNT_STAKE, staking_code_hash, platform_code_hash, nft_minting_code_hash };
+        return { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash };
     }
 
     describe("Deploy", async function () {
 
-        // it("Should deploy", async () => {
-        //     const { snip20_token, platform, staking } = await setup();
-        //     // expect(snip20_token.contractAddress).to.be.not.null;
-        //     // expect(platform.contractAddress).to.be.not.null;
-        //     // expect(staking.contractAddress).to.be.not.null;
-        // });
-
         it("Should deposit successful", async () => {
-            const { snip20_token, platform, staking, snip721_token, nft_minting, contract_owner, user_1, user_2, AMOUNT_STAKE, staking_code_hash, platform_code_hash, nft_minting_code_hash } = await setup();
+            const { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash } = await setup();
 
             const msg_deposit = {
                 deposit: {
@@ -362,21 +294,13 @@ describe("Minting", () => {
             //     }
             // );
 
-            let platformBalance = await snip20_token.queryMsg(
-                "balance",
-                {
-                    "address": platform.contractAddress,
-                    "key": PLATFORM_VK_LGND,
-                }
-            )
-
-            let userOneBalanceAfterDeposit = await snip20_token.queryMsg(
-                "balance",
-                {
-                    "address": user_1.account.address,
-                    "key": USER_1_VK_LGND,
-                }
-            )
+            // let platformBalance = await snip20_token.queryMsg(
+            //     "balance",
+            //     {
+            //         "address": platform.contractAddress,
+            //         "key": PLATFORM_VK_LGND,
+            //     }
+            // )
 
             let userOneBalanceInPlatform = await platform.queryMsg(
                 "balance",
@@ -384,22 +308,22 @@ describe("Minting", () => {
                     "address": user_1.account.address,
                     "key": USER_1_VK_ON_PLATFORM,
                 }
-            );
+            )
 
 
-            expect(platformBalance.balance.amount).to.be.equal(AMOUNT_STAKE.toFixed());
-            expect(userOneBalanceAfterDeposit.balance.amount).to.be.equal("950000000000");
-
-
-            console.log(`=============================================== Balance of Platform after first deposit: ${platformBalance.balance.amount}`);
+            // console.log(`=============================================== Balance of Platform after first deposit: ${platformBalance.balance.amount}`);
             console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceInPlatform.balance.staked}`);
 
 
-            // PLATFORM DEPOSIT TO STAKING ===========================================================
+            // PLATFORM DEPOSIT TO MINTING ===========================================================
+
+
+            const AMOUNT_MINT = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6));
+
 
             const platform_deposit_minting = {
-                Mint: {
-                    mint_for: contract_owner.account.address,
+                mint: {
+                    mint_for: user_1.account.address,
                     amount_avatar_to_mint: 1,
                     amount_loot_box_to_mint: 0,
                     amount_item_to_mint: 0,
@@ -412,6 +336,7 @@ describe("Minting", () => {
                     "contract_addr": nft_minting.contractAddress,
                     "amount": AMOUNT_MINT.toFixed(),
                     "msg": Buffer.from(JSON.stringify(platform_deposit_minting)).toString("base64"),
+                    //"msg": platform_deposit_minting,
                     "memo": "",
                 },
                 user_1,
@@ -422,10 +347,59 @@ describe("Minting", () => {
                 }
             );
 
-            // let userOneNFT = await nft_minting.queryMsg(
+            
+            // await snip721_token.executeMsg(
+            //     "add_minters",
+            //     {
+            //         "minters": [contract_owner.account.address, nft_minting.contractAddress],
+            //         "padding": null
+            //     },
+            //     contract_owner,
+            //     undefined,
+            //     { // custom fees
+            //         amount: [{ amount: "750000", denom: "uscrt" }],
+            //         gas: "3000000",
+            //     }
+            // );
+
+            // await nft_minting.executeMsg(
+            //     "mint_admin",
+            //     {
+            //         "mint_for": contract_owner.account.address,
+            //         "amount": 1,
+            //         "amount_loot_box_to_mint": 0,
+            //         "amount_item_to_mint": 0,
+            //     },
+            //     contract_owner,
+            //     undefined,
+            //     { // custom fees
+            //         amount: [{ amount: "750000", denom: "uscrt" }],
+            //         gas: "3000000",
+            //     }
+            // );
+
+            let userOneBalanceAfterBuy = await platform.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_ON_PLATFORM,
+                }
+            )
+
+            console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceAfterBuy.balance.staked}`);
+
+
+            let userOneNFT = await snip721_token.queryMsg(
+                "nft_info",
+                {
+                    "token_id": "1",
+                }
+            );
+
+            // let userOneNFT = await snip721_token.queryMsg(
             //     "owner_of",
             //     {
-            //         "token_id": "LEGEN_DAO_3",
+            //         "token_id": "1",
             //         "viewer": {
             //             address: user_1.account.address,
             //             viewing_key: USER_1_VK_SNIP_721
@@ -436,19 +410,44 @@ describe("Minting", () => {
 
             // console.log(userOneNFT)
 
-            let userOneNFT = await snip721_token.queryMsg(
-                "tokens",
-                {
-                    "owner": user_1.account.address,
-                    "viewer": user_1.account.address,
-                    "viewing_key": USER_1_VK_SNIP_721,
-                    "start_after": undefined,
-                    "limit": undefined,
-                },
 
-            );
+            // let userOneNFT = await snip721_token.queryMsg(
+            //     "tokens",
+            //     {
+            //         "owner": user_1.account.address,
+            //         "viewer": user_1.account.address,
+            //         "viewing_key": USER_1_VK_SNIP_721,
+            //         "start_after": undefined,
+            //         "limit": undefined,
+            //     },
+
+            // );
+
+            // let userOneNFT = await snip721_token.queryMsg(
+            //     "num_tokens",
+            //     {
+            //         "viewer": {
+            //             "address": user_1.account.address,
+            //             "viewing_key": USER_1_VK_SNIP_721,
+            //         },
+            //     },
+
+            // );
+
+            console.log("====================================")
 
             console.log(userOneNFT)
+
+
+            let check = await nft_minting.queryMsg(
+                "config",
+                {
+                    
+                }
+            );
+
+            console.log(check)
+
 
 
 

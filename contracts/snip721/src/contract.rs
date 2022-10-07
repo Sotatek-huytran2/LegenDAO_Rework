@@ -480,7 +480,7 @@ pub fn mint<S: Storage, A: Api, Q: Querier>(
     private_metadata: Option<Metadata>,
     serial_number: Option<SerialNumber>,
     royalty_info: Option<RoyaltyInfo>,
-    token_type: Option<String>,
+    token_type: Option<u8>,
     memo: Option<String>,
 ) -> HandleResult {
     check_status(config.status, priority)?;
@@ -579,7 +579,7 @@ pub fn mint_clones<S: Storage, A: Api, Q: Querier>(
     public_metadata: Option<Metadata>,
     private_metadata: Option<Metadata>,
     royalty_info: Option<RoyaltyInfo>,
-    token_type: Option<String>,
+    token_type: Option<u8>,
     memo: Option<String>,
 ) -> HandleResult {
     check_status(config.status, priority)?;
@@ -623,7 +623,7 @@ pub fn mint_clones<S: Storage, A: Api, Q: Querier>(
             private_metadata: private_metadata.clone(),
             serial_number: Some(serial_number.clone()),
             royalty_info: royalty_info.clone(),
-            token_type: token_type.clone(),
+            token_type: token_type,
             memo: memo.clone(),
         });
         serial_number.serial_number += 1;

@@ -5,6 +5,8 @@ use cosmwasm_std::{Binary, HumanAddr, Uint128};
 use schemars::JsonSchema;
 use secret_toolkit::utils::types::Contract;
 use serde::{Deserialize, Serialize};
+use secret_toolkit::serialization::Base64JsonOf;
+
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct MintPrice {
@@ -30,7 +32,10 @@ pub struct WhitelistAddress {
     pub amount: u8,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+// #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+// #[serde(rename_all = "snake_case")]
+
+#[derive(Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
     AddWhitelist {
@@ -61,7 +66,8 @@ pub enum HandleMsg {
 
     Receive {
         from: HumanAddr,
-        msg: Option<Binary>,
+        //msg: Option<Binary>,
+        msg: Base64JsonOf<ReceiveMsg>,
         amount: Uint128,
     },
 
@@ -93,12 +99,18 @@ pub struct Mint {}
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
+    Config {},
     // GetCount returns the current count as a json-encoded number
     Remaining {},
     MintingLevel {},
     IsWhitelisted { address: HumanAddr },
     // full price
     // whitelist price
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct CapAmountResponse {
+    pub cap_amount: u16,
 }
 
 // We define a custom struct for each query response
@@ -120,10 +132,35 @@ pub struct IsWhitelistedResponse {
     pub amount: Option<u8>,
 }
 
+// #[derive(Deserialize, JsonSchema, Clone, Debug)]
+// #[cfg_attr(test, derive(Serialize))]
+// #[serde(rename_all = "snake_case")]
+// pub enum ReceiveMsg {
+//     Mint {
+//         mint_for: HumanAddr,
+//         amount_avatar_to_mint: u8,
+//         amount_loot_box_to_mint: u8,
+//         amount_item_to_mint: u8,
+//     },
+// }
+
+
+// #[derive(Deserialize, JsonSchema, Clone, Debug)]
+// #[cfg_attr(test, derive(Serialize))]
+// #[serde(rename_all = "snake_case")]
+
+
 #[derive(Deserialize, JsonSchema)]
-#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "snake_case")]
 pub enum ReceiveMsg {
+    ReceiveFromPlatform {
+        from: HumanAddr,
+        msg: Base64JsonOf<ReceiveFromPlatformMsg>,
+    },
+}
+
+#[derive(Deserialize, JsonSchema)]
+pub enum ReceiveFromPlatformMsg {
     Mint {
         mint_for: HumanAddr,
         amount_avatar_to_mint: u8,
@@ -132,9 +169,9 @@ pub enum ReceiveMsg {
     },
 }
 
-#[derive(Deserialize, JsonSchema)]
-#[cfg_attr(test, derive(Serialize))]
-#[serde(rename_all = "snake_case")]
-pub enum PlatformApi {
-    ReceiveFromPlatform { from: HumanAddr, msg: Binary },
-}
+// #[derive(Deserialize, JsonSchema)]
+// #[cfg_attr(test, derive(Serialize))]
+// #[serde(rename_all = "snake_case")]
+// pub enum PlatformApi {
+//     ReceiveFromPlatform { from: HumanAddr, msg: Binary },
+// }
