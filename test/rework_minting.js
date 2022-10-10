@@ -24,7 +24,7 @@ const USER_1_VK_ON_PLATFORM = "USER_1_VK_PLATFORM"
 const USER_1_VK_ON_STAKING = "USER_1_VK_STAKING"
 const USER_1_VK_SNIP_721 = "USER_1_VK_SNIP_721"
 
-const AMOUNT_STAKE = new BigNumber(100000).multipliedBy(new BigNumber(10).pow(6));
+const AMOUNT_STAKE = new BigNumber(3).multipliedBy(new BigNumber(10).pow(6));
 
 describe("Minting", () => {
 
@@ -155,7 +155,9 @@ describe("Minting", () => {
             price: [
                 {
                     price: "1000000",
-                    whitelist_price: "100000",
+                    whitelist_price: "1000000",
+                    items_price: "1000000",
+                    loot_box_price: "1000000",
                     token:
                     {
                         snip20:
@@ -332,6 +334,7 @@ describe("Minting", () => {
 
 
             // console.log(`=============================================== Balance of Platform after first deposit: ${platformBalance.balance.amount}`);
+            expect(userOneBalanceInPlatform.balance.staked).to.be.equal('3000000');
             console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceInPlatform.balance.staked}`);
 
 
@@ -390,7 +393,8 @@ describe("Minting", () => {
                     "key": USER_1_VK_ON_PLATFORM,
                 }
             )
-
+        
+            //expect(userOneBalanceAfterBuy.balance.staked).to.be.equal('0');
             console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceAfterBuy.balance.staked}`);
 
 
@@ -424,8 +428,6 @@ describe("Minting", () => {
 
             expect(user_nfts).to.be.equal(3);
 
-            
-
             let first_nft = allToken.token_list.tokens[0]
             let second_nft = allToken.token_list.tokens[1]
             let third_nft = allToken.token_list.tokens[2]
@@ -454,6 +456,79 @@ describe("Minting", () => {
             console.log(first_nft_info)
             console.log(second_nft_info)
             console.log(third_nft_info)
+
+            let first_nft_type = await snip721_token.queryMsg(
+                "token_type",
+                {
+                    "token_id": first_nft.toString(),
+                }
+            );
+
+            let second_nft_type = await snip721_token.queryMsg(
+                "token_type",
+                {
+                    "token_id": second_nft.toString(),
+                }
+            );
+            
+            let third_nft_type = await snip721_token.queryMsg(
+                "token_type",
+                {
+                    "token_id": third_nft.toString(),
+                }
+            );
+
+            console.log(first_nft_type)
+            console.log(second_nft_type)
+            console.log(third_nft_type)
+
+            await snip721_token.executeMsg(
+                "set_token_type",
+                {
+                    "token_id": first_nft.toString(),
+                    "new_type": 2
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+            // let first_nft_type_after_change = await snip721_token.queryMsg(
+            //     "token_type",
+            //     {
+            //         "token_id": first_nft.toString(),
+            //     }
+            // );
+
+            // console.log(first_nft_type_after_change)
+
+
+            await nft_minting.executeMsg(
+                "open_loot_box",
+                {
+                    "token_id": first_nft.toString(),
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
+                }
+            );
+
+            let first_nft_type_after = await snip721_token.queryMsg(
+                "token_type",
+                {
+                    "token_id": first_nft.toString(),
+                }
+            );
+
+            console.log(first_nft_type_after)
+
+
 
             // let userOneNFT = await snip721_token.queryMsg(
             //     "num_tokens",

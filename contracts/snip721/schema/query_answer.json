@@ -262,6 +262,27 @@
     {
       "type": "object",
       "required": [
+        "token_type"
+      ],
+      "properties": {
+        "token_type": {
+          "type": "object",
+          "required": [
+            "token_type"
+          ],
+          "properties": {
+            "token_type": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
         "nft_info"
       ],
       "properties": {

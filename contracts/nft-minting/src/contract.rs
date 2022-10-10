@@ -15,12 +15,13 @@ use crate::handles::set_attributes::try_set_attributes;
 use crate::handles::set_minting_level::set_minting_level;
 use crate::handles::set_placeholder::set_placeholder;
 use crate::handles::withdraw::withdraw_funds;
-use crate::msg::{HandleMsg, InitMsg, QueryMsg, ReceiveMsg, Token, PlatformApi};
+use crate::msg::{HandleMsg, InitMsg, QueryMsg, ReceiveMsg, Token, PlatformApi, HandleAnswer, ResponseStatus};
 use crate::queries::is_whitelisted::query_is_whitelisted;
 use crate::queries::minting_level::query_minting_level;
 use crate::queries::remaining::{query_remaining, query_cap};
-use crate::state::{build_random_numbers, config, Config, TokenType};
+use crate::state::{build_random_numbers, config, Config, TokenType, config_read};
 use crate::types::custom_rng::NftRng;
+use crate::msgs::update_nft::change_nft_type;
 use crate::types::minting_level::MintingLevel;
 
 const MAX_MINT_AT_ONCE: u8 = 100;
@@ -133,6 +134,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
         HandleMsg::Receive { amount, msg, from } => {
             try_receive_from_platform(deps, env, amount, msg, from)
         },
+        HandleMsg::OpenLootBox { token_id } => open_loot_box(deps, env, token_id),
         // HandleMsg::Receive { amount, msg, from } => match msg.inner {
         //     // ReceiveMsg::ReceiveFromPlatform { from: to, msg } => match msg.inner {
         //     //     ReceiveFromPlatformMsg::Mint { 
@@ -160,6 +162,25 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 }
 
 
+fn open_loot_box<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    token_id: String,
+) -> StdResult<HandleResponse> {
+
+    let config = config_read(&deps.storage).may_load()?.unwrap();
+    let contract = config.nft_contract;
+
+    let message = change_nft_type(contract, token_id, 4)?;
+
+    Ok(HandleResponse {
+        messages: vec![message],
+        log: vec![],
+        data: Some(to_binary(&HandleAnswer::OpenLootBox {
+            status: ResponseStatus::Success,
+        })?),
+    })
+}
 
 fn try_receive_from_platform<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,

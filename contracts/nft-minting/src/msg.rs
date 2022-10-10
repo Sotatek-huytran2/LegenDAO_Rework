@@ -13,6 +13,8 @@ pub struct MintPrice {
     pub token: Token,
     pub price: Uint128,
     pub whitelist_price: Uint128,
+    pub items_price: Uint128,
+    pub loot_box_price: Uint128,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -65,6 +67,9 @@ pub enum HandleMsg {
         mint_state: MintingLevel,
         cap_amount: Option<u16>,
     },
+    OpenLootBox {
+        token_id: String,
+    },
     Receive {
         from: HumanAddr,
         msg: Option<Binary>,
@@ -96,6 +101,14 @@ pub enum Token {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Mint {}
+
+
+#[derive(Serialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(test, derive(Deserialize))]
+pub enum HandleAnswer {
+    OpenLootBox { status: ResponseStatus },
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -169,4 +182,12 @@ pub enum ReceiveMsg {
 #[serde(rename_all = "snake_case")]
 pub enum PlatformApi {
     ReceiveFromPlatform { from: HumanAddr, msg: Binary },
+}
+
+#[derive(Serialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+#[cfg_attr(test, derive(Deserialize))]
+pub enum ResponseStatus {
+    Success,
+    Failure,
 }

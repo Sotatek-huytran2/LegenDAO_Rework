@@ -280,6 +280,31 @@
       }
     },
     {
+      "type": "object",
+      "required": [
+        "set_token_type"
+      ],
+      "properties": {
+        "set_token_type": {
+          "type": "object",
+          "required": [
+            "new_type",
+            "token_id"
+          ],
+          "properties": {
+            "new_type": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "token_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
       "description": "set royalty information.  If no token ID is provided, this royalty info will become the default RoyaltyInfo for any new tokens minted on the contract.  If a token ID is provided, this can only be called by the token creator and only when the creator is the current owner",
       "type": "object",
       "required": [

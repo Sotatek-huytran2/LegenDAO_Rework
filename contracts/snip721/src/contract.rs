@@ -212,6 +212,18 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             public_metadata,
             private_metadata,
         ),
+        HandleMsg::SetTokenType {
+            token_id,
+            new_type,
+            ..
+        } => set_token_type(
+            deps,
+            env,
+            &config,
+            ContractStatus::StopTransactions.to_u8(),
+            &token_id,
+            new_type,
+        ),
         HandleMsg::SetRoyaltyInfo {
             token_id,
             royalty_info,
@@ -701,6 +713,46 @@ pub fn set_metadata<S: Storage, A: Api, Q: Querier>(
         messages: vec![],
         log: vec![],
         data: Some(to_binary(&HandleAnswer::SetMetadata { status: Success })?),
+    })
+}
+
+
+pub fn set_token_type<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    config: &Config,
+    priority: u8,
+    token_id: &str,
+    new_type: u8,
+) -> HandleResult {
+    check_status(config.status, priority)?;
+    let custom_err = format!("{} Not authorized to update type of token {}", &env.message.sender, token_id);
+    // if token supply is private, don't leak that the token id does not exist
+    // instead just say they are not authorized for that token
+    let opt_err = if config.token_supply_is_public {
+        None
+    } else {
+        Some(&*custom_err)
+    };
+
+    let (token, idx) = get_token(&deps.storage, token_id, opt_err)?;
+    let sender_raw = deps.api.canonical_address(&env.message.sender)?;
+
+    if !(token.owner == sender_raw && config.owner_may_update_metadata) {
+        let minters: Vec<CanonicalAddr> =
+            may_load(&deps.storage, MINTERS_KEY)?.unwrap_or_else(Vec::new);
+        if !(minters.contains(&sender_raw) && config.minter_may_update_metadata) {
+            return Err(StdError::generic_err(custom_err));
+        }
+    }
+
+    let mut map2type = PrefixedStorage::new(PREFIX_MAP_TO_TYPE, &mut deps.storage);
+    save(&mut map2type, &token_id.as_bytes(), &new_type)?;
+
+    Ok(HandleResponse {
+        messages: vec![],
+        log: vec![],
+        data: Some(to_binary(&HandleAnswer::SetTokenType { status: Success })?),
     })
 }
 
@@ -1751,6 +1803,7 @@ pub fn query<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>, msg: QueryM
             include_expired,
         } => query_owner_of(deps, &token_id, viewer, include_expired, None),
         QueryMsg::NftInfo { token_id } => query_nft_info(&deps.storage, &token_id),
+        QueryMsg::TokenType { token_id } => query_token_type(&deps.storage, &token_id),
         QueryMsg::PrivateMetadata { token_id, viewer } => {
             query_private_meta(deps, &token_id, viewer, None)
         }
@@ -2164,6 +2217,52 @@ pub fn query_nft_info<S: ReadonlyStorage>(storage: &S, token_id: &str) -> QueryR
         token_uri: None,
         extension: None,
     })
+}
+
+
+
+
+/// Returns QueryResult displaying the public metadata of a token
+///
+/// # Arguments
+///
+/// * `storage` - a reference to the contract's storage
+/// * `token_id` - string slice of the token id
+pub fn query_token_type<S: ReadonlyStorage>(storage: &S, token_id: &str) -> QueryResult {
+    
+    let map2type = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_TYPE, storage);
+    let token_type: u8 = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
+
+    return to_binary(&QueryAnswer::TokenType {
+        token_type: token_type,
+    });
+    
+    // let map2idx = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_INDEX, storage);
+    // let may_idx: Option<u32> = may_load(&map2idx, token_id.as_bytes())?;
+    // // if token id was found
+    // if let Some(idx) = may_idx {
+
+    //     let type_store = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_IDXTYPE, storage);
+    //     let idx_type: String = may_load(&type_store, &idx.to_le_bytes())?.unwrap_or("None".to_string());
+
+    //     return to_binary(&QueryAnswer::TokenType {
+    //         token_type: Some(idx_type)
+    //     });
+    // }
+
+    // let config: Config = load(storage, CONFIG_KEY)?;
+    // // token id wasn't found
+    // // if the token supply is public, let them know the token does not exist
+    // if config.token_supply_is_public {
+    //     return Err(StdError::generic_err(format!(
+    //         "Token ID: {} not found",
+    //         token_id
+    //     )));
+    // }
+    // // otherwise, just return empty metadata
+    // to_binary(&QueryAnswer::TokenType {
+    //     token_type: None
+    // })
 }
 
 /// Returns QueryResult displaying the private metadata of a token if permitted to

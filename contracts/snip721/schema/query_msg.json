@@ -201,6 +201,25 @@
       }
     },
     {
+      "type": "object",
+      "required": [
+        "token_type"
+      ],
+      "properties": {
+        "token_type": {
+          "type": "object",
+          "required": [
+            "token_id"
+          ],
+          "properties": {
+            "token_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
       "description": "displays the private metadata if permitted to view it",
       "type": "object",
       "required": [

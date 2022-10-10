@@ -12,6 +12,10 @@ pub fn check_paid_for_mint(
     paid: Uint128,
     // amount of tokens to buy
     amount: Option<u8>,
+    // amount of items to buy
+    item_amount: Option<u8>,
+    // amount of loot boxes to buy
+    loot_box_amount: Option<u8>,
     is_whitelist: bool,
 ) -> StdResult<()> {
     let price = configured_prices.iter().find(|p| match &p.token {
@@ -38,11 +42,40 @@ pub fn check_paid_for_mint(
         ));
     }
 
-    let total_cost = if is_whitelist {
+    let total_cost_avatars = if is_whitelist {
         Uint128(price.unwrap().whitelist_price.u128() * amount.unwrap_or(0) as u128)
     } else {
         Uint128(price.unwrap().price.u128() * amount.unwrap_or(0) as u128)
     };
+
+    // if total_cost != paid {
+    //     return Err(StdError::generic_err(format!(
+    //         "Failed to mint; Wrong amount of coins was sent. Got: {}, expected: {}",
+    //         paid, total_cost
+    //     )));
+    // }
+
+    // cost of items 
+    let total_cost_items = Uint128(price.unwrap().items_price.u128() * item_amount.unwrap_or(0) as u128);
+
+    // if total_cost_items != paid {
+    //     return Err(StdError::generic_err(format!(
+    //         "Failed to mint Items; Wrong amount of coins was sent. Got: {}, expected: {}",
+    //         paid, total_cost_items
+    //     )));
+    // }
+
+    // cost of loot boxes
+    let total_cost_boxes = Uint128(price.unwrap().loot_box_price.u128() * loot_box_amount.unwrap_or(0) as u128);
+
+    // if total_cost_boxes != paid {
+    //     return Err(StdError::generic_err(format!(
+    //         "Failed to mint Loot Boxes; Wrong amount of coins was sent. Got: {}, expected: {}",
+    //         paid, total_cost_boxes
+    //     )));
+    // }
+    
+    let total_cost = total_cost_avatars + total_cost_items + total_cost_boxes;
 
     if total_cost != paid {
         return Err(StdError::generic_err(format!(
@@ -50,6 +83,7 @@ pub fn check_paid_for_mint(
             paid, total_cost
         )));
     }
+
 
     Ok(())
 }

@@ -169,6 +169,10 @@ pub enum HandleMsg {
         /// optional message length padding
         padding: Option<String>,
     },
+    SetTokenType {
+        token_id: String,
+        new_type: u8,
+    },
     /// set royalty information.  If no token ID is provided, this royalty info will become the default
     /// RoyaltyInfo for any new tokens minted on the contract.  If a token ID is provided, this can only
     /// be called by the token creator and only when the creator is the current owner
@@ -495,6 +499,9 @@ pub enum HandleAnswer {
     SetMetadata {
         status: ResponseStatus,
     },
+    SetTokenType {
+        status: ResponseStatus,
+    },
     SetRoyaltyInfo {
         status: ResponseStatus,
     },
@@ -682,6 +689,7 @@ pub enum QueryMsg {
         /// false, expired Approvals will be filtered out of the response
         include_expired: Option<bool>,
     },
+    TokenType { token_id: String },
     /// displays the private metadata if permitted to view it
     PrivateMetadata {
         token_id: String,
@@ -867,6 +875,9 @@ pub enum QueryAnswer {
         private_metadata_is_public: bool,
         private_metadata_is_public_expiration: Option<Expiration>,
         inventory_approvals: Vec<Snip721Approval>,
+    },
+    TokenType {
+        token_type: u8,
     },
     NftInfo {
         token_uri: Option<String>,

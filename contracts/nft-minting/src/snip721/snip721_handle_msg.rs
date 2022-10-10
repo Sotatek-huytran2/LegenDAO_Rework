@@ -3,7 +3,6 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::snip721::metadata::Metadata;
-use crate::state::{TokenType};
 use super::royalties::RoyaltyInfo;
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -38,6 +37,10 @@ pub enum HandleMsg {
         /// optional message length padding
         padding: Option<String>,
     },
+    SetTokenType {
+        token_id: String,
+        new_type: u8,
+    }
 }
 
 /// Serial number to give an NFT when minting

@@ -10,6 +10,7 @@ use crate::snip721::snip721_handle_msg::Mint;
 
 use crate::handles::utils::{check_admin, check_paid_for_mint};
 use crate::msgs::mint_nft::batch_mint;
+use crate::msgs::update_nft::change_nft_type;
 use crate::state::{config, config_read, Config, TokenMinted, TokenType};
 use crate::types::custom_rng::NftRng;
 use crate::types::minting_level::MintingLevel;
@@ -49,6 +50,8 @@ pub fn try_mint_native<S: Storage, A: Api, Q: Querier>(
         &Token::Native(sent_funds.denom.clone()),
         sent_funds.amount,
         amount,
+        amount_item_to_mint,
+        amount_loot_box_to_mint,
         is_whitelist,
     )?;
 
@@ -149,14 +152,14 @@ fn do_mint<S: Storage, A: Api, Q: Querier>(
         create_mint_msg(deps, &owner, &base_uri, TokenType::Avatar, &mut mints, &mut tokens_minted)?;
     }
 
-    // MINT FOR LOOT BOXES
-    for _ in 0..to_mint_loot_boxes {
-        create_mint_msg(deps, &owner, &base_uri, TokenType::LootBox, &mut mints, &mut tokens_minted)?;
-    }
-
     // MINT FOR ITEMS
     for _ in 0..to_mint_items {
         create_mint_msg(deps, &owner, &base_uri, TokenType::Items, &mut mints, &mut tokens_minted)?;
+    }
+
+    // MINT FOR LOOT BOXES
+    for _ in 0..to_mint_loot_boxes {
+        create_mint_msg(deps, &owner, &base_uri, TokenType::LootBox, &mut mints, &mut tokens_minted)?;
     }
 
     messages.push(batch_mint(mints, None, contract)?);
@@ -279,7 +282,7 @@ pub fn try_mint_with_token<S: Storage, A: Api, Q: Querier>(
         }
     }
  
-    let total_mint = amount_avatar_to_mint + amount_loot_box_to_mint + amount_item_to_mint;
+    //let total_mint = amount_avatar_to_mint + amount_loot_box_to_mint + amount_item_to_mint;
 
     check_paid_for_mint(
         &config.price,
@@ -288,7 +291,9 @@ pub fn try_mint_with_token<S: Storage, A: Api, Q: Querier>(
             hash: "".to_string(), // this is just here to reuse the struct
         }),
         amount,
-        Some(total_mint),
+        Some(amount_avatar_to_mint),
+        Some(amount_item_to_mint),
+        Some(amount_loot_box_to_mint),
         // todo: add whitelist checking
         is_whitelist,
     )?;
