@@ -4,6 +4,7 @@ use cosmwasm_std::{
 };
 use secret_toolkit::snip20;
 use secret_toolkit::utils::types::Contract;
+use snafu::NoneError;
 
 use crate::handles::add_whitelist::add_whitelist;
 use crate::handles::change_settings::change_settings;
@@ -14,7 +15,7 @@ use crate::handles::set_attributes::try_set_attributes;
 use crate::handles::set_minting_level::set_minting_level;
 use crate::handles::set_placeholder::set_placeholder;
 use crate::handles::withdraw::withdraw_funds;
-use crate::msg::{HandleMsg, InitMsg, QueryMsg, ReceiveMsg, Token, ReceiveFromPlatformMsg};
+use crate::msg::{HandleMsg, InitMsg, QueryMsg, ReceiveMsg, Token, PlatformApi};
 use crate::queries::is_whitelisted::query_is_whitelisted;
 use crate::queries::minting_level::query_minting_level;
 use crate::queries::remaining::{query_remaining, query_cap};
@@ -76,7 +77,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     let state = Config {
         nft_count: msg.nft_count,
         base_uri: msg.base_uri,
-        cap_amount: Some(0),
+        cap_amount: None,
         owner: env.message.sender,
         nft_contract: msg.nft_contract,
         max_batch_mint: MAX_MINT_AT_ONCE,
@@ -89,10 +90,31 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
 
     config(&mut deps.storage).save(&state)?;
 
+    // Ok(InitResponse {
+    //     messages: vec![
+    //         snip20::register_receive_msg(
+    //             env.contract_code_hash,
+    //             None,
+    //             1, // This is public data, no need to pad
+    //             msg.token.hash.clone(),
+    //             msg.token.address.clone(),
+    //         )?,
+    //         snip20::set_viewing_key_msg(
+    //             msg.viewing_key,
+    //             None,
+    //             RESPONSE_BLOCK_SIZE,
+    //             msg.token.hash,
+    //             msg.token.address,
+    //         )?,
+    //     ],
+    //     log: vec![],
+    // })
+
     Ok(InitResponse {
-        messages: vec![],
+        messages: messages, 
         log: vec![log("status", "success")],
     })
+
     // Ok(InitResponse::default())
 }
 
@@ -108,19 +130,19 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
         HandleMsg::MintAdmin { amount, amount_loot_box_to_mint, amount_item_to_mint, mint_for } => try_mint_admin(deps, env, mint_for, amount, amount_loot_box_to_mint, amount_item_to_mint),
         HandleMsg::Mint { amount, amount_loot_box_to_mint, amount_item_to_mint } => try_mint_native(deps, env, amount, amount_loot_box_to_mint, amount_item_to_mint),
         HandleMsg::EnableReveal {} => try_enable_reveal(deps, env),
-        HandleMsg::Receive { amount, msg, from } => match msg.inner {
-            ReceiveMsg::ReceiveFromPlatform { from: to, msg } => match msg.inner {
-                ReceiveFromPlatformMsg::Mint { 
-                    mint_for, 
-                    amount_avatar_to_mint, 
-                    amount_loot_box_to_mint, 
-                    amount_item_to_mint 
-                } => receive(deps, env),
-                
-                //try_mint_with_token(deps, env, amount, mint_for, amount_avatar_to_mint, amount_loot_box_to_mint, amount_item_to_mint, from),
-            },
-            // try_receive_from_platform(deps, env, amount, msg, from)
-        }
+        HandleMsg::Receive { amount, msg, from } => {
+            try_receive_from_platform(deps, env, amount, msg, from)
+        },
+        // HandleMsg::Receive { amount, msg, from } => match msg.inner {
+        //     // ReceiveMsg::ReceiveFromPlatform { from: to, msg } => match msg.inner {
+        //     //     ReceiveFromPlatformMsg::Mint { 
+        //     //         mint_for, 
+        //     //         amount_avatar_to_mint, 
+        //     //         amount_loot_box_to_mint, 
+        //     //         amount_item_to_mint 
+        //     //     } => try_mint_with_token(deps, env, amount, mint_for, amount_avatar_to_mint, amount_loot_box_to_mint, amount_item_to_mint, from),
+        //     // },
+        // }
         HandleMsg::ChangingMintingState {
             mint_state,
             cap_amount,
@@ -139,67 +161,68 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 
 
 
-// fn try_receive_from_platform<S: Storage, A: Api, Q: Querier>(
-//     deps: &mut Extern<S, A, Q>,
-//     env: Env,
-//     amount: Uint128,
-//     //msg_external: Option<Binary>,
-//     from_external: HumanAddr,
-// ) -> HandleResult {
-//     let unwrapped_msg = msg_external.unwrap_or_default();
+fn try_receive_from_platform<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: Env,
+    amount: Uint128,
+    msg_external: Option<Binary>,
+    from_external: HumanAddr,
+) -> HandleResult {
+    let unwrapped_msg = msg_external.unwrap_or_default();
 
-//     // let msg_platform_api: StdResult<PlatformApi> = from_binary(&unwrapped_msg);
+    // let msg_platform_api: StdResult<PlatformApi> = from_binary(&unwrapped_msg);
 
-//     if let Ok(msg_platform_api) = from_binary::<PlatformApi>(&unwrapped_msg) {
-//         match msg_platform_api {
-//             PlatformApi::ReceiveFromPlatform { msg, .. } => {
-//                 // state.cap_amount = Some(10);
-//                 // config(&mut deps.storage).save(&state)?;
-//                 receive(deps, env, amount, msg, from_external)
-//             }
-//         }
-//     } else {
-//         // state.cap_amount = Some(11);
-//         // config(&mut deps.storage).save(&state)?;
-//         receive(deps, env, amount, unwrapped_msg, from_external)
-//     }
+    if let Ok(msg_platform_api) = from_binary::<PlatformApi>(&unwrapped_msg) {
+        match msg_platform_api {
+            PlatformApi::ReceiveFromPlatform { msg, .. } => {    
+                receive(deps, env, amount, msg, from_external)
+            }
+        }
+    } else {
+        receive(deps, env, amount, unwrapped_msg, from_external)
+    }
     
-// }
-
-// fn receive<S: Storage, A: Api, Q: Querier>(
-//     deps: &mut Extern<S, A, Q>,
-//     env: Env,
-//     amount: Uint128,
-//     msg: Binary,
-//     from: HumanAddr,
-// ) -> HandleResult {
-//     let msg: ReceiveMsg = from_binary(&msg)?;
-
-//     match msg {
-//         ReceiveMsg::Mint {
-//             mint_for,
-//             amount_avatar_to_mint,
-//             amount_loot_box_to_mint,
-//             amount_item_to_mint,
-//         } => try_mint_with_token(deps, env, amount, mint_for, amount_avatar_to_mint, amount_loot_box_to_mint, amount_item_to_mint, from),
-//     }
-// }
+    // Ok(HandleResponse {
+    //     messages: vec![],
+    //     log: vec![],
+    //     data: None,
+    // })
+}
 
 fn receive<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: Env,
-) -> StdResult<HandleResponse> {
+    amount: Uint128,
+    msg: Binary,
+    from: HumanAddr,
+) -> HandleResult {
+    let msg: ReceiveMsg = from_binary(&msg)?;
 
-    let mut state = config(&mut deps.storage).may_load()?.unwrap();
-    state.cap_amount = Some(10);
-    config(&mut deps.storage).save(&state)?;
-
-    Ok(HandleResponse {
-        messages: vec![],
-        log: vec![],
-        data: None,
-    })
+    match msg {
+        ReceiveMsg::Mint {
+            mint_for,
+            amount_avatar_to_mint,
+            amount_loot_box_to_mint,
+            amount_item_to_mint,
+        } => try_mint_with_token(deps, env, amount, mint_for, amount_avatar_to_mint, amount_loot_box_to_mint, amount_item_to_mint, from),
+    }    
 }
+
+// fn receive<S: Storage, A: Api, Q: Querier>(
+//     deps: &mut Extern<S, A, Q>,
+//     env: Env,
+// ) -> StdResult<HandleResponse> {
+
+//     let mut state = config(&mut deps.storage).may_load()?.unwrap();
+//     state.cap_amount = Some(10);
+//     config(&mut deps.storage).save(&state)?;
+
+//     Ok(HandleResponse {
+//         messages: vec![],
+//         log: vec![],
+//         data: None,
+//     })
+// }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(
     deps: &Extern<S, A, Q>,

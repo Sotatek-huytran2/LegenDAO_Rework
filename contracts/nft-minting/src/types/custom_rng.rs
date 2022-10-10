@@ -61,10 +61,10 @@ impl NftRng {
         self.remaining -= 1;
 
         // should be 0 to number of items remaining
-        //pop_number_from_storage(store, random_number as u32)
-        let id: u16 = self.counter as u16;   
-        
-        Ok(id)
+        pop_number_from_storage(store, random_number as u32)
+
+        // let id: u16 = self.counter as u16;   
+        // Ok(id)
     }
 
     //fn select_one_of(&mut self) {}

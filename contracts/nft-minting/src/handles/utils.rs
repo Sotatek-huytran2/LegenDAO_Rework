@@ -39,9 +39,9 @@ pub fn check_paid_for_mint(
     }
 
     let total_cost = if is_whitelist {
-        Uint128(price.unwrap().whitelist_price.u128() * amount.unwrap_or(1) as u128)
+        Uint128(price.unwrap().whitelist_price.u128() * amount.unwrap_or(0) as u128)
     } else {
-        Uint128(price.unwrap().price.u128() * amount.unwrap_or(1) as u128)
+        Uint128(price.unwrap().price.u128() * amount.unwrap_or(0) as u128)
     };
 
     if total_cost != paid {

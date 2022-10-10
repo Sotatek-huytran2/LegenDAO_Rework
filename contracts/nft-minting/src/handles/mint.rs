@@ -278,6 +278,8 @@ pub fn try_mint_with_token<S: Storage, A: Api, Q: Querier>(
             ));
         }
     }
+ 
+    let total_mint = amount_avatar_to_mint + amount_loot_box_to_mint + amount_item_to_mint;
 
     check_paid_for_mint(
         &config.price,
@@ -286,7 +288,7 @@ pub fn try_mint_with_token<S: Storage, A: Api, Q: Querier>(
             hash: "".to_string(), // this is just here to reuse the struct
         }),
         amount,
-        Some(amount_avatar_to_mint),
+        Some(total_mint),
         // todo: add whitelist checking
         is_whitelist,
     )?;
