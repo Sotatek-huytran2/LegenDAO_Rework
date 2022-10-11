@@ -43,6 +43,25 @@
     {
       "type": "object",
       "required": [
+        "open_loot_box"
+      ],
+      "properties": {
+        "open_loot_box": {
+          "type": "object",
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "$ref": "#/definitions/ResponseStatus"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
         "claim_redeemed"
       ],
       "properties": {

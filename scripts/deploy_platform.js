@@ -8,61 +8,14 @@ const VIEWING_KEY = "hello";
 async function run() {
     const contract_owner = getAccountByName("huy_sota");
 
-    // const contract_platform = new Contract("platform");
+    const contract_platform = new Contract("platform");
 
     // // console.log(contract_platform)
     // // await contract_platform.parseSchema();
 
     // // //console.log(contract_owner.account.address);
 
-    // const deploy_response = await contract_platform.deploy(
-    //     contract_owner,
-    //     { // custom fees
-    //         amount: [{ amount: "50000", denom: "uscrt" }],
-    //         gas: "3000000",
-    //     }
-    // );
-
-    // console.log(deploy_response);
-
-    const lgndToken = 'secret18y59n8z3frrslek52tkkq6t9yk76cdp57wztn9';
-    
-    // const grpcWebUrl = "http://testnet.securesecrets.org:1317/";
-    const grpcWebUrl = "https://secret-4.api.trivium.network:1317/";
-
-    // To create a readonly secret.js client, just pass in a gRPC-web endpoint
-    const secretjs = new CosmWasmClient(grpcWebUrl, undefined, BroadcastMode.Sync);
-
-    const lgndContractHash = await secretjs.getCodeHashByContractAddr(lgndToken);
-
-    // const platformInitMsg = {
-    //     token: {
-    //         address: lgndToken,
-    //         hash: lgndContractHash,
-    //     },
-    //     token_native_denom: process.env.LGND_NATIVE,
-    //     viewing_key: VIEWING_KEY,
-    // };
-
-
-    // const resp = await contract_platform.instantiate(
-    //     platformInitMsg,
-    //     "Instantiate config platform 6",
-    //     contract_owner
-    // );
-
-    // console.log(resp);
-
-
-    // console.log("================================================================");
-
-
-    const contract_staking = new Contract("staking");
-    //await contract_staking.parseSchema();
-
-    //console.log(contract_owner.account.address);
-
-    const deploy_response_stake = await contract_staking.deploy(
+    const deploy_response = await contract_platform.deploy(
         contract_owner,
         { // custom fees
             amount: [{ amount: "50000", denom: "uscrt" }],
@@ -70,40 +23,90 @@ async function run() {
         }
     );
 
-    console.log(deploy_response_stake);
+    console.log(deploy_response);
 
+    const lgndToken = 'secret16xlsf4qz05ylyamstqudqppwpzy4hp4hre6sdg';
+    
+    // testnet
+    const grpcWebUrl = "http://testnet.securesecrets.org:1317/";
 
-    const stakingInitMsg = {
+    //// mainnet
+    // const grpcWebUrl = "https://secret-4.api.trivium.network:1317/";
+
+    // To create a readonly secret.js client, just pass in a gRPC-web endpoint
+    const secretjs = new CosmWasmClient(grpcWebUrl, undefined, BroadcastMode.Sync);
+
+    const lgndContractHash = await secretjs.getCodeHashByContractAddr(lgndToken);
+
+    const platformInitMsg = {
         token: {
             address: lgndToken,
             hash: lgndContractHash,
         },
-        platform: {
-            // address: resp.contractAddress,
-            //hash: deploy_response.contractCodeHash,
-            address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
-            hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
-        },
-        inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
+        token_native_denom: process.env.LGND_NATIVE,
         viewing_key: VIEWING_KEY,
-        prng_seed: "IAo=",
-    }
+    };
 
 
-    const resp_stake = await contract_staking.instantiate(
-        stakingInitMsg,
-        "Instantiate config staking 12",
+    const resp = await contract_platform.instantiate(
+        platformInitMsg,
+        "Instantiate config platform 7",
         contract_owner
     );
 
-    console.log(resp_stake);
+    console.log(resp);
+
+
+    // console.log("================================================================");
+
+
+    // const contract_staking = new Contract("staking");
+    // //await contract_staking.parseSchema();
+
+    // //console.log(contract_owner.account.address);
+
+    // const deploy_response_stake = await contract_staking.deploy(
+    //     contract_owner,
+    //     { // custom fees
+    //         amount: [{ amount: "50000", denom: "uscrt" }],
+    //         gas: "3000000",
+    //     }
+    // );
+
+    // console.log(deploy_response_stake);
+
+
+    // const stakingInitMsg = {
+    //     token: {
+    //         address: lgndToken,
+    //         hash: lgndContractHash,
+    //     },
+    //     platform: {
+    //         // address: resp.contractAddress,
+    //         //hash: deploy_response.contractCodeHash,
+    //         address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
+    //         hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
+    //     },
+    //     inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
+    //     viewing_key: VIEWING_KEY,
+    //     prng_seed: "IAo=",
+    // }
+
+
+    // const resp_stake = await contract_staking.instantiate(
+    //     stakingInitMsg,
+    //     "Instantiate config staking 12",
+    //     contract_owner
+    // );
+
+    // console.log(resp_stake);
 
     console.log("================================================================");
 
     console.log("Success!");
     console.log(`$LGND address: ${lgndToken}`);
-    // console.log(`Platform address: ${resp.contractAddress}`);
-    console.log(`Staking address: ${resp_stake.contractAddress}`);
+    console.log(`Platform address: ${resp.contractAddress}`);
+    // console.log(`Staking address: ${resp_stake.contractAddress}`);
 
 
 

@@ -284,13 +284,13 @@ describe("Minting", () => {
             }
         );
 
-        return { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash };
+        return { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash, snip721_code_hash };
     }
 
     describe("Deploy", async function () {
 
         it("Should deposit successful", async () => {
-            const { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash } = await setup();
+            const { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash, snip721_code_hash } = await setup();
 
             const msg_deposit = {
                 deposit: {
@@ -506,10 +506,19 @@ describe("Minting", () => {
             // console.log(first_nft_type_after_change)
 
 
-            await nft_minting.executeMsg(
+            await platform.executeMsg(
                 "open_loot_box",
                 {
-                    "token_id": first_nft.toString(),
+                    "loot_box_id": first_nft.toString(),
+                    "loot_box_contract": {
+                        "address": snip721_token.contractAddress,
+                        "hash": snip721_code_hash
+                    },
+                    "open_lgnd_amount": 0,
+                    "open_nft_contract": {
+                        "address": undefined,
+                        "hash": undefined
+                    }
                 },
                 user_1,
                 undefined,

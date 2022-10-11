@@ -105,7 +105,6 @@ impl TokenType {
     }
 }
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct TokenMinted {
     pub token_id: String,

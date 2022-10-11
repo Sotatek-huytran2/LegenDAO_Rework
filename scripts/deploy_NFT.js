@@ -42,7 +42,7 @@ async function run() {
 
   const resp = await contract.instantiate(
     nftInitMsg,
-    "Instantiate NFT 6",
+    "Instantiate NFT testnet 1",
     contract_owner
   );
 

@@ -5,6 +5,8 @@ pub mod msg;
 pub mod state;
 mod unittests;
 mod unittests_utils;
+mod msgs;
+mod snip721;
 
 #[cfg(target_arch = "wasm32")]
 mod wasm {

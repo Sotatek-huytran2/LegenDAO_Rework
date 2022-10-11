@@ -38,7 +38,7 @@ async function run() {
 
   const resp = await contract.instantiate(
     lgndInitMsg,
-    "Instantiate config 2",
+    "Instantiate config testnet 1",
     contract_owner
   );
 

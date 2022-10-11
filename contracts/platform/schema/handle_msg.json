@@ -94,6 +94,41 @@
     {
       "type": "object",
       "required": [
+        "open_loot_box"
+      ],
+      "properties": {
+        "open_loot_box": {
+          "type": "object",
+          "required": [
+            "loot_box_contract",
+            "loot_box_id",
+            "open_nft_contract"
+          ],
+          "properties": {
+            "loot_box_contract": {
+              "$ref": "#/definitions/Contract"
+            },
+            "loot_box_id": {
+              "type": "string"
+            },
+            "open_lgnd_amount": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint128",
+              "minimum": 0.0
+            },
+            "open_nft_contract": {
+              "$ref": "#/definitions/Contract"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
         "add_receiving_contracts"
       ],
       "properties": {
@@ -288,6 +323,21 @@
     "Binary": {
       "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
       "type": "string"
+    },
+    "Contract": {
+      "type": "object",
+      "required": [
+        "address",
+        "hash"
+      ],
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "hash": {
+          "type": "string"
+        }
+      }
     },
     "FeatureToggleHandleMsg_for_Features": {
       "anyOf": [

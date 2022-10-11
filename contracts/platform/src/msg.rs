@@ -38,6 +38,13 @@ pub enum HandleMsg {
         /// Wanted message to initiate at the destination contract (defined in the destination contract)
         msg: Binary,
     },
+    OpenLootBox {
+        loot_box_id: String,
+        loot_box_contract: Contract,
+        open_lgnd_amount: Option<u128>,
+        open_nft_contract: Contract
+    },
+
 
     // Admin
     AddReceivingContracts {
@@ -109,6 +116,7 @@ impl Deposit {
 pub enum HandleAnswer {
     Deposit { status: ResponseStatus },
     Redeem { status: ResponseStatus },
+    OpenLootBox { status: ResponseStatus },
     ClaimRedeemed { status: ResponseStatus },
     SendFromPlatform { status: ResponseStatus },
     AddReceivingContracts { status: ResponseStatus },

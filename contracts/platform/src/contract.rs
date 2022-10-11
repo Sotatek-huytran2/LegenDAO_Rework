@@ -18,7 +18,10 @@ use secret_toolkit::snip20;
 use secret_toolkit::utils::feature_toggle::{
     FeatureStatus, FeatureToggle, FeatureToggleHandleMsg, FeatureToggleQueryMsg, FeatureToggleTrait,
 };
+use secret_toolkit::utils::types::Contract;
 use secret_toolkit::viewing_key::{ViewingKey, ViewingKeyStore};
+
+use crate::msgs::update_nft::change_nft_type;
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -103,6 +106,19 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             memo,
             msg,
         ),
+        HandleMsg::OpenLootBox { 
+            loot_box_id, 
+            loot_box_contract, 
+            open_lgnd_amount, 
+            open_nft_contract 
+        } => open_loot_box(
+            deps, 
+            &env, 
+            loot_box_id, 
+            loot_box_contract, 
+            open_lgnd_amount, 
+            open_nft_contract
+        ),
         HandleMsg::AddReceivingContracts { addresses } => {
             add_receiving_contracts(deps, &env, addresses)
         }
@@ -143,6 +159,34 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
     }
 
     result
+}
+
+fn open_loot_box<S: Storage, A: Api, Q: Querier>(
+    deps: &mut Extern<S, A, Q>,
+    env: &Env,
+    loot_box_id: String,
+    loot_box_contract: Contract,
+    open_lgnd_amount: Option<u128>,
+    open_nft_contract: Contract
+) -> StdResult<HandleResponse> {
+
+    if !open_nft_contract.address.is_empty() || !open_nft_contract.hash.is_empty() {
+        
+    }
+
+    if open_lgnd_amount.is_some() {
+
+    }
+
+    let message = change_nft_type(loot_box_contract, loot_box_id, 4)?;
+
+    Ok(HandleResponse {
+        messages: vec![message],
+        log: vec![],
+        data: Some(to_binary(&HandleAnswer::OpenLootBox {
+            status: ResponseStatus::Success,
+        })?),
+    })
 }
 
 pub fn query<S: Storage, A: Api, Q: Querier>(deps: &Extern<S, A, Q>, msg: QueryMsg) -> QueryResult {
