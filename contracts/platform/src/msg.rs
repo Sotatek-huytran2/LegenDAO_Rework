@@ -5,15 +5,18 @@ use secret_toolkit::permit::Permit;
 use secret_toolkit::serialization::Base64JsonOf;
 use secret_toolkit::utils::feature_toggle::{FeatureToggleHandleMsg, FeatureToggleQueryMsg};
 use secret_toolkit::utils::types::Contract;
+use serde::de::value::U128Deserializer;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, JsonSchema)]
 pub struct InitMsg {
     pub token: Contract,
     pub token_native_denom: String,
+    pub legen_dao_nft: Contract,
     pub unbonding_period: Option<u64>,
     pub receiving_contracts: Option<Vec<HumanAddr>>,
     pub viewing_key: String,
+    pub distribute_address: HumanAddr
 }
 
 #[derive(Deserialize, JsonSchema)]
@@ -40,9 +43,10 @@ pub enum HandleMsg {
     },
     OpenLootBox {
         loot_box_id: String,
-        loot_box_contract: Contract,
-        open_lgnd_amount: Option<u128>,
-        open_nft_contract: Contract
+        open_lgnd_amount: Uint128,
+        open_nft_contract: Option<Contract>,
+        open_nft_uri: Option<String>,
+        memo: Option<String>,
     },
 
 
@@ -263,3 +267,4 @@ pub enum ResponseStatus {
     Success,
     Failure,
 }
+

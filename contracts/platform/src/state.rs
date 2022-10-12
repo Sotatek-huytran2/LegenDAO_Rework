@@ -1,10 +1,12 @@
-use cosmwasm_std::{Env, HumanAddr, ReadonlyStorage, StdError, StdResult, Storage};
+use cosmwasm_std::{Env, HumanAddr, ReadonlyStorage, StdError, StdResult, Storage, WasmQuery, QueryRequest};
 use cosmwasm_storage::{PrefixedStorage, ReadonlyPrefixedStorage};
 use schemars::JsonSchema;
 use secret_toolkit::storage::{TypedStore, TypedStoreMut};
 use secret_toolkit::utils::types::Contract;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
+
+use crate::snip721::snip721_handle_msg::TokenTypeResponse;
 
 pub const SECONDS_IN_DAY: u64 = 60 * 60 * 24;
 
@@ -20,10 +22,13 @@ const PREFIX_TOTAL_BALANCE: &[u8] = b"total_balance";
 #[derive(Serialize, Deserialize, JsonSchema)]
 pub struct Config {
     pub admin: HumanAddr,
+    pub distribute_address: HumanAddr,
     pub token: Contract,
+    pub legen_dao_nft: Contract,
     pub native_token_denom: String,
     pub unbonding_period: u64,
     pub self_contract_addr: HumanAddr,
+    pub test: TokenTypeResponse,
 }
 
 impl Config {

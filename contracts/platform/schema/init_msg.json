@@ -3,11 +3,19 @@
   "title": "InitMsg",
   "type": "object",
   "required": [
+    "distribute_address",
+    "legen_dao_nft",
     "token",
     "token_native_denom",
     "viewing_key"
   ],
   "properties": {
+    "distribute_address": {
+      "$ref": "#/definitions/HumanAddr"
+    },
+    "legen_dao_nft": {
+      "$ref": "#/definitions/Contract"
+    },
     "receiving_contracts": {
       "type": [
         "array",

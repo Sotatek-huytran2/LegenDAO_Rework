@@ -4518,6 +4518,15 @@ fn burn_list<S: Storage, A: Api, Q: Querier>(
             // remove from maps
             let mut map2idx = PrefixedStorage::new(PREFIX_MAP_TO_INDEX, &mut deps.storage);
             remove(&mut map2idx, token_id.as_bytes());
+
+            // remove type from id
+            let mut mapid2type = PrefixedStorage::new(PREFIX_MAP_TO_TYPE, &mut deps.storage);
+            remove(&mut mapid2type, token_id.as_bytes());
+
+            // remove type from idx
+            let mut mapidx2type = PrefixedStorage::new(PREFIX_MAP_TO_IDXTYPE, &mut deps.storage);
+            remove(&mut mapidx2type, token_id.as_bytes());
+
             let mut map2id = PrefixedStorage::new(PREFIX_MAP_TO_ID, &mut deps.storage);
             remove(&mut map2id, &token_key);
             // remove the token info

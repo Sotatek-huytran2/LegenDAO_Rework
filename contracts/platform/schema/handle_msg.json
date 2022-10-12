@@ -100,27 +100,37 @@
         "open_loot_box": {
           "type": "object",
           "required": [
-            "loot_box_contract",
             "loot_box_id",
-            "open_nft_contract"
+            "open_lgnd_amount"
           ],
           "properties": {
-            "loot_box_contract": {
-              "$ref": "#/definitions/Contract"
-            },
             "loot_box_id": {
               "type": "string"
             },
-            "open_lgnd_amount": {
+            "memo": {
               "type": [
-                "integer",
+                "string",
                 "null"
-              ],
-              "format": "uint128",
-              "minimum": 0.0
+              ]
+            },
+            "open_lgnd_amount": {
+              "$ref": "#/definitions/Uint128"
             },
             "open_nft_contract": {
-              "$ref": "#/definitions/Contract"
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Contract"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "open_nft_uri": {
+              "type": [
+                "string",
+                "null"
+              ]
             }
           }
         }

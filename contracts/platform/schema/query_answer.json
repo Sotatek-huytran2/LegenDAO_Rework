@@ -52,8 +52,11 @@
       "type": "object",
       "required": [
         "admin",
+        "distribute_address",
+        "legen_dao_nft",
         "native_token_denom",
         "self_contract_addr",
+        "test",
         "token",
         "unbonding_period"
       ],
@@ -61,11 +64,20 @@
         "admin": {
           "$ref": "#/definitions/HumanAddr"
         },
+        "distribute_address": {
+          "$ref": "#/definitions/HumanAddr"
+        },
+        "legen_dao_nft": {
+          "$ref": "#/definitions/Contract"
+        },
         "native_token_denom": {
           "type": "string"
         },
         "self_contract_addr": {
           "$ref": "#/definitions/HumanAddr"
+        },
+        "test": {
+          "$ref": "#/definitions/TokenTypeResponse"
         },
         "token": {
           "$ref": "#/definitions/Contract"
@@ -179,6 +191,17 @@
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
+        }
+      }
+    },
+    "TokenTypeResponse": {
+      "type": "object",
+      "required": [
+        "token_id"
+      ],
+      "properties": {
+        "token_id": {
+          "type": "string"
         }
       }
     },

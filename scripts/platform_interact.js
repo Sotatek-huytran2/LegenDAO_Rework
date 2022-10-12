@@ -5,7 +5,8 @@ const OWNER_NFT_VK = "OWNER_NFT_VK"
 
 // secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0: testnet
 
-const NFT_ADDRESS = "secret199p24qyx23maqgsgt4ptujts309x5z4atfh5gg"
+const PLATFORM_ADDRESS = "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg"
+const STAKING_ADDRESS = "secret10tt7w554vsq3rrgs9uxsq3j8jjmnklhmgzuy4q"
 
 const USER_1_VK_ON_STAKING = "HUY_SOTA_VK_STAKING"
 
@@ -23,7 +24,7 @@ const main = async () => {
     // );
 
     const owner = new Wallet(
-        "live engage small salt donate memory admit sauce tenant ability beyond voyage"
+        "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway"
     );
 
     const myAddress = wallet.address;
@@ -46,75 +47,57 @@ const main = async () => {
         walletAddress: ownerAddress,
     });
 
-    const stakingCodeHash = await secretjsOwner.query.compute.contractCodeHash("secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe");
+    const stakingCodeHash = await secretjsOwner.query.compute.contractCodeHash(STAKING_ADDRESS);
+    const platformCodeHash = await secretjsOwner.query.compute.contractCodeHash(PLATFORM_ADDRESS);
 
-    // // transfer_nft
-    // const transfer_nft_msg = new MsgExecuteContract({
-    //     contractAddress: "secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0",
-    //     msg: {
-    //         transfer_nft: {
-    //             recipient: myAddress,
-    //             token_id: "LEGEN_DAO_1",
-    //             memo: undefined,
-    //             padding: undefined
-    //         }
-    //     },
-    //     codeHash: nftCodeHash,
-    //     sender: ownerAddress,
-    //     sentFunds: []
-    // })
-
-
-
-
-     // transfer_nft
-    const set_vk_msg = new MsgExecuteContract({
-        contractAddress: "secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe",
+    const add_receiving_msg = new MsgExecuteContract({
+        contractAddress: PLATFORM_ADDRESS,
         msg: {
-            set_viewing_key: {
-                key: USER_1_VK_ON_STAKING,
-                padding: null,
+            add_receiving_contracts: {
+                addresses: [
+                    STAKING_ADDRESS
+                ]
             }
         },
-        codeHash: stakingCodeHash,
+        codeHash: platformCodeHash,
         sender: ownerAddress,
         sentFunds: []
-    })
+    });
 
     // const tx = await secretjs.tx.broadcast([set_status_msg], {
     //     gasLimit: 800000
     //     // gasPriceInFeeDenom: 0.000625
     // });
 
-    // const tx = await secretjsOwner.tx.broadcast([set_vk_msg], {
-    //     gasLimit: 800000,
-    //     // gasPriceInFeeDenom: 0.000625
-    // });
+    const tx = await secretjsOwner.tx.broadcast([add_receiving_msg], {
+        gasLimit: 800000,
+        // gasPriceInFeeDenom: 0.000625
+    });
 
-    // console.log(tx);
+    console.log(tx);
 
     // ================================================================== QUERY ==================================================================
 
 
-    const total_locked = {}
+    // const total_locked = {}
 
-    const balance = {
-        address: ownerAddress,
-        key: USER_1_VK_ON_STAKING,
-    }
+    // const balance = {
+    //     address: ownerAddress,
+    //     key: USER_1_VK_ON_STAKING,
+    // }
 
 
-    const config = await secretjsOwner.query.compute.queryContract(
-        {
-            contractAddress: "secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe", 
-            codeHash: stakingCodeHash, 
-            query: {
-                total_locked
-            }
-        }
-    );
+    // const config = await secretjsOwner.query.compute.queryContract(
+    //     {
+    //         contractAddress: "secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe", 
+    //         codeHash: stakingCodeHash, 
+    //         query: {
+    //             total_locked
+    //         }
+    //     }
+    // );
 
-    console.log("config: ", config);
+    // console.log("config: ", config);
 }
 
 main()

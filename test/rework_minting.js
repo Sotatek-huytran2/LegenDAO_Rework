@@ -26,6 +26,10 @@ const USER_1_VK_SNIP_721 = "USER_1_VK_SNIP_721"
 
 const AMOUNT_STAKE = new BigNumber(3).multipliedBy(new BigNumber(10).pow(6));
 
+const DISTRIBUTE_AMOUNT = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6));
+
+const USER_1_INIT = new BigNumber(10).multipliedBy(new BigNumber(10).pow(6));
+
 describe("Minting", () => {
 
     async function setup() {
@@ -39,6 +43,7 @@ describe("Minting", () => {
         const snip20_token = new Contract("snip20");
         const platform = new Contract("platform");
         const snip721_token = new Contract("snip721");
+        const snip721_other_token = new Contract("snip721");
         const nft_minting = new Contract("minter-contract");
 
 
@@ -53,6 +58,11 @@ describe("Minting", () => {
         });
 
         const deploy_response_snip721 = await snip721_token.deploy(contract_owner, {
+            amount: [{ amount: "750000", denom: "uscrt" }],
+            gas: "4000000",
+        });
+
+        const deploy_response_snip721_other = await snip721_other_token.deploy(contract_owner, {
             amount: [{ amount: "750000", denom: "uscrt" }],
             gas: "4000000",
         });
@@ -78,7 +88,7 @@ describe("Minting", () => {
             decimals: 6,
             initial_balances: [
                 { address: contract_owner.account.address, amount: "1000000000000" },
-                { address: user_1.account.address, amount: "1000000000000" },
+                { address: user_1.account.address, amount: USER_1_INIT },
             ],
             config: {
                 public_total_supply: true,
@@ -98,6 +108,36 @@ describe("Minting", () => {
         );
 
 
+        // SNIP 721
+        // ==================================================================================
+
+
+        const snip721InitMsg = {
+            name: "LegenDAO NFT",
+            entropy: "LEGENDAO_ENTROPY",
+            symbol: "NFT",
+            config: {
+                public_token_supply: true,
+                enable_burn: true,
+            }
+        }
+
+
+        const rep_snip721 = await snip721_token.instantiate(
+            snip721InitMsg,
+            snip721_label,
+            contract_owner
+        );
+
+
+        const rep_snip721_other = await snip721_other_token.instantiate(
+            snip721InitMsg,
+            snip721_label,
+            contract_owner
+        );
+
+
+        // Plat form
         // ==================================================================================
 
         const platformInitMsg = {
@@ -105,6 +145,11 @@ describe("Minting", () => {
                 address: resp_snip20.contractAddress,
                 hash: deploy_response_snip20.contractCodeHash,
             },
+            legen_dao_nft: {
+                address: rep_snip721.contractAddress,
+                hash: deploy_response_snip721.contractCodeHash,
+            },
+            distribute_address: contract_owner.account.address,
             token_native_denom: process.env.LGND_NATIVE,
             viewing_key: PLATFORM_VK_LGND,
         };
@@ -115,27 +160,6 @@ describe("Minting", () => {
             platform_label,
             contract_owner
         );
-
-
-
-
-        // SNIP 721
-        // ==================================================================================
-
-
-        const snip721InitMsg = {
-            name: "LegenDAO NFT",
-            entropy: "LEGENDAO_ENTROPY",
-            symbol: "NFT"
-        }
-
-
-        await snip721_token.instantiate(
-            snip721InitMsg,
-            snip721_label,
-            contract_owner
-        );
-
 
 
         // // NFT MINTING
@@ -187,6 +211,9 @@ describe("Minting", () => {
             }
         );
 
+
+        
+
         await nft_minting.executeMsg(
             "changing_minting_state",
             {
@@ -230,6 +257,17 @@ describe("Minting", () => {
         );
 
         await snip20_token.executeMsg(
+            "increase_allowance",
+            {
+                "amount": `${DISTRIBUTE_AMOUNT.toFixed()}`,
+                "spender": platform.contractAddress,
+                "expiration": null,
+                "padding": null
+            },
+            contract_owner
+        );
+
+        await snip20_token.executeMsg(
             "set_viewing_key",
             {
                 "key": USER_1_VK_LGND,
@@ -256,6 +294,34 @@ describe("Minting", () => {
             }
         );
 
+        await snip721_other_token.executeMsg(
+            "set_viewing_key",
+            {
+                "key": USER_1_VK_SNIP_721,
+                "padding": null
+            },
+            user_1,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
+
+        await snip721_other_token.executeMsg(
+            "add_minters",
+            {
+                "minters": [platform.contractAddress, nft_minting.contractAddress],
+                "padding": null
+            },
+            contract_owner,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
+        );
+
         await snip721_token.executeMsg(
             "set_viewing_key",
             {
@@ -273,7 +339,7 @@ describe("Minting", () => {
         await snip721_token.executeMsg(
             "add_minters",
             {
-                "minters": [contract_owner.account.address, nft_minting.contractAddress, user_1.account.address],
+                "minters": [platform.contractAddress, nft_minting.contractAddress],
                 "padding": null
             },
             contract_owner,
@@ -284,13 +350,36 @@ describe("Minting", () => {
             }
         );
 
-        return { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash, snip721_code_hash };
+        return { 
+            snip20_token, 
+            platform, 
+            snip721_token,
+            snip721_other_token, 
+            nft_minting, 
+            contract_owner, 
+            user_1, 
+            user_2, 
+            platform_code_hash, 
+            nft_minting_code_hash, 
+            snip721_code_hash };
     }
 
     describe("Deploy", async function () {
 
         it("Should deposit successful", async () => {
-            const { snip20_token, platform, snip721_token, nft_minting, contract_owner, user_1, user_2, platform_code_hash, nft_minting_code_hash, snip721_code_hash } = await setup();
+            const { 
+                snip20_token, 
+                platform, 
+                snip721_token, 
+                snip721_other_token, 
+                nft_minting, 
+                contract_owner, 
+                user_1, 
+                user_2, 
+                platform_code_hash, 
+                nft_minting_code_hash, 
+                snip721_code_hash 
+            } = await setup();
 
             const msg_deposit = {
                 deposit: {
@@ -482,19 +571,19 @@ describe("Minting", () => {
             console.log(second_nft_type)
             console.log(third_nft_type)
 
-            await snip721_token.executeMsg(
-                "set_token_type",
-                {
-                    "token_id": first_nft.toString(),
-                    "new_type": 2
-                },
-                user_1,
-                undefined,
-                { // custom fees
-                    amount: [{ amount: "750000", denom: "uscrt" }],
-                    gas: "3000000",
-                }
-            );
+            // await snip721_token.executeMsg(
+            //     "set_token_type",
+            //     {
+            //         "token_id": first_nft.toString(),
+            //         "new_type": 2
+            //     },
+            //     user_1,
+            //     undefined,
+            //     { // custom fees
+            //         amount: [{ amount: "750000", denom: "uscrt" }],
+            //         gas: "3000000",
+            //     }
+            // );
 
             // let first_nft_type_after_change = await snip721_token.queryMsg(
             //     "token_type",
@@ -506,19 +595,33 @@ describe("Minting", () => {
             // console.log(first_nft_type_after_change)
 
 
-            await platform.executeMsg(
-                "open_loot_box",
+            // let minter = await snip721_token.queryMsg(
+            //     "minters",
+            //     {
+
+            //     },
+            //     user_1,
+            //     undefined,
+            //     { // custom fees
+            //         amount: [{ amount: "750000", denom: "uscrt" }],
+            //         gas: "3000000",
+            //     }
+            // );
+
+            // console.log(minter)
+
+
+            await snip721_token.executeMsg(
+                "approve",
                 {
-                    "loot_box_id": first_nft.toString(),
-                    "loot_box_contract": {
-                        "address": snip721_token.contractAddress,
-                        "hash": snip721_code_hash
-                    },
-                    "open_lgnd_amount": 0,
-                    "open_nft_contract": {
-                        "address": undefined,
-                        "hash": undefined
-                    }
+                    /// address being granted the permission
+                    "spender": platform.contractAddress,
+                    /// id of the token that the spender can transfer
+                    "token_id": first_nft.toString(),
+                    /// optional expiration for this approval
+                    "expires": null,
+                    /// optional message length padding
+                    "padding": null
                 },
                 user_1,
                 undefined,
@@ -528,14 +631,89 @@ describe("Minting", () => {
                 }
             );
 
-            let first_nft_type_after = await snip721_token.queryMsg(
-                "token_type",
+
+
+            await platform.executeMsg(
+                "open_loot_box",
                 {
-                    "token_id": first_nft.toString(),
+                    "loot_box_id": first_nft.toString(),
+                    "open_lgnd_amount": "0",
+                    "open_nft_contract": {
+                        //"address": snip721_token.contractAddress,
+                        "address": snip721_other_token.contractAddress,
+                        "hash": snip721_code_hash
+                    },
+                    "open_nft_uri": "https://bigdick.com/".concat(first_nft.toString())
+                },
+                user_1,
+                undefined,
+                { // custom fees
+                    amount: [{ amount: "750000", denom: "uscrt" }],
+                    gas: "3000000",
                 }
             );
 
-            console.log(first_nft_type_after)
+            // ================== CHECK INFO OF NFT WHEN OPEN LOOT BOX (Same collection) =================
+            // let first_nft_type_after = await snip721_token.queryMsg(
+            //     "token_type",
+            //     {
+            //         "token_id": first_nft.toString(),
+            //     }
+            // );
+
+            // console.log(first_nft_type_after)
+
+            // let first_nft_info_afterburn = await snip721_token.queryMsg(
+            //     "nft_info",
+            //     {
+            //         "token_id": first_nft.toString(),
+            //     }
+            // );
+
+            // console.log(first_nft_info_afterburn)
+
+            // ================== CHECK TYPE OF NFT WHEN OPEN LOOT BOX (Different collection) =================
+
+            
+            let allOtherToken = await snip721_other_token.queryMsg(
+                "tokens",
+                {
+                    "owner": user_1.account.address,
+                    "viewer": user_2.account.address,
+                    "viewing_key": USER_1_VK_SNIP_721,
+                    "start_after": undefined,
+                    "limit": undefined,
+                },
+            );
+
+            let other_nfts_number = allOtherToken.token_list.tokens.length;
+
+            expect(other_nfts_number).to.be.equal(1);
+
+            console.log(allOtherToken)
+
+            let first_nft_other = allOtherToken.token_list.tokens[0]
+
+            let first_nft_other_info = await snip721_other_token.queryMsg(
+                "nft_info",
+                {
+                    "token_id": first_nft_other.toString(),
+                }
+            );
+
+            console.log(first_nft_other_info);
+
+
+            let user_1_balance_after_open = await snip20_token.queryMsg(
+                "balance",
+                {
+                    "address": user_1.account.address,
+                    "key": USER_1_VK_LGND,
+                }
+            )
+
+            console.log(`=============================================== Balance of User after Open Loot Box: ${user_1_balance_after_open.balance.amount}`);
+
 
 
 

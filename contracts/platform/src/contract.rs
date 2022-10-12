@@ -1,3 +1,5 @@
+use std::vec;
+
 use crate::auto_claim::AutoClaims;
 use crate::constants::{PREFIX_REVOKED_PERMITS, RESPONSE_BLOCK_SIZE};
 use crate::msg::ResponseStatus::Success;
@@ -11,7 +13,7 @@ use crate::state::{
 use cosmwasm_std::{
     to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Env, Extern, HandleResponse, HandleResult,
     HumanAddr, InitResponse, InitResult, Querier, QueryResult, StdError, StdResult, Storage,
-    Uint128,
+    Uint128, QueryRequest::Wasm
 };
 use secret_toolkit::permit::{validate, Permit, RevokedPermits, TokenPermissions};
 use secret_toolkit::snip20;
@@ -21,7 +23,13 @@ use secret_toolkit::utils::feature_toggle::{
 use secret_toolkit::utils::types::Contract;
 use secret_toolkit::viewing_key::{ViewingKey, ViewingKeyStore};
 
-use crate::msgs::update_nft::change_nft_type;
+use crate::msgs::update_nft::{change_nft_type, burn_loot_box, change_nft_metadata};
+use crate::msgs::mint_nft::{mint_nft_msg};
+use crate::msgs::nft_info::{token_type};
+
+use crate::snip721::metadata::Metadata;
+
+use crate::snip721::snip721_handle_msg::TokenTypeResponse;
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -31,9 +39,14 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
     Config {
         admin: env.message.sender.clone(),
         token: msg.token.clone(),
+        legen_dao_nft: msg.legen_dao_nft.clone(),
         native_token_denom: msg.token_native_denom,
         unbonding_period: msg.unbonding_period.unwrap_or(SECONDS_IN_DAY * 21),
         self_contract_addr: env.contract.address,
+        distribute_address: msg.distribute_address.clone(),
+        test: TokenTypeResponse {
+            token_id: "0".to_string()
+        },
     }
     .save(&mut deps.storage)?;
 
@@ -108,16 +121,18 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
         ),
         HandleMsg::OpenLootBox { 
             loot_box_id, 
-            loot_box_contract, 
             open_lgnd_amount, 
-            open_nft_contract 
+            open_nft_contract,
+            open_nft_uri,
+            memo
         } => open_loot_box(
             deps, 
             &env, 
             loot_box_id, 
-            loot_box_contract, 
             open_lgnd_amount, 
-            open_nft_contract
+            open_nft_contract,
+            open_nft_uri,
+            memo
         ),
         HandleMsg::AddReceivingContracts { addresses } => {
             add_receiving_contracts(deps, &env, addresses)
@@ -165,23 +180,99 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
     env: &Env,
     loot_box_id: String,
-    loot_box_contract: Contract,
-    open_lgnd_amount: Option<u128>,
-    open_nft_contract: Contract
+    open_lgnd_amount: Uint128,
+    open_nft_contract: Option<Contract>,
+    open_nft_uri: Option<String>,
+    memo: Option<String>,
 ) -> StdResult<HandleResponse> {
 
-    if !open_nft_contract.address.is_empty() || !open_nft_contract.hash.is_empty() {
-        
+    let mut config = Config::get_unchecked(&deps.storage)?;
+    let mut messages = vec![];
+
+    // check if token id is Loot Box
+    let query_nft_type = token_type(config.legen_dao_nft.clone(), loot_box_id.clone())?;
+    let loot_box_type: TokenTypeResponse = deps.querier.custom_query(&query_nft_type)?;
+    
+    config.test = loot_box_type;
+
+    if open_nft_contract.is_some() {
+
+        let compare_nft_contract = open_nft_contract.clone();
+
+        if config.legen_dao_nft.eq(&compare_nft_contract.unwrap()) {
+            
+            let public_metadata = Some(
+                Metadata {
+                    //token_uri: Some(uri.clone()),
+                    token_uri: open_nft_uri,
+                    extension: None,
+                }
+            );
+            
+            // change metadata of nft
+            let change_meta_data_message = change_nft_metadata(
+                config.legen_dao_nft.clone(), 
+                loot_box_id.clone(), 
+                public_metadata, 
+                None, 
+                None)?;
+    
+            messages.push(change_meta_data_message);
+
+            // change type of nft
+            let change_message = change_nft_type(config.legen_dao_nft.clone(), loot_box_id, 2)?;
+            messages.push(change_message);
+        }
+        else {
+
+            let public_metadata = Some(
+                Metadata {
+                    //token_uri: Some(uri.clone()),
+                    token_uri: open_nft_uri,
+                    extension: None,
+                }
+            );
+
+            // mint nft of other collection to user
+            let mint_message = mint_nft_msg(
+                None, 
+                Some(env.message.sender.clone()),
+                public_metadata,
+                None,
+                None,
+                None,
+                RESPONSE_BLOCK_SIZE,
+                open_nft_contract.unwrap()
+            )?;
+
+            messages.push(mint_message);
+
+            // burn loot box of legenDAO collection
+            let change_message = burn_loot_box(config.legen_dao_nft.clone(), loot_box_id, None, None)?;
+            messages.push(change_message);
+        }
     }
 
-    if open_lgnd_amount.is_some() {
+    if open_lgnd_amount > Uint128(0) {
 
+        let send_msg = snip20::transfer_from_msg(
+            config.distribute_address.clone(),
+            env.message.sender.clone(),
+            open_lgnd_amount,
+            memo,
+            None,
+            RESPONSE_BLOCK_SIZE,
+            config.token.hash.clone(),
+            config.token.address.clone(),
+        )?;
+
+        messages.push(send_msg);
     }
 
-    let message = change_nft_type(loot_box_contract, loot_box_id, 4)?;
+    config.save(&mut deps.storage)?;
 
     Ok(HandleResponse {
-        messages: vec![message],
+        messages: messages,
         log: vec![],
         data: Some(to_binary(&HandleAnswer::OpenLootBox {
             status: ResponseStatus::Success,

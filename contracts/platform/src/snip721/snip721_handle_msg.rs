@@ -40,7 +40,35 @@ pub enum HandleMsg {
     SetTokenType {
         token_id: String,
         new_type: u8,
-    }
+    },
+    /// burn a token
+    BurnNft {
+        /// token to burn
+        token_id: String,
+        /// optional memo for the tx
+        memo: Option<String>,
+        /// optional message length padding
+        padding: Option<String>,
+    },
+    /// set the public and/or private metadata.  This can be called by either the token owner or
+    /// a valid minter if they have been given this power by the appropriate config values
+    SetMetadata {
+        /// id of the token whose metadata should be updated
+        token_id: String,
+        /// the optional new public metadata
+        public_metadata: Option<Metadata>,
+        /// the optional new private metadata
+        private_metadata: Option<Metadata>,
+        /// optional message length padding
+        padding: Option<String>,
+    },
+}
+
+
+#[derive(Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum QueryMsg {
+    TokenType { token_id: String },
 }
 
 /// Serial number to give an NFT when minting
@@ -79,4 +107,9 @@ pub struct Mint {
     pub token_type: Option<u8>,
     /// optional memo for the tx
     pub memo: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, JsonSchema, Clone, Debug)]
+pub struct TokenTypeResponse {
+    pub token_id: String 
 }
