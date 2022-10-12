@@ -77,7 +77,7 @@
           "$ref": "#/definitions/HumanAddr"
         },
         "test": {
-          "$ref": "#/definitions/TokenTypeResponse"
+          "$ref": "#/definitions/TokenTypeRespone"
         },
         "token": {
           "$ref": "#/definitions/Contract"
@@ -194,14 +194,16 @@
         }
       }
     },
-    "TokenTypeResponse": {
+    "TokenTypeRespone": {
       "type": "object",
       "required": [
-        "token_id"
+        "token_type"
       ],
       "properties": {
-        "token_id": {
-          "type": "string"
+        "token_type": {
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
         }
       }
     },

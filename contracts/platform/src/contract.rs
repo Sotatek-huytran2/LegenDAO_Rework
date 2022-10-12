@@ -29,7 +29,7 @@ use crate::msgs::nft_info::{token_type};
 
 use crate::snip721::metadata::Metadata;
 
-use crate::snip721::snip721_handle_msg::TokenTypeResponse;
+use crate::snip721::snip721_handle_msg::{TokenTypeRespone};
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -44,8 +44,8 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         unbonding_period: msg.unbonding_period.unwrap_or(SECONDS_IN_DAY * 21),
         self_contract_addr: env.contract.address,
         distribute_address: msg.distribute_address.clone(),
-        test: TokenTypeResponse {
-            token_id: "0".to_string()
+        test: TokenTypeRespone {
+            token_type: 0
         },
     }
     .save(&mut deps.storage)?;
@@ -191,7 +191,7 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
 
     // check if token id is Loot Box
     let query_nft_type = token_type(config.legen_dao_nft.clone(), loot_box_id.clone())?;
-    let loot_box_type: TokenTypeResponse = deps.querier.custom_query(&query_nft_type)?;
+    let loot_box_type: TokenTypeRespone = deps.querier.custom_query(&query_nft_type)?;
     
     config.test = loot_box_type;
 

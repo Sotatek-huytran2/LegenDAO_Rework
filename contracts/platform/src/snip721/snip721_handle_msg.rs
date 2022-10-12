@@ -68,7 +68,9 @@ pub enum HandleMsg {
 #[derive(Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
-    TokenType { token_id: String },
+    TokenType {
+        token_id: String,
+    },
 }
 
 /// Serial number to give an NFT when minting
@@ -110,6 +112,6 @@ pub struct Mint {
 }
 
 #[derive(Serialize, Deserialize, JsonSchema, Clone, Debug)]
-pub struct TokenTypeResponse {
-    pub token_id: String 
+pub struct TokenTypeRespone {
+    pub token_type: u8,
 }

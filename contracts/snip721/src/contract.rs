@@ -2233,7 +2233,7 @@ pub fn query_token_type<S: ReadonlyStorage>(storage: &S, token_id: &str) -> Quer
     let map2type = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_TYPE, storage);
     let token_type: u8 = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
 
-    return to_binary(&QueryAnswer::TokenType {
+    return to_binary(&QueryAnswer::TokenTypeRespone {
         token_type: token_type,
     });
     

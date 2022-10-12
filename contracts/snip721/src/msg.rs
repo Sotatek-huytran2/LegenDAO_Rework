@@ -876,7 +876,7 @@ pub enum QueryAnswer {
         private_metadata_is_public_expiration: Option<Expiration>,
         inventory_approvals: Vec<Snip721Approval>,
     },
-    TokenType {
+    TokenTypeRespone {
         token_type: u8,
     },
     NftInfo {
