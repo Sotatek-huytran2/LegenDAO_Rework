@@ -833,7 +833,7 @@ pub struct Cw721OwnerOfResponse {
     pub approvals: Vec<Cw721Approval>,
 }
 
-#[derive(Serialize, Deserialize, JsonSchema, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryAnswer {
     ContractInfo {
@@ -1052,4 +1052,10 @@ pub enum QueryWithPermit {
         /// optional number of token ids to display
         limit: Option<u32>,
     },
+}
+
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct TokenTypeRespone {
+    pub token_type: u8
 }

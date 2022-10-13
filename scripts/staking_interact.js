@@ -64,9 +64,6 @@ const main = async () => {
     //     sentFunds: []
     // })
 
-
-
-
      // transfer_nft
     const set_vk_msg = new MsgExecuteContract({
         contractAddress: "secret1f4nnvjy7d3u07xdpjud50n4lms6xrqpzn28khe",

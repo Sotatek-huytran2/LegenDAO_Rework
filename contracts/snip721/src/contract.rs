@@ -20,7 +20,7 @@ use crate::mint_run::{SerialNumber, StoredMintRunInfo};
 use crate::msg::{
     AccessLevel, Burn, ContractStatus, Cw721Approval, Cw721OwnerOfResponse, HandleAnswer,
     HandleMsg, InitMsg, Mint, QueryAnswer, QueryMsg, QueryWithPermit, ReceiverInfo,
-    ResponseStatus::Success, Send, Snip721Approval, Transfer, ViewerInfo,
+    ResponseStatus::Success, Send, Snip721Approval, Transfer, ViewerInfo, TokenTypeRespone
 };
 use crate::rand::sha_256;
 use crate::receiver::{batch_receive_nft_msg, receive_nft_msg};
@@ -2233,9 +2233,13 @@ pub fn query_token_type<S: ReadonlyStorage>(storage: &S, token_id: &str) -> Quer
     let map2type = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_TYPE, storage);
     let token_type: u8 = may_load(&map2type, token_id.as_bytes())?.ok_or_else(|| StdError::generic_err("not_found"))?;
 
-    return to_binary(&QueryAnswer::TokenTypeRespone {
+    return to_binary(&TokenTypeRespone {
         token_type: token_type,
     });
+
+    // return to_binary(&QueryAnswer::TokenTypeRespone {
+    //     token_type: token_type,
+    // });
     
     // let map2idx = ReadonlyPrefixedStorage::new(PREFIX_MAP_TO_INDEX, storage);
     // let may_idx: Option<u32> = may_load(&map2idx, token_id.as_bytes())?;
@@ -4519,7 +4523,7 @@ fn burn_list<S: Storage, A: Api, Q: Querier>(
             let mut map2idx = PrefixedStorage::new(PREFIX_MAP_TO_INDEX, &mut deps.storage);
             remove(&mut map2idx, token_id.as_bytes());
 
-            // remove type from id
+            // remove type  from id
             let mut mapid2type = PrefixedStorage::new(PREFIX_MAP_TO_TYPE, &mut deps.storage);
             remove(&mut mapid2type, token_id.as_bytes());
 

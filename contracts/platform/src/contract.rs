@@ -5,7 +5,7 @@ use crate::constants::{PREFIX_REVOKED_PERMITS, RESPONSE_BLOCK_SIZE};
 use crate::msg::ResponseStatus::Success;
 use crate::msg::{
     Deposit, HandleAnswer, HandleMsg, InitMsg, PlatformApi, QueryAnswer, QueryMsg, QueryWithPermit,
-    ReceiveMsg, ResponseStatus,
+    ReceiveMsg, ResponseStatus, VerifyResponse
 };
 use crate::state::{
     BalanceChange, Balances, Config, Features, ReceivingContracts, TotalBalances, SECONDS_IN_DAY,
@@ -13,7 +13,7 @@ use crate::state::{
 use cosmwasm_std::{
     to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Env, Extern, HandleResponse, HandleResult,
     HumanAddr, InitResponse, InitResult, Querier, QueryResult, StdError, StdResult, Storage,
-    Uint128, QueryRequest::Wasm
+    Uint128, QueryRequest, Empty, 
 };
 use secret_toolkit::permit::{validate, Permit, RevokedPermits, TokenPermissions};
 use secret_toolkit::snip20;
@@ -25,11 +25,17 @@ use secret_toolkit::viewing_key::{ViewingKey, ViewingKeyStore};
 
 use crate::msgs::update_nft::{change_nft_type, burn_loot_box, change_nft_metadata};
 use crate::msgs::mint_nft::{mint_nft_msg};
-use crate::msgs::nft_info::{token_type};
+use crate::msgs::nft_info::{get_token_type};
 
 use crate::snip721::metadata::Metadata;
 
 use crate::snip721::snip721_handle_msg::{TokenTypeRespone};
+
+
+use crate::ethereum::{get_recovery_param, decode_address, ethereum_address_raw};
+
+use sha3::{Keccak256, Digest};
+use std::ops::Deref;
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -124,6 +130,9 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_lgnd_amount, 
             open_nft_contract,
             open_nft_uri,
+            message,
+            signature,
+            signer_address,
             memo
         } => open_loot_box(
             deps, 
@@ -132,6 +141,9 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_lgnd_amount, 
             open_nft_contract,
             open_nft_uri,
+            message.as_str(),
+            signature,
+            signer_address.as_str(),
             memo
         ),
         HandleMsg::AddReceivingContracts { addresses } => {
@@ -183,17 +195,114 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
     open_lgnd_amount: Uint128,
     open_nft_contract: Option<Contract>,
     open_nft_uri: Option<String>,
+    message: &str,
+    signature: Binary,
+    signer_address: &str,
     memo: Option<String>,
 ) -> StdResult<HandleResponse> {
 
-    let mut config = Config::get_unchecked(&deps.storage)?;
+    // ============ Verify Signature
+    let signature_u8 = signature.as_slice();
+
+    let signer_address = decode_address(signer_address)?;
+
+    // Hashing
+    let mut hasher = Keccak256::new();
+    hasher.update(format!("\x19Ethereum Signed Message:\n{}", message.len()));
+    hasher.update(message);
+    let hash = hasher.finalize();
+
+    // Decompose signature
+    let (v, rs) = match signature_u8.split_last() {
+        Some(pair) => pair,
+        None => return Err(StdError::generic_err("Signature must not be empty")),
+    };
+    let recovery = get_recovery_param(*v)?;
+
+    // Verification
+    let calculated_pubkey = deps.api.secp256k1_recover_pubkey(&hash, rs, recovery);
+
+    // if let Err(err) = calculated_pubkey {
+    //     return Err(StdError::generic_err(format!(
+    //         "{}", err
+    //     )));
+    // }
+
+    match calculated_pubkey {
+        Ok(pubkey_ok) => {
+            let calculated_address = ethereum_address_raw(&pubkey_ok)?;
+            if signer_address != calculated_address {
+                return Err(StdError::generic_err(format!(
+                    "Wrong signature",
+                )));
+            }
+    
+            let result = deps.api.secp256k1_verify(&hash, rs, &pubkey_ok);
+
+            if let Err(err) = result {
+                return Err(StdError::generic_err(format!(
+                    "{}", err
+                )));
+            }
+        },
+        Err(err) => {
+            return Err(StdError::generic_err(format!(
+            "{}", err)));
+        }
+    }
+
+    // // using if let
+    // if let Ok(kok) = calculated_pubkey {
+    //     let calculated_address = ethereum_address_raw(&kok)?;
+    //     if signer_address != calculated_address {
+    //         return Err(StdError::generic_err(format!(
+    //             "Wrong signature",
+    //         )));
+    //     }
+    
+    //     let result = deps.api.secp256k1_verify(&hash, rs, &kok);
+
+    //     if let Err(err) = result {
+    //         return Err(StdError::generic_err(format!(
+    //             "{}", err
+    //         )));
+    //     }
+    // }
+    // else {
+    //     return Err(StdError::generic_err(format!(
+    //         "{}", err
+    //     )));
+    // }
+
+    // let calculated_address = ethereum_address_raw(&calculated_pubkey)?;
+    // if signer_address != calculated_address {
+    //     return Err(StdError::generic_err(format!(
+    //         "Wrong signature",
+    //     )));
+    // }
+    
+    // let result = deps.api.secp256k1_verify(&hash, rs, &calculated_pubkey);
+
+    // if let Err(err) = result {
+    //     return Err(StdError::generic_err(format!(
+    //         "{}", err
+    //     )));
+    // }
+
+    // ============ Verify Signature
+
+    let config = Config::get_unchecked(&deps.storage)?;
     let mut messages = vec![];
 
     // check if token id is Loot Box
-    let query_nft_type = token_type(config.legen_dao_nft.clone(), loot_box_id.clone())?;
-    let loot_box_type: TokenTypeRespone = deps.querier.custom_query(&query_nft_type)?;
+    let query_nft_type = get_token_type(config.legen_dao_nft.clone(), loot_box_id.clone())?;
+    let result_nft_type: TokenTypeRespone = deps.querier.query(&query_nft_type)?;
     
-    config.test = loot_box_type;
+    if result_nft_type.token_type != 3 {
+        return Err(StdError::generic_err(format!(
+            "Only lootbox can be open",
+        )));
+    }
 
     if open_nft_contract.is_some() {
 
@@ -268,8 +377,6 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
 
         messages.push(send_msg);
     }
-
-    config.save(&mut deps.storage)?;
 
     Ok(HandleResponse {
         messages: messages,

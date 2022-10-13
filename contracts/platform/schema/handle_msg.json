@@ -101,7 +101,10 @@
           "type": "object",
           "required": [
             "loot_box_id",
-            "open_lgnd_amount"
+            "message",
+            "open_lgnd_amount",
+            "signature",
+            "signer_address"
           ],
           "properties": {
             "loot_box_id": {
@@ -112,6 +115,10 @@
                 "string",
                 "null"
               ]
+            },
+            "message": {
+              "description": "Message to verify. This will be wrapped in the standard container `\"\\x19Ethereum Signed Message:\\n\" + len(message) + message` before verification.",
+              "type": "string"
             },
             "open_lgnd_amount": {
               "$ref": "#/definitions/Uint128"
@@ -131,6 +138,18 @@
                 "string",
                 "null"
               ]
+            },
+            "signature": {
+              "description": "Serialized signature. Fixed length format (64 bytes `r` and `s` plus the one byte `v`).",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/Binary"
+                }
+              ]
+            },
+            "signer_address": {
+              "description": "Signer address. This is matched case insensitive, so you can provide checksummed and non-checksummed addresses. Checksums are not validated.",
+              "type": "string"
             }
           }
         }

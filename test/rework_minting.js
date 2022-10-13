@@ -117,7 +117,7 @@ describe("Minting", () => {
             entropy: "LEGENDAO_ENTROPY",
             symbol: "NFT",
             config: {
-                public_token_supply: true,
+                //public_token_supply: true,
                 enable_burn: true,
             }
         }
@@ -211,8 +211,6 @@ describe("Minting", () => {
             }
         );
 
-
-        
 
         await nft_minting.executeMsg(
             "changing_minting_state",
@@ -617,7 +615,7 @@ describe("Minting", () => {
                     /// address being granted the permission
                     "spender": platform.contractAddress,
                     /// id of the token that the spender can transfer
-                    "token_id": first_nft.toString(),
+                    "token_id": third_nft.toString(),
                     /// optional expiration for this approval
                     "expires": null,
                     /// optional message length padding
@@ -631,19 +629,17 @@ describe("Minting", () => {
                 }
             );
 
-
-
             await platform.executeMsg(
                 "open_loot_box",
                 {
-                    "loot_box_id": first_nft.toString(),
+                    "loot_box_id": third_nft.toString(),
                     "open_lgnd_amount": "0",
                     "open_nft_contract": {
                         //"address": snip721_token.contractAddress,
                         "address": snip721_other_token.contractAddress,
                         "hash": snip721_code_hash
                     },
-                    "open_nft_uri": "https://bigdick.com/".concat(first_nft.toString())
+                    "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString())
                 },
                 user_1,
                 undefined,
@@ -702,6 +698,15 @@ describe("Minting", () => {
             );
 
             console.log(first_nft_other_info);
+
+            let plt_config = await platform.queryMsg(
+                "config",
+                {
+                
+                }
+            );
+
+            console.log(plt_config);
 
 
             let user_1_balance_after_open = await snip20_token.queryMsg(

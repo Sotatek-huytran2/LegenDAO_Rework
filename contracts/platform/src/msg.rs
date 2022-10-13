@@ -8,6 +8,8 @@ use secret_toolkit::utils::types::Contract;
 use serde::de::value::U128Deserializer;
 use serde::{Deserialize, Serialize};
 
+//se cosmwasm_schema::{cw_serde, QueryResponses};
+
 #[derive(Deserialize, JsonSchema)]
 pub struct InitMsg {
     pub token: Contract,
@@ -46,6 +48,14 @@ pub enum HandleMsg {
         open_lgnd_amount: Uint128,
         open_nft_contract: Option<Contract>,
         open_nft_uri: Option<String>,
+        /// Message to verify. This will be wrapped in the standard container
+        /// `"\x19Ethereum Signed Message:\n" + len(message) + message` before verification.
+        message: String,
+        /// Serialized signature. Fixed length format (64 bytes `r` and `s` plus the one byte `v`).
+        signature: Binary,
+        /// Signer address.
+        /// This is matched case insensitive, so you can provide checksummed and non-checksummed addresses. Checksums are not validated.
+        signer_address: String,
         memo: Option<String>,
     },
 
@@ -133,9 +143,12 @@ pub enum HandleAnswer {
     ChangeConfig { status: ResponseStatus },
 }
 
-#[derive(Deserialize, JsonSchema)]
+#[derive(Deserialize, Serialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
+    TokenType {
+        token_id: String,
+    },
     Config {},
     /// Number of withdraws pending to be claimed (both unbonding and claimable)
     NumOfPendingClaims {},
@@ -150,7 +163,7 @@ pub enum QueryMsg {
         key: String,
     },
 
-    // Permits
+    // Permits  
     /// Permit queries. See more: [Permits API](https://github.com/SecretFoundation/SNIPs/blob/master/SNIP-24.md)
     WithPermit {
         permit: Permit,
@@ -247,7 +260,7 @@ impl QueryMsg {
     }
 }
 
-#[derive(Deserialize, JsonSchema)]
+#[derive(Deserialize, Serialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryWithPermit {
     /// Balance of an account (the account that signed the permit). Same as QueryMsg::Balance
@@ -268,3 +281,6 @@ pub enum ResponseStatus {
     Failure,
 }
 
+pub struct VerifyResponse {
+    pub verifies: bool,
+}

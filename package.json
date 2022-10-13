@@ -8,10 +8,13 @@
     "chai": "^4.3.4",
     "json-schema-to-typescript": "^10.1.5",
     "mongoose": "^6.1.6",
+    "secp256k1": "^4.0.3",
     "secret-polar-reworks": "0.1.8",
     "secretjs": "1.4.0-alpha.10"
   },
   "devDependencies": {
+    "@terra-money/core": "^2.0.9",
+    "@terra-money/terra.js": "^3.1.7",
     "assert": "^2.0.0",
     "axios": "^0.26.1",
     "bignumber.js": "^9.1.0",

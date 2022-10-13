@@ -1,11 +1,16 @@
 const { Wallet, getMsgDecoderRegistry, MsgExecuteContract, MsgSnip20Send, MsgSnip20Transfer, SecretNetworkClient } = require("secretjs");
 
+const { BigNumber } = require('bignumber.js');
 
 const OWNER_NFT_VK = "OWNER_NFT_VK"
 
 // secret1j5e8yyzljq9c78tjlshtvefz8fslzupfy5l6r0: testnet
 
-const NFT_ADDRESS = "secret1lus0l4aaa0p4wfudq02d7epqcrv36pxmnwy5ku"
+
+const PLATFORM_ADDRESS = "secret1dcdvruu9r87weary8z9rdztyjzua7n8g4j5gdh"
+const MINTING_ADDRESS = "secret1vxf87arx93zsm4hxkqp6nys3kr35r2r406qkzp"
+const SNIP20_ADDRESS = "secret16xlsf4qz05ylyamstqudqppwpzy4hp4hre6sdg"
+const NFT_ADDRESS = "secret1vs79386n0d0qqsv8nr6n8mypmk0tsc5lfgq7v5"
 
 const main = async () => {
     // const grpcWebUrl = " https://secret-4.api.trivium.network:1317";
@@ -56,6 +61,7 @@ const main = async () => {
         chainId: "pulsar-2",
         wallet: owner,
         walletAddress: ownerAddress,
+        //encryptionSeed: 
     });
 
 
@@ -74,10 +80,12 @@ const main = async () => {
     //     } 
     // );
 
-    // const codeHash = await secretjs.query.compute.contractCodeHash("secret18y59n8z3frrslek52tkkq6t9yk76cdp57wztn9");
-    // const platformCodeHash = await secretjs.query.compute.contractCodeHash("secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg");
-    // const stakingCodeHash = await secretjs.query.compute.contractCodeHash("secret1lnk3x8q06nckmprptchh238gshzskkvjht0c8f");
-
+    
+    const platformCodeHash = await secretjsOwner.query.compute.contractCodeHash(PLATFORM_ADDRESS);
+    const mintingCodeHash = await secretjsOwner.query.compute.contractCodeHash(MINTING_ADDRESS);
+    const snip20CodeHash = await secretjsOwner.query.compute.contractCodeHash(SNIP20_ADDRESS);
+    const sip721CodeHash = await secretjsOwner.query.compute.contractCodeHash(NFT_ADDRESS);
+    
     // const msg_deposit = {
     //     deposit: {
     //         to: wallet.address
@@ -152,19 +160,19 @@ const main = async () => {
     //     sentFunds: []
     // })
 
-    // const add_receiving_msg = new MsgExecuteContract({
-    //     contractAddress: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
-    //     msg: {
-    //         add_receiving_contracts: {
-    //             addresses: [
-    //                 "secret1lnk3x8q06nckmprptchh238gshzskkvjht0c8f"
-    //             ]
-    //         }
-    //     },
-    //     codeHash: platformCodeHash,
-    //     sender: myAddress,
-    //     sentFunds: []
-    // });
+    const add_receiving_msg = new MsgExecuteContract({
+        contractAddress: PLATFORM_ADDRESS,
+        msg: {
+            add_receiving_contracts: {
+                addresses: [
+                    MINTING_ADDRESS
+                ]
+            }
+        },
+        codeHash: platformCodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    });
 
     // const withdraw_msg = new MsgExecuteContract({
     //     contractAddress: "secret1lnk3x8q06nckmprptchh238gshzskkvjht0c8f",
@@ -312,12 +320,100 @@ const main = async () => {
         sentFunds: []
     })
 
+    const add_minter_msg = new MsgExecuteContract({
+        contractAddress: NFT_ADDRESS,
+        msg: {
+            add_minters: {
+                minters: [PLATFORM_ADDRESS, MINTING_ADDRESS],
+                padding: undefined
+            }
+        },
+        codeHash: nftCodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    })
+
+    //  ================================================== MINTING CONTRACT INTERACT 
+
+    const change_minting_state_msg = new MsgExecuteContract({
+        contractAddress: MINTING_ADDRESS,
+        msg: {
+            changing_minting_state: {
+                mint_state: 3,
+                cap_amount: undefined
+            }
+        },
+        codeHash: mintingCodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    })
+
+
+    // ========================================== SNIP 20 interact
+
+    const AMOUNT_MINT = new BigNumber(3).multipliedBy(new BigNumber(10).pow(6));
+
+    const msg_deposit = {
+        deposit: {
+            to: ownerAddress
+        }
+    }
+
+
+    const send_token_to_platform_msg = new MsgExecuteContract({
+        contractAddress: SNIP20_ADDRESS,
+        msg: {
+            send: {
+                "recipient": PLATFORM_ADDRESS,
+                "recipient_code_hash": platformCodeHash,
+                "amount": AMOUNT_MINT.toFixed(),
+                "msg": Buffer.from(JSON.stringify(msg_deposit)).toString("base64"),
+                "memo": "",
+                "padding": null,
+            }
+        },
+        codeHash: snip20CodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    })
+
+
+    //  ================================================== PLATFORM CONTRACT INTERACT 
+
+    
+
+    const platform_deposit_minting = {
+        mint: {
+            mint_for: ownerAddress,
+            amount_avatar_to_mint: 1,
+            amount_loot_box_to_mint: 1,
+            amount_item_to_mint: 1,
+        },
+    }
+
+
+    const mint_from_paltform_msg = new MsgExecuteContract({
+        contractAddress: PLATFORM_ADDRESS,
+        msg: {
+            send_from_platform: {
+                contract_addr: MINTING_ADDRESS,
+                amount: AMOUNT_MINT.toFixed(),
+                msg: Buffer.from(JSON.stringify(platform_deposit_minting)).toString("base64"),
+                memo: "",
+            }
+        },
+        codeHash: platformCodeHash,
+        sender: ownerAddress,
+        sentFunds: []
+    })
+
+
     // const tx = await secretjs.tx.broadcast([set_status_msg], {
     //     gasLimit: 800000
     //     // gasPriceInFeeDenom: 0.000625
     // });
 
-    const tx = await secretjsOwner.tx.broadcast([batch_transfer_nft_msg], {
+    const tx = await secretjsOwner.tx.broadcast([mint_from_paltform_msg], {
         gasLimit: 8000000,
         // gasPriceInFeeDenom: 0.000625
     });
