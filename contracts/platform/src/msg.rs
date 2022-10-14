@@ -18,7 +18,8 @@ pub struct InitMsg {
     pub unbonding_period: Option<u64>,
     pub receiving_contracts: Option<Vec<HumanAddr>>,
     pub viewing_key: String,
-    pub distribute_address: HumanAddr
+    pub distribute_address: HumanAddr,
+    pub signer_address: Binary
 }
 
 #[derive(Deserialize, JsonSchema)]
@@ -48,14 +49,8 @@ pub enum HandleMsg {
         open_lgnd_amount: Uint128,
         open_nft_contract: Option<Contract>,
         open_nft_uri: Option<String>,
-        /// Message to verify. This will be wrapped in the standard container
-        /// `"\x19Ethereum Signed Message:\n" + len(message) + message` before verification.
-        message: String,
-        /// Serialized signature. Fixed length format (64 bytes `r` and `s` plus the one byte `v`).
+        message: Binary,
         signature: Binary,
-        /// Signer address.
-        /// This is matched case insensitive, so you can provide checksummed and non-checksummed addresses. Checksums are not validated.
-        signer_address: String,
         memo: Option<String>,
     },
 

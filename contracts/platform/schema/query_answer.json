@@ -48,6 +48,10 @@
     }
   ],
   "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+      "type": "string"
+    },
     "Config": {
       "type": "object",
       "required": [
@@ -56,7 +60,7 @@
         "legen_dao_nft",
         "native_token_denom",
         "self_contract_addr",
-        "test",
+        "signer_address",
         "token",
         "unbonding_period"
       ],
@@ -76,8 +80,8 @@
         "self_contract_addr": {
           "$ref": "#/definitions/HumanAddr"
         },
-        "test": {
-          "$ref": "#/definitions/TokenTypeRespone"
+        "signer_address": {
+          "$ref": "#/definitions/Binary"
         },
         "token": {
           "$ref": "#/definitions/Contract"
@@ -190,19 +194,6 @@
           "description": "Unbonding period ending timestamp (in seconds)",
           "type": "integer",
           "format": "uint64",
-          "minimum": 0.0
-        }
-      }
-    },
-    "TokenTypeRespone": {
-      "type": "object",
-      "required": [
-        "token_type"
-      ],
-      "properties": {
-        "token_type": {
-          "type": "integer",
-          "format": "uint8",
           "minimum": 0.0
         }
       }

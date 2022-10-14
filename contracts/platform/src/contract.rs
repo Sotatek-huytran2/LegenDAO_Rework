@@ -1,4 +1,4 @@
-use std::vec;
+use std::{vec, result};
 
 use crate::auto_claim::AutoClaims;
 use crate::constants::{PREFIX_REVOKED_PERMITS, RESPONSE_BLOCK_SIZE};
@@ -22,6 +22,7 @@ use secret_toolkit::utils::feature_toggle::{
 };
 use secret_toolkit::utils::types::Contract;
 use secret_toolkit::viewing_key::{ViewingKey, ViewingKeyStore};
+use snafu::NoneError;
 
 use crate::msgs::update_nft::{change_nft_type, burn_loot_box, change_nft_metadata};
 use crate::msgs::mint_nft::{mint_nft_msg};
@@ -32,10 +33,11 @@ use crate::snip721::metadata::Metadata;
 use crate::snip721::snip721_handle_msg::{TokenTypeRespone};
 
 
-use crate::ethereum::{get_recovery_param, decode_address, ethereum_address_raw};
+// use crate::ethereum::{get_recovery_param, decode_address, ethereum_address_raw};
 
-use sha3::{Keccak256, Digest};
-use std::ops::Deref;
+// use sha3::{Keccak256, Digest};
+// use std::ops::Deref;
+use sha2::{Digest, Sha256};
 
 pub fn init<S: Storage, A: Api, Q: Querier>(
     deps: &mut Extern<S, A, Q>,
@@ -50,9 +52,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         unbonding_period: msg.unbonding_period.unwrap_or(SECONDS_IN_DAY * 21),
         self_contract_addr: env.contract.address,
         distribute_address: msg.distribute_address.clone(),
-        test: TokenTypeRespone {
-            token_type: 0
-        },
+        signer_address: msg.signer_address,
     }
     .save(&mut deps.storage)?;
 
@@ -132,7 +132,6 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_nft_uri,
             message,
             signature,
-            signer_address,
             memo
         } => open_loot_box(
             deps, 
@@ -141,9 +140,8 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_lgnd_amount, 
             open_nft_contract,
             open_nft_uri,
-            message.as_str(),
+            message,
             signature,
-            signer_address.as_str(),
             memo
         ),
         HandleMsg::AddReceivingContracts { addresses } => {
@@ -195,104 +193,37 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
     open_lgnd_amount: Uint128,
     open_nft_contract: Option<Contract>,
     open_nft_uri: Option<String>,
-    message: &str,
+    message: Binary,
     signature: Binary,
-    signer_address: &str,
     memo: Option<String>,
 ) -> StdResult<HandleResponse> {
 
-    // ============ Verify Signature
+    let mut config = Config::get_unchecked(&deps.storage)?;
+    let mut messages = vec![];
+
+    let message_u8 = message.as_slice();
     let signature_u8 = signature.as_slice();
+    let signer_address_u8 = config.signer_address.as_slice();
 
-    let signer_address = decode_address(signer_address)?;
-
+    // ============ Verify Signature
     // Hashing
-    let mut hasher = Keccak256::new();
-    hasher.update(format!("\x19Ethereum Signed Message:\n{}", message.len()));
-    hasher.update(message);
-    let hash = hasher.finalize();
-
-    // Decompose signature
-    let (v, rs) = match signature_u8.split_last() {
-        Some(pair) => pair,
-        None => return Err(StdError::generic_err("Signature must not be empty")),
-    };
-    let recovery = get_recovery_param(*v)?;
+    let hash = Sha256::digest(message_u8);
 
     // Verification
-    let calculated_pubkey = deps.api.secp256k1_recover_pubkey(&hash, rs, recovery);
+    let result = deps.api.secp256k1_verify(hash.as_ref(), signature_u8, signer_address_u8);
 
-    // if let Err(err) = calculated_pubkey {
-    //     return Err(StdError::generic_err(format!(
-    //         "{}", err
-    //     )));
-    // }
-
-    match calculated_pubkey {
-        Ok(pubkey_ok) => {
-            let calculated_address = ethereum_address_raw(&pubkey_ok)?;
-            if signer_address != calculated_address {
-                return Err(StdError::generic_err(format!(
-                    "Wrong signature",
-                )));
-            }
-    
-            let result = deps.api.secp256k1_verify(&hash, rs, &pubkey_ok);
-
-            if let Err(err) = result {
-                return Err(StdError::generic_err(format!(
-                    "{}", err
-                )));
-            }
-        },
-        Err(err) => {
-            return Err(StdError::generic_err(format!(
-            "{}", err)));
-        }
+    if let Err(err) = result {
+        return Err(StdError::generic_err(format!("Error is {}", err)));
     }
+    else {
+        if !result.unwrap() {
+            return Err(StdError::generic_err(format!("Error is fucking wrong")));
+        }
 
-    // // using if let
-    // if let Ok(kok) = calculated_pubkey {
-    //     let calculated_address = ethereum_address_raw(&kok)?;
-    //     if signer_address != calculated_address {
-    //         return Err(StdError::generic_err(format!(
-    //             "Wrong signature",
-    //         )));
-    //     }
-    
-    //     let result = deps.api.secp256k1_verify(&hash, rs, &kok);
-
-    //     if let Err(err) = result {
-    //         return Err(StdError::generic_err(format!(
-    //             "{}", err
-    //         )));
-    //     }
-    // }
-    // else {
-    //     return Err(StdError::generic_err(format!(
-    //         "{}", err
-    //     )));
-    // }
-
-    // let calculated_address = ethereum_address_raw(&calculated_pubkey)?;
-    // if signer_address != calculated_address {
-    //     return Err(StdError::generic_err(format!(
-    //         "Wrong signature",
-    //     )));
-    // }
-    
-    // let result = deps.api.secp256k1_verify(&hash, rs, &calculated_pubkey);
-
-    // if let Err(err) = result {
-    //     return Err(StdError::generic_err(format!(
-    //         "{}", err
-    //     )));
-    // }
-
+        // return Err(StdError::generic_err(format!("Error is fucking wrong {}", result.unwrap())));
+    }
     // ============ Verify Signature
-
-    let config = Config::get_unchecked(&deps.storage)?;
-    let mut messages = vec![];
+    
 
     // check if token id is Loot Box
     let query_nft_type = get_token_type(config.legen_dao_nft.clone(), loot_box_id.clone())?;
@@ -302,6 +233,22 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
         return Err(StdError::generic_err(format!(
             "Only lootbox can be open",
         )));
+    }
+
+    if open_lgnd_amount > Uint128(0) {
+
+        let send_msg = snip20::transfer_from_msg(
+            config.distribute_address.clone(),
+            env.message.sender.clone(),
+            open_lgnd_amount,
+            memo,
+            None,
+            RESPONSE_BLOCK_SIZE,
+            config.token.hash.clone(),
+            config.token.address.clone(),
+        )?;
+
+        messages.push(send_msg);
     }
 
     if open_nft_contract.is_some() {
@@ -357,26 +304,17 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
             messages.push(mint_message);
 
             // burn loot box of legenDAO collection
-            let change_message = burn_loot_box(config.legen_dao_nft.clone(), loot_box_id, None, None)?;
-            messages.push(change_message);
+            let burn_message = burn_loot_box(config.legen_dao_nft.clone(), loot_box_id, None, None)?;
+            messages.push(burn_message);
         }
+    } 
+    else {
+        // burn loot box of legenDAO collection
+        let burn_message = burn_loot_box(config.legen_dao_nft.clone(), loot_box_id, None, None)?;
+        messages.push(burn_message);
     }
 
-    if open_lgnd_amount > Uint128(0) {
-
-        let send_msg = snip20::transfer_from_msg(
-            config.distribute_address.clone(),
-            env.message.sender.clone(),
-            open_lgnd_amount,
-            memo,
-            None,
-            RESPONSE_BLOCK_SIZE,
-            config.token.hash.clone(),
-            config.token.address.clone(),
-        )?;
-
-        messages.push(send_msg);
-    }
+    config.save(&mut deps.storage)?;
 
     Ok(HandleResponse {
         messages: messages,

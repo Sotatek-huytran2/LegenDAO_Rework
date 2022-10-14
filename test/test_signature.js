@@ -48,21 +48,27 @@ const main = async () => {
     // );
 
     // const decryptedKey = decrypt(exportedWallet.encrypted_key, "@Solid0209");
-    
+
     const mnemonic = "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway"
 
     const wallet = new Wallet(
         "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway",
     );
- 
-    const u8_private_key = wallet.privateKey;
 
-    const rawKey = new RawKey(Buffer.from(u8_private_key, "hex"));
+    const other_wallet = new Wallet(
+        "grant rice replace explain federal release fix clever romance raise often wild taxi quarter soccer fiber love must tape steak together observe swap guitar",
+    );
+
+    const u8_private_key = wallet.privateKey;
+    const u8_private_other_key = other_wallet.privateKey;
+
+    const rawKey = new RawKey(Buffer.from(u8_private_key, "base64"));
+    const rawKey_other = new RawKey(Buffer.from(u8_private_other_key, "base64"));
 
     console.log(rawKey)
 
-    const minting_grant = { 
-        "open_loot_box": { 
+    const open_loot_box = {
+        "open_loot_box": {
             "loot_box_id": "2",
             "open_lgnd_amount": "0",
             "open_nft_contract": {
@@ -70,16 +76,15 @@ const main = async () => {
                 "hash": "47ad683d1936a0b51476cee2e9c1a583268df708641001741334c49141d82d28"
             },
             "open_nft_uri": "https://bigdick.com/2",
-        } 
+        }
     }
 
-    //console.log(Buffer.from(JSON.stringify(minting_grant)).toString("base64"));
+    const message = Buffer.from(JSON.stringify(open_loot_box));
 
     // Sign minting instruction by the imported private key
-    const signature = await rawKey.sign(Buffer.from(JSON.stringify(minting_grant)));
+    const signature = await rawKey.sign(message);
 
-    console.log(signature.toString("base64"))
-
+    console.log(rawKey.publicKey.key.toString('base64'))
 
     // Verify valid public key if needed
     const verified = secp256k1.publicKeyVerify(
@@ -87,7 +92,6 @@ const main = async () => {
     )
 
     console.log("VERIFIED: ", verified);
-
 
     // Verify instruction off-chain 
     // const bool = secp256k1.ecdsaVerify(
@@ -98,13 +102,13 @@ const main = async () => {
 
     const bool = secp256k1.ecdsaVerify(
         new Uint8Array(Buffer.from(signature)),
-        new Uint8Array(Buffer.from(SHA256(JSON.stringify(minting_grant)).toString(), 'hex')),
-        new Uint8Array(Buffer.from(rawKey.publicKey.key.toString('base64'), 'base64'))
+        new Uint8Array(Buffer.from(SHA256(JSON.stringify(open_loot_box)).toString(), 'hex')),
+        new Uint8Array(Buffer.from(rawKey_other.publicKey.key.toString('base64'), 'base64'))
     );
 
     console.log("Sign by private key: ", bool);
 
-    
+
 
     // console.log(signature.toString("base64"));
     // console.log(rawKey.publicKey.key);

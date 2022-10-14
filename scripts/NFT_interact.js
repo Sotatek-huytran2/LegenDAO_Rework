@@ -30,6 +30,10 @@ const main = async () => {
 
     const u8_private_key = owner.privateKey;
 
+    console.log(Buffer.from(owner.publicKey).toString("base64"))
+
+    console.log("=======")
+
     const private_key = Buffer.from(u8_private_key).toString("base64");
     console.log(private_key);
 

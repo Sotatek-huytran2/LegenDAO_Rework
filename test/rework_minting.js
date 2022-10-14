@@ -2,9 +2,11 @@ const { expect, use } = require("chai");
 const { Contract, getAccountByName, polarChai } = require("secret-polar");
 const path = require('path');
 const fs = require('fs');
-const sha256 = require('crypto-js/sha256');
 const { BigNumber } = require('bignumber.js');
 const { send } = require("process");
+const { Wallet } = require("secretjs");
+const { RawKey } = require('@terra-money/terra.js');
+const SHA256 = require('crypto-js/sha256');
 
 use(polarChai);
 
@@ -30,14 +32,35 @@ const DISTRIBUTE_AMOUNT = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6)
 
 const USER_1_INIT = new BigNumber(10).multipliedBy(new BigNumber(10).pow(6));
 
+
+
+
+
 describe("Minting", () => {
 
     async function setup() {
 
-        //console.log(AMOUNT_STAKE.toFixed());
+        const owner = new Wallet(
+            "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway"
+        );
+        
+        const rawKey = new RawKey(Buffer.from(owner.privateKey, "hex"));
+        
+        
+        const owner_fake = new Wallet(
+            "grant rice replace explain federal release fix clever romance raise often wild taxi quarter soccer fiber love must tape steak together observe swap guitar"
+        );
+        const rawKey_fake = new RawKey(Buffer.from(owner_fake.privateKey, "hex"));
 
-        const contract_owner = getAccountByName("account_0");
-        const user_1 = getAccountByName("account_1");
+        console.log(Buffer.from(rawKey.publicKey.key.toString('base64'), 'base64').toString("base64"))
+        console.log(Buffer.from(rawKey_fake.publicKey.key.toString('base64'), 'base64').toString("base64"))
+
+        
+
+        //console.log(AMOUNT_STAKE.toFixed());
+        const contract_owner = getAccountByName("huy_sota");
+
+        const user_1 = getAccountByName("account_0");
         const user_2 = getAccountByName("account_4");
 
         const snip20_token = new Contract("snip20");
@@ -150,6 +173,7 @@ describe("Minting", () => {
                 hash: deploy_response_snip721.contractCodeHash,
             },
             distribute_address: contract_owner.account.address,
+            signer_address: Buffer.from(rawKey.publicKey.key.toString('base64'), 'base64').toString("base64"),
             token_native_denom: process.env.LGND_NATIVE,
             viewing_key: PLATFORM_VK_LGND,
         };
@@ -251,7 +275,12 @@ describe("Minting", () => {
                 "expiration": null,
                 "padding": null
             },
-            user_1
+            user_1,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
         );
 
         await snip20_token.executeMsg(
@@ -262,7 +291,12 @@ describe("Minting", () => {
                 "expiration": null,
                 "padding": null
             },
-            contract_owner
+            contract_owner,
+            undefined,
+            { // custom fees
+                amount: [{ amount: "750000", denom: "uscrt" }],
+                gas: "3000000",
+            }
         );
 
         await snip20_token.executeMsg(
@@ -348,35 +382,44 @@ describe("Minting", () => {
             }
         );
 
-        return { 
-            snip20_token, 
-            platform, 
+        return {
+            snip20_token,
+            platform,
             snip721_token,
-            snip721_other_token, 
-            nft_minting, 
-            contract_owner, 
-            user_1, 
-            user_2, 
-            platform_code_hash, 
-            nft_minting_code_hash, 
-            snip721_code_hash };
+            snip721_other_token,
+            nft_minting,
+            contract_owner,
+            user_1,
+            user_2,
+            platform_code_hash,
+            nft_minting_code_hash,
+            snip721_code_hash,
+            owner,
+            rawKey,
+            owner_fake,
+            rawKey_fake
+        };
     }
 
     describe("Deploy", async function () {
 
         it("Should deposit successful", async () => {
-            const { 
-                snip20_token, 
-                platform, 
-                snip721_token, 
-                snip721_other_token, 
-                nft_minting, 
-                contract_owner, 
-                user_1, 
-                user_2, 
-                platform_code_hash, 
-                nft_minting_code_hash, 
-                snip721_code_hash 
+            const {
+                snip20_token,
+                platform,
+                snip721_token,
+                snip721_other_token,
+                nft_minting,
+                contract_owner,
+                user_1,
+                user_2,
+                platform_code_hash,
+                nft_minting_code_hash,
+                snip721_code_hash,
+                owner,
+                rawKey,
+                owner_fake,
+                rawKey_fake
             } = await setup();
 
             const msg_deposit = {
@@ -480,7 +523,7 @@ describe("Minting", () => {
                     "key": USER_1_VK_ON_PLATFORM,
                 }
             )
-        
+
             //expect(userOneBalanceAfterBuy.balance.staked).to.be.equal('0');
             console.log(`=============================================== Balance of User on platform after first deposit: ${userOneBalanceAfterBuy.balance.staked}`);
 
@@ -557,7 +600,7 @@ describe("Minting", () => {
                     "token_id": second_nft.toString(),
                 }
             );
-            
+
             let third_nft_type = await snip721_token.queryMsg(
                 "token_type",
                 {
@@ -631,6 +674,24 @@ describe("Minting", () => {
 
             // ================= Verify
 
+            const open_loot_box = {
+                "open_loot_box": {
+                    "loot_box_id": third_nft.toString(),
+                    "open_lgnd_amount": "0",
+                    "open_nft_contract": {
+                        "address": snip721_other_token.contractAddress,
+                        "hash": snip721_code_hash,
+                    },
+                    "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString()),
+                }
+            }
+
+            const message = Buffer.from(JSON.stringify(open_loot_box));
+
+            const signature = await rawKey_fake.sign(message);
+            // const signature = await rawKey_other.sign(message);
+
+            // NOTE: add nonce and timestamp to prevent replay attack
             await platform.executeMsg(
                 "open_loot_box",
                 {
@@ -642,9 +703,8 @@ describe("Minting", () => {
                         "hash": snip721_code_hash
                     },
                     "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString()),
-                    "message": ,
-                    "signature": ,
-                    "signer_address": owner.account.address,
+                    "message": Buffer.from(JSON.stringify(open_loot_box).toString()).toString("base64"),
+                    "signature": Buffer.from(signature).toString("base64"),
                 },
                 user_1,
                 undefined,
@@ -675,7 +735,7 @@ describe("Minting", () => {
 
             // ================== CHECK TYPE OF NFT WHEN OPEN LOOT BOX (Different collection) =================
 
-            
+
             let allOtherToken = await snip721_other_token.queryMsg(
                 "tokens",
                 {
@@ -707,7 +767,7 @@ describe("Minting", () => {
             let plt_config = await platform.queryMsg(
                 "config",
                 {
-                
+
                 }
             );
 
@@ -740,13 +800,13 @@ describe("Minting", () => {
 
             // console.log("====================================")
 
-            
+
 
 
             // let check = await nft_minting.queryMsg(
             //     "config",
             //     {
-                    
+
             //     }
             // );
 

@@ -1,4 +1,4 @@
-use cosmwasm_std::{Env, HumanAddr, ReadonlyStorage, StdError, StdResult, Storage, WasmQuery, QueryRequest};
+use cosmwasm_std::{Env, HumanAddr, ReadonlyStorage, StdError, StdResult, Storage, WasmQuery, QueryRequest, Binary};
 use cosmwasm_storage::{PrefixedStorage, ReadonlyPrefixedStorage};
 use schemars::JsonSchema;
 use secret_toolkit::storage::{TypedStore, TypedStoreMut};
@@ -28,7 +28,7 @@ pub struct Config {
     pub native_token_denom: String,
     pub unbonding_period: u64,
     pub self_contract_addr: HumanAddr,
-    pub test: TokenTypeRespone,
+    pub signer_address: Binary,
 }
 
 impl Config {
