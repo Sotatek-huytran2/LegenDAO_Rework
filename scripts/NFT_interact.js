@@ -28,6 +28,13 @@ const main = async () => {
     const myAddress = wallet.address;
     const ownerAddress = owner.address;
 
+    const u8_private_key = owner.privateKey;
+
+    const private_key = Buffer.from(u8_private_key).toString("base64");
+    console.log(private_key);
+
+    // privatekey(hex): 7e80cf6267c0cdefe7e94929bbffde347bbad74958aee05b8c33a83d1211a9bd
+    // privatekey(hex): 7e80cf6267c0cdefe7e94929bbffde347bbad74958aee05b8c33a83d1211a9bd
 
     // // mainnet
     // const secretjs = await SecretNetworkClient.create({
@@ -413,12 +420,12 @@ const main = async () => {
     //     // gasPriceInFeeDenom: 0.000625
     // });
 
-    const tx = await secretjsOwner.tx.broadcast([mint_from_paltform_msg], {
-        gasLimit: 8000000,
-        // gasPriceInFeeDenom: 0.000625
-    });
+    // const tx = await secretjsOwner.tx.broadcast([mint_from_paltform_msg], {
+    //     gasLimit: 8000000,
+    //     // gasPriceInFeeDenom: 0.000625
+    // });
 
-    console.log(tx);
+    // console.log(tx);
 
     // ================================================================== QUERY ==================================================================
 

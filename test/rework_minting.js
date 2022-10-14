@@ -629,6 +629,8 @@ describe("Minting", () => {
                 }
             );
 
+            // ================= Verify
+
             await platform.executeMsg(
                 "open_loot_box",
                 {
@@ -639,7 +641,10 @@ describe("Minting", () => {
                         "address": snip721_other_token.contractAddress,
                         "hash": snip721_code_hash
                     },
-                    "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString())
+                    "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString()),
+                    "message": ,
+                    "signature": ,
+                    "signer_address": owner.account.address,
                 },
                 user_1,
                 undefined,
