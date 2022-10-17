@@ -1,19 +1,19 @@
 use std::{vec, result};
 
 use crate::auto_claim::AutoClaims;
-use crate::constants::{PREFIX_REVOKED_PERMITS, RESPONSE_BLOCK_SIZE};
+use crate::constants::{PREFIX_REVOKED_PERMITS, RESPONSE_BLOCK_SIZE, FIVE_MINUTES};
 use crate::msg::ResponseStatus::Success;
 use crate::msg::{
     Deposit, HandleAnswer, HandleMsg, InitMsg, PlatformApi, QueryAnswer, QueryMsg, QueryWithPermit,
-    ReceiveMsg, ResponseStatus, VerifyResponse
+    ReceiveMsg, ResponseStatus, OpenLootBoxMessage
 };
 use crate::state::{
-    BalanceChange, Balances, Config, Features, ReceivingContracts, TotalBalances, SECONDS_IN_DAY,
+    BalanceChange, Balances, Config, Features, ReceivingContracts, TotalBalances, Nonces, SECONDS_IN_DAY,
 };
 use cosmwasm_std::{
     to_binary, Api, BankMsg, Binary, Coin, CosmosMsg, Env, Extern, HandleResponse, HandleResult,
     HumanAddr, InitResponse, InitResult, Querier, QueryResult, StdError, StdResult, Storage,
-    Uint128, QueryRequest, Empty, 
+    Uint128, QueryRequest, Empty, from_slice,
 };
 use secret_toolkit::permit::{validate, Permit, RevokedPermits, TokenPermissions};
 use secret_toolkit::snip20;
@@ -53,6 +53,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         self_contract_addr: env.contract.address,
         distribute_address: msg.distribute_address.clone(),
         signer_address: msg.signer_address,
+        ts_now: 0,
     }
     .save(&mut deps.storage)?;
 
@@ -130,6 +131,8 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_lgnd_amount, 
             open_nft_contract,
             open_nft_uri,
+            nonce,
+            ts_execute,
             message,
             signature,
             memo
@@ -140,6 +143,8 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
             open_lgnd_amount, 
             open_nft_contract,
             open_nft_uri,
+            nonce,
+            ts_execute,
             message,
             signature,
             memo
@@ -193,12 +198,18 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
     open_lgnd_amount: Uint128,
     open_nft_contract: Option<Contract>,
     open_nft_uri: Option<String>,
+    nonce: u64,
+    ts_execute: u64,
     message: Binary,
     signature: Binary,
     memo: Option<String>,
 ) -> StdResult<HandleResponse> {
 
+    
+
     let mut config = Config::get_unchecked(&deps.storage)?;
+    let mut user_noce = Nonces::load(&deps.storage, &env.message.sender)?.unwrap_or_default();
+
     let mut messages = vec![];
 
     let message_u8 = message.as_slice();
@@ -207,7 +218,7 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
 
     // ============ Verify Signature
     // Hashing
-    let hash = Sha256::digest(message_u8);
+    let hash = Sha256::digest(message_u8.clone());
 
     // Verification
     let result = deps.api.secp256k1_verify(hash.as_ref(), signature_u8, signer_address_u8);
@@ -217,10 +228,42 @@ fn open_loot_box<S: Storage, A: Api, Q: Querier>(
     }
     else {
         if !result.unwrap() {
-            return Err(StdError::generic_err(format!("Error is fucking wrong")));
+            return Err(StdError::generic_err(format!("Wrong Signature")));
+        }
+        else {
+            if user_noce.nonce != nonce {
+                return Err(StdError::generic_err(format!("Wrong nonce",)))
+            }
+
+            if  ts_execute + FIVE_MINUTES < env.block.time {
+                return Err(StdError::generic_err(format!("Timestamp is overdue")));
+            }
+
+            config.ts_now = env.block.time;
+        
+            user_noce.nonce = user_noce.nonce + 1;
+            user_noce.save(&mut deps.storage, &env.message.sender)?;
+
+            // let open_box_msg: HandleMsg = from_slice(message_u8.clone())?;
+
+            // match open_box_msg {
+            //     HandleMsg::OpenLootBox{
+            //         loot_box_id,
+            //         open_lgnd_amount,
+            //         open_nft_contract,
+            //         open_nft_uri,
+            //         nonce,
+            //         message,
+            //         signature,
+            //         memo,
+            //     } => {
+                    
+            //     }
+            //     _ => return Err(StdError::generic_err(format!("Wrong message",)))
+            // }
         }
 
-        // return Err(StdError::generic_err(format!("Error is fucking wrong {}", result.unwrap())));
+        // return Err(StdError::generic_err(format!("Error is wrong {}", result.unwrap())));
     }
     // ============ Verify Signature
     

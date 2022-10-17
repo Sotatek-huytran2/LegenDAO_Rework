@@ -1,67 +1,40 @@
 const { Contract, getAccountByName, getLogs } = require("secret-polar-reworks");
-
-const { CosmWasmClient, BroadcastMode } = require("secretjs");
+const { RawKey } = require('@terra-money/terra.js');
+const { CosmWasmClient, BroadcastMode, Wallet } = require("secretjs");
 
 const VIEWING_KEY = "hello";
+
+const owner = new Wallet(
+    "joy clip vital cigar snap column control cattle ocean scout world rude labor gun find drift gaze nurse canal soldier amazing wealth valid runway"
+);
+
+const rawKey = new RawKey(Buffer.from(owner.privateKey, "hex"));
 
 
 async function run() {
     const contract_owner = getAccountByName("huy_sota");
 
-    const lgndToken = 'secret18y59n8z3frrslek52tkkq6t9yk76cdp57wztn9';
+    const lgndToken = 'secret16xlsf4qz05ylyamstqudqppwpzy4hp4hre6sdg';
+    const lgndNFT = 'secret1vs79386n0d0qqsv8nr6n8mypmk0tsc5lfgq7v5'
     
     // // testnet
-    // const grpcWebUrl = "http://testnet.securesecrets.org:1317/";
+    const grpcWebUrl = "http://testnet.securesecrets.org:1317/";
 
     // mainnet
-    const grpcWebUrl = "https://secret-4.api.trivium.network:1317/";
+    // const grpcWebUrl = "https://secret-4.api.trivium.network:1317/";
 
     // To create a readonly secret.js client, just pass in a gRPC-web endpoint
-    const secretjs = new CosmWasmClient(grpcWebUrl, undefined, BroadcastMode.Sync);
+    // const secretjs = new CosmWasmClient(grpcWebUrl, undefined, BroadcastMode.Sync);
 
-    const lgndContractHash = await secretjs.getCodeHashByContractAddr(lgndToken);
+    // const lgndContractHash = await secretjs.getCodeHashByContractAddr(lgndToken);
+    // const lgndnftContractHash = await secretjs.getCodeHashByContractAddr(lgndNFT);
 
-    console.log(lgndContractHash)
+    // console.log(lgndContractHash)
 
     // // ========================================  PLATFORM
-    // const contract_platform = new Contract("platform");
+    const contract_platform = new Contract("platform");
 
-    // const deploy_response = await contract_platform.deploy(
-    //     contract_owner,
-    //     { // custom fees
-    //         amount: [{ amount: "50000", denom: "uscrt" }],
-    //         gas: "3000000",
-    //     }
-    // );
-
-    // console.log(deploy_response);
-
-    // const platformInitMsg = {
-    //     token: {
-    //         address: lgndToken,
-    //         hash: lgndContractHash,
-    //     },
-    //     token_native_denom: process.env.LGND_NATIVE,
-    //     viewing_key: VIEWING_KEY,
-    // };
-
-
-    // const resp = await contract_platform.instantiate(
-    //     platformInitMsg,
-    //     "Instantiate config platform 7",
-    //     contract_owner
-    // );
-
-    // console.log(resp);
-
-
-    // console.log("================================================================");
-
-
-    // // ========================================  Staking 
-    const contract_staking = new Contract("staking");
-
-    const deploy_response_stake = await contract_staking.deploy(
+    const deploy_response = await contract_platform.deploy(
         contract_owner,
         { // custom fees
             amount: [{ amount: "50000", denom: "uscrt" }],
@@ -69,40 +42,81 @@ async function run() {
         }
     );
 
-    console.log(deploy_response_stake);
+    console.log(deploy_response);
 
-
-    const stakingInitMsg = {
+    const platformInitMsg = {
         token: {
             address: lgndToken,
-            hash: lgndContractHash,
+            hash: "61d8a71482b8d6fdc8be79d0911fd5ff0304d5ece9d8c56e68690e258239f9e7",
         },
-        platform: {
-            // address: resp.contractAddress,
-            //hash: deploy_response.contractCodeHash,
-            address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
-            hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
+        legen_dao_nft: {
+            address: lgndNFT,
+            hash: "10f08f81497f3eb9ebdeda8e5986dfddb8eeffd8af24a8a6f86d6ea5fde9f584",
         },
-        inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
+        distribute_address: contract_owner.account.address,
+        signer_address: Buffer.from(rawKey.publicKey.key.toString('base64'), 'base64').toString("base64"),
+        token_native_denom: process.env.LGND_NATIVE,
         viewing_key: VIEWING_KEY,
-        prng_seed: "IAo=",
-    }
+    };
 
 
-    const resp_stake = await contract_staking.instantiate(
-        stakingInitMsg,
-        "Instantiate config staking 13",
+    const resp = await contract_platform.instantiate(
+        platformInitMsg,
+        "Instantiate config platform 8",
         contract_owner
     );
 
-    console.log(resp_stake);
+    console.log(resp);
 
-    console.log("================================================================");
+
+    // console.log("================================================================");
+
+
+    // // // ========================================  Staking 
+    // const contract_staking = new Contract("staking");
+
+    // const deploy_response_stake = await contract_staking.deploy(
+    //     contract_owner,
+    //     { // custom fees
+    //         amount: [{ amount: "50000", denom: "uscrt" }],
+    //         gas: "3000000",
+    //     }
+    // );
+
+    // console.log(deploy_response_stake);
+
+
+    // const stakingInitMsg = {
+    //     token: {
+    //         address: lgndToken,
+    //         hash: lgndContractHash,
+    //     },
+    //     platform: {
+    //         // address: resp.contractAddress,
+    //         //hash: deploy_response.contractCodeHash,
+    //         address: "secret1xcdxl3pfv9n3kycfhxgtul27awjw3hd4k96mrg",
+    //         hash: "2ae84f76f2411405ee17430446a0bb2754c1b70b91cea3820e37962a090374ab",
+    //     },
+    //     inflation_schedule: [{ end_block: 10_000_000, reward_per_block: "10000" }],
+    //     viewing_key: VIEWING_KEY,
+    //     prng_seed: "IAo=",
+    // }
+
+
+    // const resp_stake = await contract_staking.instantiate(
+    //     stakingInitMsg,
+    //     "Instantiate config staking 13",
+    //     contract_owner
+    // );
+
+    // console.log(resp_stake);
+
+    // console.log("================================================================");
 
     console.log("Success!");
     // console.log(`$LGND address: ${lgndToken}`);
-    // console.log(`Platform address: ${resp.contractAddress}`);
-    console.log(`Staking address: ${resp_stake.contractAddress}`);
+    console.log(`Platform address: ${resp.contractAddress}`);
+    // console.log(`Staking address: ${resp_stake.contractAddress}`);
 }
 
 module.exports = { default: run };

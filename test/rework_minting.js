@@ -33,9 +33,6 @@ const DISTRIBUTE_AMOUNT = new BigNumber(1).multipliedBy(new BigNumber(10).pow(6)
 const USER_1_INIT = new BigNumber(10).multipliedBy(new BigNumber(10).pow(6));
 
 
-
-
-
 describe("Minting", () => {
 
     async function setup() {
@@ -674,6 +671,8 @@ describe("Minting", () => {
 
             // ================= Verify
 
+            let ts_execute = Math.floor(Date.now() / 1000);
+            
             const open_loot_box = {
                 "open_loot_box": {
                     "loot_box_id": third_nft.toString(),
@@ -682,13 +681,15 @@ describe("Minting", () => {
                         "address": snip721_other_token.contractAddress,
                         "hash": snip721_code_hash,
                     },
+                    "nonce": 1,
+                    "ts_execute": ts_execute,
                     "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString()),
                 }
             }
 
             const message = Buffer.from(JSON.stringify(open_loot_box));
 
-            const signature = await rawKey_fake.sign(message);
+            const signature = await rawKey.sign(message);
             // const signature = await rawKey_other.sign(message);
 
             // NOTE: add nonce and timestamp to prevent replay attack
@@ -703,6 +704,8 @@ describe("Minting", () => {
                         "hash": snip721_code_hash
                     },
                     "open_nft_uri": "https://bigdick.com/".concat(third_nft.toString()),
+                    "nonce": 0,
+                    "ts_execute": ts_execute,
                     "message": Buffer.from(JSON.stringify(open_loot_box).toString()).toString("base64"),
                     "signature": Buffer.from(signature).toString("base64"),
                 },
@@ -713,6 +716,7 @@ describe("Minting", () => {
                     gas: "3000000",
                 }
             );
+
 
             // ================== CHECK INFO OF NFT WHEN OPEN LOOT BOX (Same collection) =================
             // let first_nft_type_after = await snip721_token.queryMsg(

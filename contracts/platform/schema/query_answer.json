@@ -62,6 +62,7 @@
         "self_contract_addr",
         "signer_address",
         "token",
+        "ts_now",
         "unbonding_period"
       ],
       "properties": {
@@ -85,6 +86,11 @@
         },
         "token": {
           "$ref": "#/definitions/Contract"
+        },
+        "ts_now": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
         },
         "unbonding_period": {
           "type": "integer",

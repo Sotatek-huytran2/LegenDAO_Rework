@@ -1,6 +1,7 @@
 const { Wallet, getMsgDecoderRegistry, MsgExecuteContract, MsgSnip20Send, MsgSnip20Transfer, SecretNetworkClient } = require("secretjs");
 
 const { BigNumber } = require('bignumber.js');
+const { now } = require("mongoose");
 
 const OWNER_NFT_VK = "OWNER_NFT_VK"
 
@@ -36,6 +37,8 @@ const main = async () => {
 
     const private_key = Buffer.from(u8_private_key).toString("base64");
     console.log(private_key);
+
+    console.log(Math.floor(Date.now() / 1000))
 
     // privatekey(hex): 7e80cf6267c0cdefe7e94929bbffde347bbad74958aee05b8c33a83d1211a9bd
     // privatekey(hex): 7e80cf6267c0cdefe7e94929bbffde347bbad74958aee05b8c33a83d1211a9bd

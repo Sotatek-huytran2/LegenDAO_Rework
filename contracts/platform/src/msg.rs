@@ -49,6 +49,8 @@ pub enum HandleMsg {
         open_lgnd_amount: Uint128,
         open_nft_contract: Option<Contract>,
         open_nft_uri: Option<String>,
+        nonce: u64,
+        ts_execute: u64,
         message: Binary,
         signature: Binary,
         memo: Option<String>,
@@ -276,6 +278,14 @@ pub enum ResponseStatus {
     Failure,
 }
 
-pub struct VerifyResponse {
-    pub verifies: bool,
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct OpenLootBoxMessage {
+    pub loot_box_id: String,
+    pub open_lgnd_amount: Uint128,
+    pub open_nft_contract: Option<Contract>,
+    pub open_nft_uri: Option<String>,
+    pub message: Binary,
+    pub signature: Binary,
+    pub memo: Option<String>,
 }
+

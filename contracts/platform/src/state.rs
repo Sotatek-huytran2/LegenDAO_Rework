@@ -6,6 +6,7 @@ use secret_toolkit::utils::types::Contract;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
+
 use crate::snip721::snip721_handle_msg::TokenTypeRespone;
 
 pub const SECONDS_IN_DAY: u64 = 60 * 60 * 24;
@@ -14,6 +15,7 @@ pub const SECONDS_IN_DAY: u64 = 60 * 60 * 24;
 
 const PREFIX_CONFIG: &[u8] = b"config";
 const PREFIX_BALANCES: &[u8] = b"balances";
+const PREFIX_NONCE: &[u8] = b"user_nonce";
 const PREFIX_RECEIVING_CONTRACTS: &[u8] = b"receiving_contracts";
 const PREFIX_TOTAL_BALANCE: &[u8] = b"total_balance";
 
@@ -29,6 +31,7 @@ pub struct Config {
     pub unbonding_period: u64,
     pub self_contract_addr: HumanAddr,
     pub signer_address: Binary,
+    pub ts_now: u64,
 }
 
 impl Config {
@@ -73,6 +76,32 @@ impl Balances {
     pub fn save<S: Storage>(&self, storage: &mut S, key: &HumanAddr) -> StdResult<()> {
         let mut balances_store = PrefixedStorage::new(PREFIX_BALANCES, storage);
         TypedStoreMut::attach(&mut balances_store).store(key.0.as_bytes(), self)
+    }
+}
+
+
+#[derive(Serialize, Deserialize)]
+pub struct Nonces {
+    pub nonce: u64,
+}
+
+impl Nonces {
+    pub fn load<S: ReadonlyStorage>(storage: &S, user: &HumanAddr) -> StdResult<Option<Self>> {
+        let user_nonces_store = ReadonlyPrefixedStorage::new(PREFIX_NONCE, storage);
+        TypedStore::attach(&user_nonces_store).may_load(user.0.as_bytes())
+    }
+
+    pub fn save<S: Storage>(&self, storage: &mut S, user: &HumanAddr) -> StdResult<()> {
+        let mut user_nonces_store = PrefixedStorage::new(PREFIX_NONCE, storage);
+        TypedStoreMut::attach(&mut user_nonces_store).store(user.0.as_bytes(), self)
+    }
+}
+
+impl Default for Nonces {
+    fn default() -> Self {
+        Nonces {
+            nonce: 0,
+        }
     }
 }
 

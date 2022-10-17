@@ -102,8 +102,10 @@
           "required": [
             "loot_box_id",
             "message",
+            "nonce",
             "open_lgnd_amount",
-            "signature"
+            "signature",
+            "ts_execute"
           ],
           "properties": {
             "loot_box_id": {
@@ -117,6 +119,11 @@
             },
             "message": {
               "$ref": "#/definitions/Binary"
+            },
+            "nonce": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
             },
             "open_lgnd_amount": {
               "$ref": "#/definitions/Uint128"
@@ -139,6 +146,11 @@
             },
             "signature": {
               "$ref": "#/definitions/Binary"
+            },
+            "ts_execute": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
             }
           }
         }
